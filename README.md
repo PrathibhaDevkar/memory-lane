@@ -3,7 +3,7 @@
 An AI agent that helps caregivers put together personal reminiscence sessions for people living with dementia. Built for the Qloo Agentic Hackathon.
 
 Supports caregivers' activities. Not therapy and makes no medical claims.
-
+Building a support system scalable to caregivers, from individuals to Nursing Care.
 - **Approach & decisions:** [docs/approach.md](docs/approach.md)
 - **Phase 0 era-matching results:** [docs/phase0-results.md](docs/phase0-results.md)
 
