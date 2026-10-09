@@ -31,7 +31,7 @@ For each fictional persona it looks up the favorite with `/search`, then calls `
 3. **Results need a content-safety filter.** Unfiltered/filtered lists included explicit titles (a Rolling Stones documentary with an explicit name, *Last Tango in Paris*), a film about Alzheimer's (*Still Alice*) and distressing subjects (*Holocaust* miniseries). Qloo has no concept of "appropriate for a reminiscence session."
 4. **A "no favorite" comparison isn't possible.** Qloo returns 400 `at least one valid signal or filter is required`. For the demo comparison use a modern favorite vs. an era favorite instead (e.g. Taylor Swift vs. Sinatra).
 5. **Places are current businesses, not nostalgic places.** Rosa got Museum of Illusions and Benihana. June got hotels and Starbucks. Memphis worked because its landmarks are music history.
-6. **Qloo's oldest age bucket is `55_and_older`**, so it can't tell a 1942 birth from a 1968 one. Birth year only matters through our year filters.
+6. **Qloo's oldest age bucket is `55_and_older`**, so it can't tell a 1942 birth from a 1968 one. Birth year only matters through our year filters. Follow-up A/B test showed the age signal slightly modernizes artist picks, so we drop it (see D7 in approach.md).
 
 ## Full result lists
 

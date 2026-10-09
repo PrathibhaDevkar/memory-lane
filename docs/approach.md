@@ -18,6 +18,7 @@ Qloo's taste graph must **drive** the picks, not decorate them.
 | D4 | Places: prefer historic landmarks / long-standing venues. Framed like the dish: "a place to talk about," not a visit recommendation. | Raw place results are mostly current businesses. |
 | D5 | Demo comparison = modern favorite vs. era favorite, plus LLM-only vs. Memory Lane toggle. | Qloo rejects requests with no favorite (400). |
 | D6 | If a Qloo call fails, the kit shows the gap and the reason. Never fill it with invented data. | Project rule. |
+| D7 | Don't send `signal.demographics.age` on insights calls. Era comes from the seed favorite (D2) and year filters (D1) only. | A/B on the Sinatra seed (Oct 8): no age → Armstrong, Nat King Cole, Doris Day, Mel Tormé (purest era list); `55_and_older` → adds Paul Anka, Harry Connick Jr.; `24_and_younger` → Nina Simone, Manhattan Transfer, Sara Gazarek. The age signal reflects what that age group likes *today*, not when they were young. (The Phase 0 script still sends it; results doc reflects that.) |
 
 ## Non-negotiable rules
 - `QLOO_API_KEY` / `ANTHROPIC_API_KEY` only in `.env.local` (gitignored) and Vercel env vars. All Qloo and Claude calls server-side.
