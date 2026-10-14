@@ -185,7 +185,7 @@ flowchart LR
 
 | Gate | Where | How |
 |---|---|---|
-| Content filter (D3) | `lib/qloo/filters.ts` | Three checks on what Qloo already returns. (1) `properties.content_rating` blocklist (`R`, `NC-17`, `X`, `TV-MA`): catches *Last Tango in Paris*. (2) Sensitive **phrases** matched against `plot_themes_description`, `properties.keywords` and `tags[].name`: "dementia", "cognitive decline", "memory decline", "genocide", "suicide", "drug use", "terminal illness", "cancer", "deathbed", plus war phrases ("world war", "the war", "combat", "battlefield"; not bare "war", which would hit *Star Wars*). These catch *Still Alice*, *Charly* (rated M), *Holocaust* (Not Rated), the Rolling Stones documentary (no rating), and *Terms of Endearment* (tagged Cancer). (3) A profanity list on the title. Phrases, not single words: *Kramer vs. Kramer* has a "Hospital" keyword and stays. Known trade-off: "suicide" also drops *The Paper Chase*. Accepted, because over-excluding is the safe side |
+| Content filter (D3) | `lib/qloo/filters.ts` | Four checks on what Qloo already returns, revised after the Oct 14 re-check ([phase2-recheck.md](phase2-recheck.md)). (1) `content_rating` blocklist (`R`, `NC-17`, `X`, `TV-MA`): *Last Tango in Paris*, *A Clockwork Orange*. (2) Qloo's **War** genre: *Holocaust*, *M\*A\*S\*H*, *The Winds of War*. (3) Sensitive phrases matched against `plot_themes_description` **only**: "dementia", "alzheimer", "cognitive decline", "memory decline", "memory loss", "genocide", "holocaust", "nazi", "totalitarian", "suicide", "drug use", "addiction", "terminal illness", "cancer", "deathbed", "grief", "sexual abuse", "rape". Catches *Still Alice*, *Charly*, *Terms of Endearment*, *Hitler: A Career*, the Rolling Stones documentary. (4) Profanity in the title. **Not** keyword tags: they record minor plot details and would have dropped *The Sound of Music* ("Nazi" tag), *The Princess Bride* and 19 of June's 25 TV shows. Result on all saved responses: 43 of 193 titles excluded (22%), all 8 known offenders caught, every classic tested kept |
 | Over-filtering | `lib/qloo/tools.ts` | Ask Qloo for `take=25`, filter, keep the top 5. If fewer than 3 survive, the section says so (gap) instead of padding |
 | Avoid-list | `lib/qloo/filters.ts` | Case-insensitive match of caregiver's terms against name, tags, genre |
 | Grounding | `lib/agent/grounding.ts` | Every kit item's entity ID (or, for the dish, its specialty-dish tag ID) was returned by a tool in this run. Applies to Memory Lane mode only |
@@ -354,7 +354,7 @@ gantt
 | # | Task | Day | Done when |
 |---|---|---|---|
 | 2.0 | `scripts/qloo-recheck.mjs`: the 3 personas with no age signal, `take=25/50`, separate places and restaurants calls, plus the Taylor Swift hop. Saves the responses to `fixtures/qloo/`, and also copies the Phase 0 responses that contain the offenders (unfiltered movies, year-filtered lists) so filter tests don't depend on what Qloo returns today | Oct 16 AM | June has ≥ 1 allowlisted place; her dish is found or the gap is accepted and written down; the hop returns in-era films; we know whether *Charly* still appears for Rosa without the age signal (if not, demo step 6 uses whichever title the trace excludes) |
-| 2.1 | `qloo/filters.ts`: D3 + avoid-list (§5), tested against `fixtures/qloo/` | Oct 16 | Rejects *Still Alice*, *Holocaust*, *Last Tango in Paris*, *Charly*, *Terms of Endearment* and the explicit documentary; keeps *Kramer vs. Kramer* |
+| 2.1 | `qloo/filters.ts`: D3 + avoid-list (§5), tested against `fixtures/qloo/` and `fixtures/qloo/phase0/` | Oct 16 | Rejects *Still Alice*, *Holocaust*, *Last Tango in Paris*, *Charly*, *Terms of Endearment*, *Hitler: A Career*, *A Clockwork Orange* and the explicit documentary; keeps *The Sound of Music*, *The Princess Bride*, *Mary Poppins*, *Kramer vs. Kramer* |
 | 2.2 | `qloo/client.ts`: header auth, 8 s timeout, retry once on 5xx, in-memory cache keyed by URL (small: the Phase 0 script already has the fetch logic) | Oct 16 PM | Unit test with mocked fetch |
 | 2.3 | `qloo/tools.ts`: tools from §4.1 | Oct 17 | Era score through the tools matches Phase 0 (100% movies/TV) |
 | 2.4 | `agent/run.ts` + system prompt; the loop pushes a `TraceStep` for every call (a plain array, no UI yet) | Oct 17 | Rosa / Walt / June each produce a kit locally in ≤ 4 Claude turns |
@@ -428,7 +428,7 @@ flowchart LR
     B --> C["3 · The kit<br/>Ella, Nat King Cole,<br/>a 1950s film, a Chicago landmark,<br/>open questions"]
     C --> D["4 · Toggle LLM-only<br/>generic or wrong-era picks,<br/>no reasons, no trace"]
     D --> E["5 · Enter Taylor Swift<br/>agent notices she is out of era,<br/>seeds music from an era film<br/>(the hop shows in the trace)"]
-    E --> F["6 · Safety<br/>trace shows Charly (1968),<br/>a film about memory decline,<br/>excluded with reason"]
+    E --> F["6 · Safety, on June's kit<br/>trace shows Terms of Endearment<br/>excluded: theme of grief"]
 ```
 
 The comparison (D5) is **modern favorite vs. era favorite** (step 5 shows the agent routing around a modern favorite) plus **LLM-only vs. Memory Lane** (step 4). A "no favorite" baseline isn't possible because Qloo returns 400 without a signal.
@@ -464,8 +464,8 @@ The README frames Memory Lane as scaling **from individual caregivers to nursing
 
 | Question | Decide by | Status |
 |---|---|---|
-| Places: how do we find landmarks? | Oct 16 | `primary_genre` allowlist works for Rosa and Walt; June re-check in task 2.0 |
-| Dish: where does it come from? | Oct 16 | `specialty_dishes` from hometown restaurants, gap if none; June re-check in task 2.0 |
+| Places: how do we find landmarks? | — | **Answered Oct 14:** `primary_genre` allowlist with `take=50` finds landmarks for all three cities (7 for June). Claude still applies era judgment: the allowlist lets in modern attractions |
+| Dish: where does it come from? | — | **Answered Oct 14:** a separate restaurants call, keeping only places that list `specialty_dishes`. Finds dishes for all three cities |
 | Which Claude model is the default (speed vs. quality)? | Oct 20 | A fast default ships Oct 15; timing on two models confirms it |
 | Stream the trace live (SSE) or show it after? | Oct 19 | Show after, unless runs take > 15 s |
 | Feedback storage: Supabase or Upstash Redis? | — | **Decided:** Upstash Redis, already needed for the rate limit |
@@ -494,6 +494,8 @@ Before building, each step was checked for anything that could stall it. What wa
 | 14 | Public `/api/kit` with no limit; preview URLs may be protected | Vercel defaults | Upstash rate limit + daily cap, gate on production URL (tasks 2.5–2.6) |
 | 15 | Oct 16, 17, 18, 19 each overloaded at some point | Second and third review | Re-check script writes the test fixtures; client on Oct 16 (reuses Phase 0 fetch code) so Oct 17 is tools + loop only; route, zod and env vars moved to Oct 15; Oct 19 split into Oct 19–21 (§8) |
 | 17 | Smoke runs would trip the rate limit | Third review | `SMOKE_TOKEN` exemption (task 2.5) |
+| 18 | The D3 filter as designed would have emptied kits: keyword-tag matching dropped *The Sound of Music*, *The Princess Bride*, 19/25 of June's TV | Task 2.0 re-check against live Qloo | Phrases on the theme summary only, plus Qloo's War genre (§5, D3) |
+| 19 | *Charly* no longer comes back for Rosa without the age signal, so demo step 6 had no example | Task 2.0 | Demo step 6 uses June's *Terms of Endearment* (§11) |
 | 16 | Dish fallback named an unrelated cuisine ("a French dish" for Los Angeles); demo step 6 relied on *Still Alice*, which D1 already removes | Second review | Dish gap instead of a fallback; demo uses *Charly* (1968), which is in Rosa's window |
 
-**What's still a risk, stated plainly:** the schedule has no slack before Oct 18 other than the stated fallback. June's dish (and the Taylor Swift hop) stay unverified until task 2.0 runs on Oct 16. "Zero bottlenecks" isn't a promise anyone can make for a 15-day build; the goal of this review is that every known one has a fix or a fallback with a date.
+**What's still a risk, stated plainly:** the schedule has no slack before Oct 18 other than the stated fallback. Task 2.0 (run Oct 14) verified June's place and dish and the Taylor Swift hop. "Zero bottlenecks" isn't a promise anyone can make for a 15-day build; the goal of this review is that every known one has a fix or a fallback with a date.

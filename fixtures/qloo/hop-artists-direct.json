@@ -1,0 +1,179 @@
+{
+  "url": "/v2/insights?signal.interests.entities=4BBEF799-A0C4-4110-AB01-39216993C312&filter.type=urn%3Aentity%3Aartist&take=10",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "A3A7CEAC-FE66-49E4-AC58-D619BC48C840",
+      "name": "Carly Rae Jepsen",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Carly Rae Jepsen is a Canadian singer-songwriter who rose to fame after placing on Canadian Idol and then achieving international success with the 2011 viral hit \"Call Me Maybe.\" Her catalog spans bright mainstream pop, synth-driven indie pop and earlier folk/acoustic work. Widely praised for her craft of concise, hook-forward songwriting, Jepsen balances radio-ready singles with critically acclaimed albums such as Emotion (2015) and Dedicated (2019). She is known for melodic hooks, layered harmonies and emotive lyricism."
+      },
+      "genres": [
+        "Acoustic",
+        "Dance Pop",
+        "Synth Pop",
+        "Pop",
+        "Canadian",
+        "Dance-Pop",
+        "Synth-Pop",
+        "Indie Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "92CB2EFE-3137-468F-892F-2EE109F4818D",
+      "name": "Demi Lovato",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Demi Lovato is an American singer, songwriter, and actress who rose to fame as a child star on the Disney Channel before establishing a successful music career. Known for her powerful vocal range and emotional delivery, she has released multiple albums spanning pop, pop rock, and dance pop genres. Lovato is also recognized for her openness about mental health and addiction struggles, which has influenced her music and public persona."
+      },
+      "genres": [
+        "Pop",
+        "Dance Pop",
+        "Pop - Rock",
+        "Disney",
+        "Pop Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "2AC15D3A-D513-487B-845B-3B37BD902F8B",
+      "name": "One Direction",
+      "type": "urn:entity",
+      "properties": {
+        "description": "One Direction is a British–Irish pop boy band formed in 2010 on the UK TV show The X Factor. Composed of Harry Styles, Liam Payne, Louis Tomlinson, Niall Horan and originally Zayn Malik, they rose to international fame with catchy, harmony-driven pop, multiple number-one albums, stadium tours, and a fervent global fandom. Zayn Malik left in 2015; the group announced an indefinite hiatus in 2016 while members pursued solo careers."
+      },
+      "genres": [
+        "British",
+        "Pop",
+        "Teen Pop",
+        "Pop Rock",
+        "Boy Band",
+        "Dance-Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "705FCAEF-5937-446C-BEC0-EDDDBBE35A04",
+      "name": "Selena Gomez & the Scene",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Selena Gomez & The Scene was an American pop band formed in 2008, fronted by singer and actress Selena Gomez. The band was known for its catchy dance-pop and electropop sound, appealing primarily to a teen audience. They released three studio albums before disbanding in 2012, with Gomez pursuing a solo career. The group was notable for blending pop with electronic elements and teen pop sensibilities, producing hits that charted on the Billboard Hot 100 and other charts."
+      },
+      "genres": [
+        "Disney",
+        "Dance Pop",
+        "Pop",
+        "Pop - Rock",
+        "Dance-Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "BE94A541-4FEC-49CE-8865-C54834FD8484",
+      "name": "Katy Perry",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Katy Perry is an American singer, songwriter, and television judge who rose to fame with her 2008 hit single 'I Kissed a Girl.' Known for her wide vocal range and colorful, playful image, she has become one of the best-selling music artists worldwide. Her music spans pop, dance-pop, and electropop genres, often featuring themes of love, self-empowerment, and fun. Perry has released multiple chart-topping albums and singles, and is recognized for her theatrical performances and music videos."
+      },
+      "genres": [
+        "Pop",
+        "Pop - Rock",
+        "Indie",
+        "Rock",
+        "Dance Pop",
+        "Dance-Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F6754C46-B3E7-457F-8B7E-06C613597320",
+      "name": "Beyoncé",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Beyoncé Giselle Knowles-Carter is an American singer, songwriter, actress and businesswoman who rose to fame as lead singer of Destiny's Child before establishing a massively successful solo career noted for powerful vocals, ambitious visual albums, genre-blending records and large-scale performances. She is one of the best-selling music artists of all time and holds numerous awards and cultural milestones."
+      },
+      "genres": [
+        "Pop",
+        "Soul",
+        "Hip - Hop",
+        "Rhythm & Blues",
+        "R & B",
+        "R&B",
+        "Hip Hop",
+        "Dance"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "A8A71B45-1FF5-475F-8559-581CECF97563",
+      "name": "Bruno Mars",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Bruno Mars, born Peter Gene Hernandez, is an American singer, songwriter, record producer, and performer. He is known for his wide-ranging musical style that incorporates pop, R&B, funk, soul, reggae, rock, and hip hop. Mars is celebrated for his smooth vocals, catchy melodies, and energetic live performances. He has achieved global success with numerous hit singles and albums, earning multiple Grammy Awards and widespread acclaim for his artistry and showmanship."
+      },
+      "genres": [
+        "R & B",
+        "Slow Jams",
+        "Soul",
+        "Pop",
+        "Rhythm & Blues",
+        "Funk",
+        "R&B"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "FF0F07D1-47B1-403A-975C-04BF98EAD8F9",
+      "name": "Jonas Brothers",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Jonas Brothers are an American pop rock band made up of three brothers — Kevin, Joe and Nick Jonas. They rose to fame in the mid-to-late 2000s via teen-targeted albums, Disney Channel exposure (including appearances in Camp Rock and their own series) and radio-friendly pop-rock singles. After mainstream success, a hiatus in the early 2010s saw members pursue solo projects; the band reunited in 2019 and returned with hit material and global touring."
+      },
+      "genres": [
+        "Pop Rock",
+        "Disney",
+        "Rock",
+        "Pop - Rock",
+        "Teen Pop",
+        "Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "EEE15A04-1AB1-43EA-945E-B93EA6DD920A",
+      "name": "Ariana Grande",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Ariana Grande is an American singer, songwriter, and actress who rose to fame with her role on the Nickelodeon TV show 'Victorious' before launching a successful music career. She is known for her impressive vocal range, often compared to Mariah Carey, and her blend of pop and R&B music. Grande has released multiple chart-topping albums and singles, earning numerous awards and critical acclaim. Her music often features themes of love, empowerment, and personal growth."
+      },
+      "genres": [
+        "Ariana Grande",
+        "R & B",
+        "Pop",
+        "Rhythm & Blues",
+        "American",
+        "Soul",
+        "R&B"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "809B75F5-6747-459D-8A98-EA31A5CF7C80",
+      "name": "P!nk",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Alecia Beth Moore (P!nk) is an American singer-songwriter who rose from 1990s R&B beginnings to become a global pop-rock superstar. Known for a distinctive raspy voice, confessional songwriting and daring aerial live shows, she has sold over 90 million records, earned multiple Grammys and major industry awards, and reinvented her sound across R&B, pop, rock and folk collaborations while maintaining wide commercial and critical success."
+      },
+      "genres": [
+        "Pop - Rock",
+        "Pop",
+        "Pop Rock",
+        "Dance Pop",
+        "Rock"
+      ],
+      "keywords": []
+    }
+  ]
+}
