@@ -185,7 +185,7 @@ flowchart LR
 
 | Gate | Where | How |
 |---|---|---|
-| Content filter (D3) | `lib/qloo/filters.ts` | Three checks on what Qloo already returns. (1) `properties.content_rating` blocklist (`R`, `NC-17`, `X`, `TV-MA`): catches *Last Tango in Paris*. (2) Sensitive **phrases** matched against `plot_themes_description`, `properties.keywords` and `tags[].name`: "dementia", "cognitive decline", "memory decline", "genocide", "suicide", "drug use", "terminal illness", "cancer", "deathbed". These catch *Still Alice*, *Charly* (rated M), *Holocaust* (Not Rated), the Rolling Stones documentary (no rating), and *Terms of Endearment* (tagged Cancer). (3) A profanity list on the title. Phrases, not single words: *Kramer vs. Kramer* has a "Hospital" keyword and stays. Known trade-off: "suicide" also drops *The Paper Chase*. Accepted, because over-excluding is the safe side |
+| Content filter (D3) | `lib/qloo/filters.ts` | Three checks on what Qloo already returns. (1) `properties.content_rating` blocklist (`R`, `NC-17`, `X`, `TV-MA`): catches *Last Tango in Paris*. (2) Sensitive **phrases** matched against `plot_themes_description`, `properties.keywords` and `tags[].name`: "dementia", "cognitive decline", "memory decline", "genocide", "suicide", "drug use", "terminal illness", "cancer", "deathbed", plus war phrases ("world war", "the war", "combat", "battlefield"; not bare "war", which would hit *Star Wars*). These catch *Still Alice*, *Charly* (rated M), *Holocaust* (Not Rated), the Rolling Stones documentary (no rating), and *Terms of Endearment* (tagged Cancer). (3) A profanity list on the title. Phrases, not single words: *Kramer vs. Kramer* has a "Hospital" keyword and stays. Known trade-off: "suicide" also drops *The Paper Chase*. Accepted, because over-excluding is the safe side |
 | Over-filtering | `lib/qloo/tools.ts` | Ask Qloo for `take=25`, filter, keep the top 5. If fewer than 3 survive, the section says so (gap) instead of padding |
 | Avoid-list | `lib/qloo/filters.ts` | Case-insensitive match of caregiver's terms against name, tags, genre |
 | Grounding | `lib/agent/grounding.ts` | Every kit item's entity ID (or, for the dish, its specialty-dish tag ID) was returned by a tool in this run. Applies to Memory Lane mode only |
@@ -268,10 +268,9 @@ classDiagram
 ```
 memory-lane/
 ├── app/
-│   ├── page.tsx                   intake form
-│   ├── kit/page.tsx               kit view + trace panel + mode toggle
+│   ├── page.tsx                   one page: intake form → kit (profile never in the URL)
 │   └── api/kit/route.ts           POST /api/kit
-├── components/                    KitCard, TracePanel, ModeToggle, GapNotice
+├── components/                    MemoryLaneApp, IntakeForm, KitView (+ TracePanel, ModeToggle later)
 ├── lib/
 │   ├── types.ts                   shared server ↔ UI contract
 │   ├── era.ts                     birthYear → { start, end }

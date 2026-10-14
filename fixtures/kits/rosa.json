@@ -3,7 +3,7 @@
   "provenance": {
     "kind": "fixture",
     "generatedAt": "2026-10-08",
-    "note": "Walking-skeleton fixture: Rosa's kit, built only from the Oct 8 Phase 0 Qloo responses. It is returned for every request until the live agent is wired in."
+    "note": "This is a sample kit for Rosa, built from real Qloo results saved on Oct 8. Every request shows this sample until live kits are switched on."
   },
   "profile": {
     "displayName": "Rosa",
@@ -77,7 +77,7 @@
         "kind": "movie",
         "title": "Designing Woman",
         "year": 1957,
-        "whyPicked": "Qloo: an in-era film (1957) with a strong overlap with Frank Sinatra fans.",
+        "whyPicked": "Qloo: a film from 1957 that Frank Sinatra fans also enjoy.",
         "searchUrl": "https://www.youtube.com/results?search_query=Designing%20Woman%201957%20trailer"
       },
       {
@@ -86,7 +86,7 @@
         "kind": "movie",
         "title": "Sweet Charity",
         "year": 1969,
-        "whyPicked": "Qloo: an in-era film (1969) with a strong overlap with Frank Sinatra fans.",
+        "whyPicked": "Qloo: a film from 1969 that Frank Sinatra fans also enjoy.",
         "searchUrl": "https://www.youtube.com/results?search_query=Sweet%20Charity%201969%20trailer"
       },
       {
@@ -95,7 +95,7 @@
         "kind": "tv",
         "title": "Route 66",
         "year": 1960,
-        "whyPicked": "Qloo: an in-era show (1960) with a strong overlap with Frank Sinatra fans.",
+        "whyPicked": "Qloo: a show from 1960 that Frank Sinatra fans also enjoy.",
         "searchUrl": "https://www.youtube.com/results?search_query=Route%2066%201960%20opening"
       }
     ]

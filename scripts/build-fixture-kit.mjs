@@ -48,7 +48,7 @@ const screen = (resp, id, kind) => {
   const year = e.properties.release_year;
   return {
     source: "qloo", qlooId: id, kind, title: e.name, year,
-    whyPicked: `Qloo: an in-era ${kind === "tv" ? "show" : "film"} (${year}) with a strong overlap with ${SEED} fans.`,
+    whyPicked: `Qloo: a ${kind === "tv" ? "show" : "film"} from ${year} that ${SEED} fans also enjoy.`,
     searchUrl: youtube(`${e.name} ${year} ${kind === "tv" ? "opening" : "trailer"}`),
   };
 };
@@ -69,7 +69,7 @@ const kit = {
   provenance: {
     kind: "fixture",
     generatedAt: PHASE0_RUN,
-    note: "Walking-skeleton fixture: Rosa's kit, built only from the Oct 8 Phase 0 Qloo responses. It is returned for every request until the live agent is wired in.",
+    note: "This is a sample kit for Rosa, built from real Qloo results saved on Oct 8. Every request shows this sample until live kits are switched on.",
   },
   profile: {
     displayName: "Rosa",

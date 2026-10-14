@@ -9,18 +9,34 @@ import { z } from "zod";
 
 export const FavoriteKindSchema = z.enum(["artist", "movie", "tv", "other"]);
 
+// Messages are written for caregivers: the API returns them and the form shows them as-is.
 export const FavoriteSchema = z.object({
-  text: z.string().trim().min(1).max(80),
+  text: z.string().trim().min(1, "Write the favorite's name.").max(80, "Keep each favorite under 80 characters."),
   kind: FavoriteKindSchema,
 });
 
+// Shared with the intake form so client hints and server validation can't disagree.
+export const BIRTH_YEAR_MIN = 1920;
+export const BIRTH_YEAR_MAX = 1990;
+export const MAX_FAVORITES = 3;
+
 export const ProfileSchema = z.object({
-  displayName: z.string().trim().min(1).max(60),
-  birthYear: z.number().int().min(1920).max(1990),
-  hometown: z.string().trim().min(2).max(80),
-  favorites: z.array(FavoriteSchema).min(1).max(3),
+  displayName: z.string().trim().min(1, "Add a first name or nickname.").max(60, "Keep the name under 60 characters."),
+  birthYear: z
+    .number({ error: "Add the year of birth." })
+    .int("Use a whole year, like 1948.")
+    .min(BIRTH_YEAR_MIN, `Use a year between ${BIRTH_YEAR_MIN} and ${BIRTH_YEAR_MAX}.`)
+    .max(BIRTH_YEAR_MAX, `Use a year between ${BIRTH_YEAR_MIN} and ${BIRTH_YEAR_MAX}.`),
+  hometown: z.string().trim().min(2, "Add the city or town they grew up in.").max(80, "Keep the place under 80 characters."),
+  favorites: z
+    .array(FavoriteSchema)
+    .min(1, "Add at least one favorite they remember.")
+    .max(MAX_FAVORITES, `Add up to ${MAX_FAVORITES} favorites.`),
   // Required on purpose: the caregiver must think about it. "none" is an allowed answer.
-  thingsToAvoid: z.array(z.string().trim().min(1).max(80)).min(1).max(10),
+  thingsToAvoid: z
+    .array(z.string().trim().min(1).max(80, "Keep each item under 80 characters."))
+    .min(1, "Add at least one thing to avoid, or tick “Nothing to avoid”.")
+    .max(10, "Add up to 10 things to avoid."),
 });
 
 // ---------- Output: the session kit ----------
