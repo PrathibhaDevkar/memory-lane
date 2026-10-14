@@ -43,7 +43,7 @@ Re-baselined Oct 14. Day-by-day schedule: [implementation-plan.md §8](implement
 | Phase | Dates | Scope | Status |
 |---|---|---|---|
 | 0 | Oct 8–9 | Era-matching test | ✅ Done: GO |
-| 1 | Oct 14–15 | Repo, license, Next.js scaffold, `lib/types.ts`, walking skeleton deployed on Vercel | In progress |
+| 1 | Oct 14–15 | Repo, license, Next.js scaffold, `lib/types.ts`, walking skeleton deployed on Vercel | Live: [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) (sample kit). Caregiver tester still to book |
 | 2 | Oct 16–18 | Qloo wrappers, agent loop, real data behind `/api/kit`, 3 personas. **Gate: end-to-end on live URL by Oct 18** | |
 | 3 | Oct 19–25 | LLM-only vs Memory Lane toggle, trace panel, feedback loop, cached demo personas, one real caregiver test | |
 | 4 | Oct 26–29 | Mobile, loading/error states, README, 2-min video, Devpost text, stranger test, **submit Oct 29** (hard deadline Oct 30, 10:45 PM CDT) | |

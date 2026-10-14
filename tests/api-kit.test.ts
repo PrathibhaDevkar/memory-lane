@@ -30,6 +30,16 @@ describe("POST /api/kit (fixture mode)", () => {
     expect(body.issues).toHaveProperty("thingsToAvoid");
   });
 
+  it("gives plain messages for missing fields, not zod defaults", async () => {
+    const res = await post(JSON.stringify({}));
+    expect(res.status).toBe(400);
+    const { issues } = await res.json();
+    for (const field of ["displayName", "birthYear", "hometown", "favorites", "thingsToAvoid"]) {
+      expect(issues[field]?.[0]).toBeTruthy();
+      expect(issues[field][0]).not.toMatch(/Invalid input|expected/);
+    }
+  });
+
   it("returns 400 for a non-JSON body", async () => {
     const res = await post("not json");
     expect(res.status).toBe(400);

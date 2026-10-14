@@ -21,20 +21,22 @@ export const BIRTH_YEAR_MAX = 1990;
 export const MAX_FAVORITES = 3;
 
 export const ProfileSchema = z.object({
-  displayName: z.string().trim().min(1, "Add a first name or nickname.").max(60, "Keep the name under 60 characters."),
+  displayName: z.string({ error: "Add a first name or nickname." }).trim().min(1, "Add a first name or nickname.").max(60, "Keep the name under 60 characters."),
   birthYear: z
     .number({ error: "Add the year of birth." })
     .int("Use a whole year, like 1948.")
     .min(BIRTH_YEAR_MIN, `Use a year between ${BIRTH_YEAR_MIN} and ${BIRTH_YEAR_MAX}.`)
     .max(BIRTH_YEAR_MAX, `Use a year between ${BIRTH_YEAR_MIN} and ${BIRTH_YEAR_MAX}.`),
-  hometown: z.string().trim().min(2, "Add the city or town they grew up in.").max(80, "Keep the place under 80 characters."),
+  hometown: z.string({ error: "Add the city or town they grew up in." }).trim().min(2, "Add the city or town they grew up in.").max(80, "Keep the place under 80 characters."),
   favorites: z
-    .array(FavoriteSchema)
+    .array(FavoriteSchema, { error: "Add at least one favorite they remember." })
     .min(1, "Add at least one favorite they remember.")
     .max(MAX_FAVORITES, `Add up to ${MAX_FAVORITES} favorites.`),
   // Required on purpose: the caregiver must think about it. "none" is an allowed answer.
   thingsToAvoid: z
-    .array(z.string().trim().min(1).max(80, "Keep each item under 80 characters."))
+    .array(z.string().trim().min(1).max(80, "Keep each item under 80 characters."), {
+      error: "Add at least one thing to avoid, or tick “Nothing to avoid”.",
+    })
     .min(1, "Add at least one thing to avoid, or tick “Nothing to avoid”.")
     .max(10, "Add up to 10 things to avoid."),
 });
