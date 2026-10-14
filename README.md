@@ -4,6 +4,7 @@ An AI agent that helps caregivers put together personal reminiscence sessions fo
 
 Supports caregivers' activities. Not therapy and makes no medical claims.
 Building a support system scalable to caregivers, from individuals to Nursing Care.
+- **Implementation plan (architecture, agent loop, timeline, diagrams):** [docs/implementation-plan.md](docs/implementation-plan.md)
 - **Approach & decisions:** [docs/approach.md](docs/approach.md)
 - **Phase 0 era-matching results:** [docs/phase0-results.md](docs/phase0-results.md)
 
