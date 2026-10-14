@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* Warm "memory book" palette. Contrast checked for body text on --paper and --card (WCAG AA+). */
+:root {
+  --paper: #faf6ef;
+  --card: #ffffff;
+  --ink: #2a2420;
+  --muted: #5f564d;
+  --line: #e4dccf;
+  --accent: #8a3b12;
+  --accent-ink: #ffffff;
+  --accent-soft: #f6e7dc;
+  --note: #fff6d6;
+  --note-line: #e5c96b;
+  --gap: #f3f0ea;
+  --error: #a3221b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1b1714;
+    --card: #25201c;
+    --ink: #f3ece4;
+    --muted: #c3b8ab;
+    --line: #3d352e;
+    --accent: #f0a77a;
+    --accent-ink: #1b1714;
+    --accent-soft: #3a2a20;
+    --note: #2f2a1a;
+    --note-line: #8a7433;
+    --gap: #2b2621;
+    --error: #ff8f86;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-note: var(--note);
+  --color-note-line: var(--note-line);
+  --color-gap: var(--gap);
+  --color-error: var(--error);
+  --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-fraunces);
+}
+
+html {
+  font-size: 18px; /* readable default for caregivers on phones and tablets */
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Visible focus for keyboard users everywhere. */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Containers focused from code (tabindex="-1", e.g. the kit after it loads) aren't
+   tab stops, so they don't get the focus ring. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* The kit is often used on paper during a session. */
+@media print {
+  :root {
+    --paper: #ffffff;
+    --card: #ffffff;
+    --ink: #000000;
+    --muted: #333333;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

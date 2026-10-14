@@ -1,6 +1,6 @@
 # Memory Lane — approach going forward
 
-Living doc. Update it when we change a decision. Change by PR so both of us see it.
+Living doc. Update it when we change a decision. Change by PR.
 
 ## What we're building
 An AI agent that helps caregivers put together reminiscence sessions for people living with dementia.
@@ -13,7 +13,7 @@ Qloo's taste graph must **drive** the picks, not decorate them.
 | # | Decision | Why |
 |---|---|---|
 | D1 | Every movie/TV Qloo call sets `filter.release_year.min/max` from the birth year (formative window = ages 10–30). Done in the wrapper code, not left to Claude. | Without it, 0% in-era for 2 of 3 personas. |
-| D2 | Music era comes from the favorite (`signal.interests.entities`). If the favorite is a movie or modern, the agent first finds an era-appropriate artist to use as the seed. | `filter.release_year` doesn't apply to artists. |
+| D2 | Music era comes from the favorite (`signal.interests.entities`). Any entity type can seed music (a film works: *The Sound of Music* → Carole King, Carpenters). If the favorite is modern, the agent seeds music with the top in-era film from the year-filtered screen results instead. | `filter.release_year` doesn't apply to artists. |
 | D3 | Content-safety filter on every result, on top of the caregiver's "things to avoid": drop explicit/mature titles and anything about dementia, illness, death, war or trauma. Filtered items show in the trace as "excluded: reason". | Phase 0 returned *Still Alice*, *Holocaust*, explicit titles. |
 | D4 | Places: prefer historic landmarks / long-standing venues. Framed like the dish: "a place to talk about," not a visit recommendation. | Raw place results are mostly current businesses. |
 | D5 | Demo comparison = modern favorite vs. era favorite, plus LLM-only vs. Memory Lane toggle. | Qloo rejects requests with no favorite (400). |
@@ -29,33 +29,27 @@ Qloo's taste graph must **drive** the picks, not decorate them.
 - Demo personas are fictional. No real resident data stored.
 
 ## Stack
-Next.js (App Router, TypeScript, Tailwind) on Vercel · Claude API with tool use · Qloo hackathon API (`/search`, `/v2/insights`, `/v2/tags`) · feedback storage TBD (Supabase or Upstash Redis), Phase 3 only.
+Next.js (App Router, TypeScript, Tailwind) on Vercel · Claude API with tool use · Qloo hackathon API (`/search`, `/v2/insights`) · Upstash Redis for rate limiting and feedback.
 
-## Who owns what
-```
-lib/qloo/      Prathibha (A): Qloo client + typed tool wrappers, caching, D1/D3 filters
-lib/agent/     Prathibha (A): agent loop, prompts, trace
-app/api/       Prathibha (A): POST /api/kit
-app/(pages)/   Abil (B): intake, kit page
-components/    Abil (B)
-lib/types.ts   Shared contract (Profile, Kit, TraceStep): change only with both agreeing
-```
+## Code layout
+See [implementation-plan.md §7](implementation-plan.md#7-repository-layout-target).
 
 ## Git workflow
-`main` protected. All changes by PR, reviewed by the other person. Branches `feat/...`, `fix/...`, merged within 1–2 days. Review on Vercel preview URLs.
+All changes land on `main` by PR, one per phase from `feat/memory-lane-build`. Review on Vercel preview URLs.
 
 ## Timeline
+Re-baselined Oct 14. Day-by-day schedule: [implementation-plan.md §8](implementation-plan.md#8-timeline-and-phase-plan).
+
 | Phase | Dates | Scope | Status |
 |---|---|---|---|
 | 0 | Oct 8–9 | Era-matching test | ✅ Done: GO |
-| 1 | Oct 8–10 | Repo, license, Next.js scaffold, Vercel deploy, env vars, `lib/types.ts` | Next |
-| 2 | Oct 11–18 | Qloo wrappers, agent loop, `/api/kit`, intake, kit page, 3 personas. **Gate: end-to-end on live URL by Oct 18** | |
+| 1 | Oct 14–15 | Repo, license, Next.js scaffold, `lib/types.ts`, walking skeleton deployed on Vercel | Live: [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) (sample kit). Caregiver tester still to book |
+| 2 | Oct 16–18 | Qloo wrappers, agent loop, real data behind `/api/kit`, 3 personas. **Gate: end-to-end on live URL by Oct 18** | |
 | 3 | Oct 19–25 | LLM-only vs Memory Lane toggle, trace panel, feedback loop, cached demo personas, one real caregiver test | |
 | 4 | Oct 26–29 | Mobile, loading/error states, README, 2-min video, Devpost text, stranger test, **submit Oct 29** (hard deadline Oct 30, 10:45 PM CDT) | |
 
-Submission needs: live hosted demo, **public** repo (flip from private before submitting), MIT license visible in About, text description, 2-min video.
+Submission needs: live hosted demo, **public** repo (already public as of Oct 14), MIT license visible in About, text description, 2-min video.
 
 ## Open questions
-- Feedback storage: Supabase or Upstash Redis?
-- Places: does `/v2/tags` have a landmark/historic tag we can filter on? Test in Phase 2.
-- Dish: Qloo has restaurant places and cuisine tags but no dish entity. Agent picks a dish from the cuisine; confirm approach.
+- Places: Filter on `properties.primary_genre` (implementation-plan.md §4.1). Works for Chicago and Memphis; Los Angeles re-check Oct 16.
+- Dish: Use `properties.specialty_dishes` from hometown restaurants; a gap if none (implementation-plan.md §4.1). Los Angeles re-check Oct 16.
