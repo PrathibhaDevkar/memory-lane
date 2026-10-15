@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { SUDDEN_CHANGE_QUESTION, SUPPORT_LEVELS } from "@/lib/care";
 import {
   BIRTH_YEAR_MAX,
   BIRTH_YEAR_MIN,
@@ -8,6 +9,7 @@ import {
   type Favorite,
   type FavoriteKind,
   type Profile,
+  type SupportLevel,
 } from "@/lib/types";
 
 export type FieldErrors = Partial<Record<keyof Profile, string[]>>;
@@ -21,7 +23,9 @@ const KIND_LABELS: Record<FavoriteKind, string> = {
 
 // Fictional persona from Phase 0, for demos and quick testing.
 export const EXAMPLE_PROFILE: Profile = {
+  suddenChange: false,
   displayName: "Rosa",
+  supportLevel: "early",
   birthYear: 1942,
   hometown: "Chicago",
   favorites: [{ text: "Frank Sinatra", kind: "artist" }],
@@ -48,8 +52,19 @@ export function IntakeForm({ initial, errors = {}, busy, onSubmit }: Props) {
   const initialNothing = initial?.thingsToAvoid.length === 1 && initial.thingsToAvoid[0] === "none";
   const [nothingToAvoid, setNothingToAvoid] = useState(initialNothing);
   const [avoidText, setAvoidText] = useState(initial && !initialNothing ? initial.thingsToAvoid.join("\n") : "");
+  // No defaults for these two: the caregiver has to choose.
+  const [suddenChange, setSuddenChange] = useState<boolean | null>(initial?.suddenChange ?? null);
+  const [supportLevel, setSupportLevel] = useState<SupportLevel | null>(initial?.supportLevel ?? null);
+  const [formerWork, setFormerWork] = useState(initial?.formerWork ?? "");
+  const [firstLanguage, setFirstLanguage] = useState(initial?.firstLanguage ?? "");
+  const [traditions, setTraditions] = useState(initial?.traditions ?? "");
 
   function fill(p: Profile) {
+    setSuddenChange(p.suddenChange);
+    setSupportLevel(p.supportLevel);
+    setFormerWork(p.formerWork ?? "");
+    setFirstLanguage(p.firstLanguage ?? "");
+    setTraditions(p.traditions ?? "");
     setDisplayName(p.displayName);
     setBirthYear(String(p.birthYear));
     setHometown(p.hometown);
@@ -68,7 +83,13 @@ export function IntakeForm({ initial, errors = {}, busy, onSubmit }: Props) {
     const thingsToAvoid = nothingToAvoid
       ? ["none"]
       : avoidText.split(/[\n,]/).map((s) => s.trim()).filter(Boolean);
+    // Unanswered choices are sent as-is so the server's caregiver-friendly message explains them.
     onSubmit({
+      suddenChange: suddenChange as boolean,
+      supportLevel: supportLevel as SupportLevel,
+      formerWork: formerWork.trim() || undefined,
+      firstLanguage: firstLanguage.trim() || undefined,
+      traditions: traditions.trim() || undefined,
       displayName: displayName.trim(),
       birthYear: Number(birthYear),
       hometown: hometown.trim(),
@@ -102,9 +123,36 @@ export function IntakeForm({ initial, errors = {}, busy, onSubmit }: Props) {
         </button>
       </div>
 
+      <fieldset aria-describedby={describedBy("suddenChange")}>
+        <legend className="font-semibold">First, a safety check</legend>
+        <p className="mt-1">{SUDDEN_CHANGE_QUESTION}</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          {[
+            { value: false, label: "No" },
+            { value: true, label: "Yes" },
+          ].map((o) => (
+            <label
+              key={o.label}
+              className="flex min-w-24 cursor-pointer items-center gap-2 rounded-lg border border-line bg-card px-4 py-2.5 has-[:checked]:border-accent has-[:checked]:bg-accent-soft"
+            >
+              <input
+                type="radio"
+                name={`${id}-sudden`}
+                className="size-5 accent-accent"
+                checked={suddenChange === o.value}
+                onChange={() => setSuddenChange(o.value)}
+                required
+              />
+              {o.label}
+            </label>
+          ))}
+        </div>
+        {err("suddenChange")}
+      </fieldset>
+
       <div>
         <label htmlFor={`${id}-name`} className="font-semibold">
-          First name or nickname
+          What do they like to be called?
         </label>
         <input
           id={`${id}-name`}
@@ -119,6 +167,33 @@ export function IntakeForm({ initial, errors = {}, busy, onSubmit }: Props) {
         />
         {err("displayName")}
       </div>
+
+      <fieldset aria-describedby={describedBy("supportLevel")}>
+        <legend className="font-semibold">How much support do they need today?</legend>
+        <p className="mt-1 text-sm text-muted">This shapes the kit. It can change from day to day.</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          {(Object.keys(SUPPORT_LEVELS) as SupportLevel[]).map((level) => (
+            <label
+              key={level}
+              className="flex cursor-pointer gap-3 rounded-lg border border-line bg-card p-3 has-[:checked]:border-accent has-[:checked]:bg-accent-soft"
+            >
+              <input
+                type="radio"
+                name={`${id}-support`}
+                className="mt-1 size-5 shrink-0 accent-accent"
+                checked={supportLevel === level}
+                onChange={() => setSupportLevel(level)}
+                required
+              />
+              <span>
+                <span className="block font-medium">{SUPPORT_LEVELS[level].label}</span>
+                <span className="block text-sm text-muted">{SUPPORT_LEVELS[level].description}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+        {err("supportLevel")}
+      </fieldset>
 
       <div className="grid gap-7 sm:grid-cols-2">
         <div>
@@ -254,6 +329,55 @@ export function IntakeForm({ initial, errors = {}, busy, onSubmit }: Props) {
         </label>
         {err("thingsToAvoid")}
       </div>
+
+      <details className="rounded-lg border border-line bg-card p-4" open={Boolean(formerWork || firstLanguage || traditions)}>
+        <summary className="cursor-pointer font-semibold">More about them (optional)</summary>
+        <p className="mt-2 text-sm text-muted">Helps make the questions personal. Used for this kit only, not saved.</p>
+        <div className="mt-4 grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor={`${id}-work`} className="font-medium">
+              Work they did
+            </label>
+            <input
+              id={`${id}-work`}
+              className={inputClass}
+              value={formerWork}
+              onChange={(e) => setFormerWork(e.target.value)}
+              placeholder="e.g. teacher, ran the family farm"
+              maxLength={80}
+            />
+          </div>
+          <div>
+            <label htmlFor={`${id}-lang`} className="font-medium">
+              First language
+            </label>
+            <input
+              id={`${id}-lang`}
+              className={inputClass}
+              value={firstLanguage}
+              onChange={(e) => setFirstLanguage(e.target.value)}
+              placeholder="e.g. Polish"
+              maxLength={40}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor={`${id}-trad`} className="font-medium">
+              Traditions or faith that matter to them
+            </label>
+            <input
+              id={`${id}-trad`}
+              className={inputClass}
+              value={traditions}
+              onChange={(e) => setTraditions(e.target.value)}
+              placeholder="e.g. Sunday hymns, Diwali"
+              maxLength={80}
+            />
+          </div>
+        </div>
+        {err("formerWork")}
+        {err("firstLanguage")}
+        {err("traditions")}
+      </details>
 
       <button
         type="submit"

@@ -73,9 +73,9 @@ Stage one is pass/fail: the project fits the theme and reasonably applies the Ql
 | D5 | Demo comparison: modern vs. era favorite, plus AI-only vs. Memory Lane | Qloo rejects requests with no favorite (400) |
 | D6 | A failed Qloo call or an empty section shows the gap and the reason. Never filled with invented data | Project rule |
 | D7 | Never send `signal.demographics.age` | The age signal reflects what an age group likes *today*, not when they were young |
-| D8 *(proposed)* | Stage-aware kits: the caregiver chooses the support level; it changes the mix and the questions | Care practice: support needs change with the stage, and day to day |
-| D9 *(proposed)* | Sudden-change check before any kit; "yes" returns a safety stop and makes no API calls | Care practice: a sudden change is reported for medical evaluation, never assumed to be progression |
-| D10 *(proposed)* | Stricter question rules: no "Do you remember…", no quizzes, one idea per card, adult tone | Care practice: avoid testing memory. *Reverses the current checker, which allows "Do you remember…?"* |
+| D8 *(built Oct 15; wording under team review)* | Stage-aware kits: the caregiver chooses the support level; it changes the mix and the questions | Care practice: support needs change with the stage, and day to day |
+| D9 *(built Oct 15; wording under team review)* | Sudden-change check before any kit; "yes" returns a safety stop and makes no API calls | Care practice: a sudden change is reported for medical evaluation, never assumed to be progression |
+| D10 *(built Oct 15)* | Stricter question rules: no "Do you remember…", no quizzes, one idea per card, adult tone | Care practice: avoid testing memory. Replaced the earlier checker, which allowed "Do you remember…?" |
 | D11 *(proposed)* | Session notes are built and kept in the caregiver's browser; nothing about a real person is stored by Memory Lane | Privacy: observations about a real person's care are health-related information |
 | D12 *(proposed)* | Model-written suggestions (activity ideas) are labeled as suggestions, never presented as Qloo data | Honesty: only Qloo-grounded items carry Qloo's authority |
 
@@ -253,7 +253,7 @@ flowchart LR
 | Content filter (D3) | `lib/qloo/filters.ts` | Rating blocklist; War genre; phrases in the theme summary ("dementia", "alzheimer", "cognitive decline", "memory decline", "memory loss", "genocide", "holocaust", "nazi", "totalitarian", "suicide", "drug use", "addiction", "terminal illness", "cancer", "deathbed", "grief", "sexual abuse", "rape"); profanity in titles. On all saved responses: 43 of 193 titles excluded, all 8 known offenders caught, every classic tested kept |
 | Caregiver's avoid list | `lib/qloo/filters.ts` | Whole-word match, singular or plural ("hospitals" ~ "Hospital"), on names, genres, keywords and descriptions |
 | Grounding | `lib/agent/kit.ts` | Every pick's ID (or dish tag) was returned by a tool in this run, as the right kind of thing; the dish name may only use the dish's own words |
-| Questions | `lib/agent/validate-prompts.ts` | Today: one question ending in `?` (or "Tell me…"); rejects "You loved/used to…" and "Remember when…". D10 tightens this |
+| Questions | `lib/agent/validate-prompts.ts` | D10: no remembering or recalling, no quiz forms, no statements about the person's past, one question per card, adult words; per-level limits (early ≤ 5 with ≥ 3 open, middle ≤ 3, late ≤ 2 and short comments allowed) |
 | No invented data (D6) | `lib/agent/kit.ts` | An empty section is a gap with a reason |
 | Media | Kit page | Search links only; the schema rejects other hosts and embeds |
 | Claims | Copy review | No "therapy", "treatment" or "improves memory" anywhere |
@@ -333,10 +333,11 @@ memory-lane/
 ├── app/
 │   ├── page.tsx                   one page: form → kit (profile never in the URL)
 │   └── api/kit/route.ts           POST /api/kit (KIT_SOURCE=fixture | agent)
-├── components/                    MemoryLaneApp, IntakeForm, KitView
+├── components/                    MemoryLaneApp, IntakeForm, KitView, SafetyStop
 ├── lib/
 │   ├── types.ts                   shared server ↔ UI contract (zod)
 │   ├── era.ts                     birthYear → { start, end }
+│   ├── care.ts                    support levels, watch-for, safety wording (one place)
 │   ├── kit-source.ts, links.ts    fixture kit; search links
 │   ├── qloo/
 │   │   ├── client.ts              header auth, timeout, retries, 2 in flight, cache, normalize
@@ -356,7 +357,7 @@ memory-lane/
 │   ├── phase0-era-test.mjs        Phase 0 (reproducibility)
 │   ├── qloo-recheck.mjs           re-check; writes fixtures/qloo/
 │   ├── build-fixture-kit.mjs      builds fixtures/kits/rosa.json
-│   └── smoke.mjs                  personas end to end against a running app
+│   └── smoke.mjs                  7 personas end to end against a running app
 └── docs/                          plan.md (this), research.md
 ```
 
@@ -371,7 +372,7 @@ Planned files are listed in §12.
 | 0 | Can Qloo match an era? | ✅ Done (GO) |
 | 1 | Scaffold, contract, form → kit, deployed | ✅ Live at [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) (sample kit). PR open for review |
 | 2 | Live agent: Qloo tools, filters, Claude loop | 🟡 Built and tested on its own branch, not pushed. Qloo side verified live; **Claude side waiting on an API key** |
-| 3 | Care-practice features, session mode, trace, comparison | ⏳ Planned (§12) |
+| 3 | Care-practice features, session mode, trace, comparison | 🟡 Intake, safety stop, question rules, support levels and watch-for built (Oct 15); session mode, notes, trace and comparison next (§12) |
 | 4 | Ship: polish, README, description, video, submit | ⏳ |
 
 ```mermaid
@@ -386,7 +387,7 @@ gantt
     Agent built, Qloo verified           :done,    p2, 2026-10-14, 1d
 
     section Phase 2: Live
-    Contract, safety stop, intake, rules :active,  a1, 2026-10-15, 2d
+    Contract, safety stop, intake, rules :done,    a1, 2026-10-15, 1d
     Live run of all personas (needs key) :         a2, 2026-10-17, 1d
     Abuse limit, deploy, smoke           :         a3, 2026-10-18, 1d
     GATE live kits on production         :milestone, g2, 2026-10-18, 0d
@@ -418,27 +419,27 @@ gantt
 
 | Change | Detail |
 |---|---|
-| `displayName` | Becomes the **preferred name** ("What do they like to be called?") |
-| **Add** `supportLevel` | `early \| middle \| late`, required; shown as "Mostly independent / Needs some help / Needs a lot of help" |
-| **Add** `suddenChange` | Required yes/no: "Any sudden change in the last few hours or days: new confusion, unusual drowsiness, not recognizing familiar people?" |
-| **Add** `formerWork`, `firstLanguage`, `traditions` | Optional; used for this kit only, never stored |
-| **Add** `SafetyStop` + `KitResponse = Kit \| SafetyStop` | The response when `suddenChange` is yes |
-| **Add** `Kit.supportLevel`, `Kit.watchFor`, `Kit.activityIdeas` | Watch-for signs are fixed per level, written in code; activity ideas (≤ 3) are labeled suggestions (D12) |
+| ✅ `displayName` | Becomes the **preferred name** ("What do they like to be called?") |
+| ✅ `supportLevel` | `early \| middle \| late`, required; shown as "Mostly independent / Needs some help / Needs a lot of help" |
+| ✅ `suddenChange` | Required yes/no: "Any sudden change in the last few hours or days: new confusion, unusual drowsiness, not recognizing familiar people?" |
+| ✅ `formerWork`, `firstLanguage`, `traditions` | Optional; used for this kit only, never stored |
+| ✅ `SafetyStop` + `KitResponse = Kit \| SafetyStop` | The response when `suddenChange` is yes |
+| ✅ `Kit.activityIdeas` | ≤ 3, checked for food and small, sharp or hot items, labeled suggestions (D12). The support level travels in `kit.profile`; watch-for signs come from `lib/care.ts`, not stored per kit |
 | **Add** `SessionLog`, `CareNote` | Browser only (D11) |
 
 ### 12.2 API (`app/api/kit/route.ts`)
-- **Safety stop first:** `suddenChange` yes → `SafetyStop`, **no Qloo or Claude call**. Message: a sudden change can have a medical cause; tell their nurse or doctor now; Memory Lane isn't the right activity for today.
+- ✅ **Safety stop first:** `suddenChange` yes → `SafetyStop`, **no Qloo or Claude call**. Message: a sudden change can have a medical cause; tell their nurse or doctor now; Memory Lane isn't the right activity for today.
 - Generous abuse limit on live kits (`lib/ratelimit.ts`, Upstash); demo kits never limited; `SMOKE_TOKEN` exempt.
 
 ### 12.3 Agent (`lib/agent/*`)
 
 | File | Change |
 |---|---|
-| `prompts.ts` | Care principles as instructions; preferred name; questions per level (**early** 5 open questions; **middle** 3 short ones, some as a choice of two; **late** 0–2 gentle comments about the music); former work and traditions for questions and seeds (e.g. "hymns" via `resolve_favorite`); thin coverage for a first language → say so in gaps |
-| `prompts.ts` `submit_kit` | Add `activity_ideas` (≤ 3) |
-| `validate-prompts.ts` | D10: reject "do you remember"/"remember", "you used to/loved/were", quiz forms ("what year", "what was the name", "who sang", "how old were you"), two questions in one, childlike wording. Level rules: early ≥ 3 open questions; middle allows choices; late allows short comments about an item |
-| `kit.ts` | `supportLevel`, fixed `watchFor` lists, labeled `activityIdeas`; item counts per level (late: 3 songs, no film, place optional) |
-| `run.ts` | Pass the new profile fields |
+| ✅ `prompts.ts` | Care principles as instructions; preferred name; questions per level (**early** 5 open questions; **middle** 3 short ones, some as a choice of two; **late** 0–2 gentle comments about the music); former work and traditions for questions and seeds (e.g. "hymns" via `resolve_favorite`); thin coverage for a first language → say so in gaps |
+| ✅ `prompts.ts` `submit_kit` | Add `activity_ideas` (≤ 3) |
+| ✅ `validate-prompts.ts` | D10: reject "do you remember"/"remember", "you used to/loved/were", quiz forms ("what year", "what was the name", "who sang", "how old were you"), two questions in one, childlike wording. Level rules: early ≥ 3 open questions; middle allows choices; late allows short comments about an item |
+| ✅ `kit.ts` | Item counts per level from `lib/care.ts` (songs 5/4/3, films 2/1/1); checked, labeled `activityIdeas` |
+| ✅ `run.ts` | Pass the new profile fields |
 
 ### 12.4 Qloo tools
 No rule changes; traditions and former work reach Qloo only as seeds Claude resolves, so picks stay grounded. **Optional, first to cut:** a place era check on Wikidata. Qloo places carry no Wikidata ID ([research §3](research.md#3-wikidata-coverage-in-qloo-data)), so it would look places up by name and city, accept only an exact match in that city, and say "unknown" otherwise.
@@ -447,9 +448,9 @@ No rule changes; traditions and former work reach Qloo only as seeds Claude reso
 
 | Component | Change |
 |---|---|
-| `IntakeForm.tsx` | Sudden-change question first; preferred name; support level (three plain choices); favorites; things to avoid; collapsed "More about them (optional)": former work, first language, traditions |
-| **New** `SafetyStop.tsx` | Calm full-page message, no kit |
-| `KitView.tsx` | Preferred name and support level in the header; **"Watch for"** strip; "Ideas" labeled as suggestions; Start session · Print · Send to WhatsApp |
+| ✅ `IntakeForm.tsx` | Sudden-change question first; preferred name; support level (three plain choices); favorites; things to avoid; collapsed "More about them (optional)": former work, first language, traditions |
+| ✅ `SafetyStop.tsx` | Calm full-page message, no kit |
+| `KitView.tsx` | ✅ Support level in the header, **"Watch for"** strip, "Ideas" labeled as suggestions, calm late-level wording. Next: Start session · Send to WhatsApp |
 | **New** `SessionMode.tsx` | Full-screen, large type, one card at a time; each card: Play/Search · **Lit up · Calm · Not interested · Not today · Stop**. Stop ends with brief reassurance guidance |
 | **New** `SessionNote.tsx` | Reactions and time of day + a short care note from a template; Copy · Send to WhatsApp · Print; nothing sent to the server; "Build next kit" adds anything marked Stop to things to avoid |
 | **New** `TracePanel.tsx` | "How this kit was made": Claude turns, Qloo calls, what was screened out and why |
@@ -484,12 +485,12 @@ No professional caregiver is available. **Adults aged 60+** judge era accuracy (
 
 | Layer | What | Tool |
 |---|---|---|
-| Unit | Era window, content filter on real offenders, avoid list, landmarks, dishes, client retries and concurrency, tools' rules, grounding, question rules, loop control | vitest (81 tests today) |
+| Unit | Era window, content filter on real offenders, avoid list, landmarks, dishes, client retries and concurrency, tools' rules, grounding, question rules per level, activity ideas, safety stop (no API calls), loop control | vitest (113 tests) |
 | Contract | Tools against recorded Qloo responses in `fixtures/qloo/` | vitest, no network |
 | UI | Kit view (gaps, banners, labels, no embeds), intake form | vitest, server-rendered |
 | Live | Tools against the real Qloo API | `LIVE=1 npx vitest run tests/live` |
 | End to end | Personas through a running app | `node scripts/smoke.mjs <url>` |
-| Planned (§12) | Safety stop makes no API calls; stricter questions; support levels; session flow; share text; new personas in smoke | vitest + smoke |
+| Planned (§12) | Session flow; share text | vitest |
 | Human | Testers per §12.8; a stranger | Phase 3–4 |
 
 ---

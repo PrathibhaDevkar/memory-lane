@@ -4,13 +4,15 @@
 // (it would land in history and shared links) and never in browser storage.
 
 import { useEffect, useRef, useState } from "react";
-import { KitSchema, type Kit, type Profile } from "@/lib/types";
+import { KitResponseSchema, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
 import { IntakeForm, type FieldErrors } from "./IntakeForm";
 import { KitView } from "./KitView";
+import { SafetyStop } from "./SafetyStop";
 
 type State =
   | { view: "form"; busy: boolean; errors?: FieldErrors; message?: string }
-  | { view: "kit"; kit: Kit };
+  | { view: "kit"; kit: Kit }
+  | { view: "stop"; stop: SafetyStopData };
 
 export function MemoryLaneApp() {
   const [state, setState] = useState<State>({ view: "form", busy: false });
@@ -19,7 +21,7 @@ export function MemoryLaneApp() {
 
   // Move focus to the kit when it appears, so screen-reader and keyboard users land on it.
   useEffect(() => {
-    if (state.view === "kit") {
+    if (state.view === "kit" || state.view === "stop") {
       kitRef.current?.focus();
       window.scrollTo({ top: 0 });
     }
@@ -48,15 +50,32 @@ export function MemoryLaneApp() {
         return;
       }
       // Validate the response against the shared contract before showing it.
-      const parsed = KitSchema.safeParse(body);
+      const parsed = KitResponseSchema.safeParse(body);
       if (!parsed.success) {
         setState({ view: "form", busy: false, message: "The kit came back in an unexpected shape. Please try again." });
         return;
       }
-      setState({ view: "kit", kit: parsed.data });
+      setState(parsed.data.mode === "safety_stop" ? { view: "stop", stop: parsed.data } : { view: "kit", kit: parsed.data });
     } catch {
       setState({ view: "form", busy: false, message: "Couldn't reach Memory Lane. Check the connection and try again." });
     }
+  }
+
+  if (state.view === "stop") {
+    return (
+      <div ref={kitRef} tabIndex={-1} className="outline-none">
+        <div className="no-print mb-6">
+          <button
+            type="button"
+            onClick={() => setState({ view: "form", busy: false })}
+            className="rounded-full border border-line px-4 py-2 font-medium hover:bg-accent-soft"
+          >
+            ← Back
+          </button>
+        </div>
+        <SafetyStop stop={state.stop} />
+      </div>
+    );
   }
 
   if (state.view === "kit") {

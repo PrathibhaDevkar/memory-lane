@@ -11,7 +11,7 @@ const live = process.env.LIVE === "1" && Boolean(process.env.QLOO_API_KEY);
 describe.skipIf(!live)("Qloo tools, live", () => {
   it("June: resolve → (music, film, tv, places, dish) with two seeds", async () => {
     const ctx = new RunContext(
-      { displayName: "June", birthYear: 1958, hometown: "Los Angeles", favorites: [{ text: "The Sound of Music", kind: "movie" }], thingsToAvoid: ["hospitals"] },
+      { suddenChange: false, supportLevel: "early", displayName: "June", birthYear: 1958, hometown: "Los Angeles", favorites: [{ text: "The Sound of Music", kind: "movie" }], thingsToAvoid: ["hospitals"] },
       { start: 1968, end: 1988 },
     );
     const a = JSON.parse((await runTool(ctx, "resolve_favorite", { name: "The Sound of Music", kind: "movie" })).content);
@@ -34,7 +34,7 @@ describe.skipIf(!live)("Qloo tools, live", () => {
 
   it("Taylor Swift hop: film seeded by Swift, then music seeded by that film", async () => {
     const ctx = new RunContext(
-      { displayName: "Rosa", birthYear: 1942, hometown: "Chicago", favorites: [{ text: "Taylor Swift", kind: "artist" }], thingsToAvoid: ["none"] },
+      { suddenChange: false, supportLevel: "early", displayName: "Rosa", birthYear: 1942, hometown: "Chicago", favorites: [{ text: "Taylor Swift", kind: "artist" }], thingsToAvoid: ["none"] },
       { start: 1952, end: 1972 },
     );
     const swift = JSON.parse((await runTool(ctx, "resolve_favorite", { name: "Taylor Swift", kind: "artist" })).content).candidates[0].id;

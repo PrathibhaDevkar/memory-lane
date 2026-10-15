@@ -1,8 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { buildLiveKit } from "@/lib/agent/run";
+import { SAFETY_STOP_MESSAGE } from "@/lib/care";
 import { fixtureKit, kitSource } from "@/lib/kit-source";
-import { KitSchema, ProfileSchema } from "@/lib/types";
+import { KitSchema, ProfileSchema, type SafetyStop } from "@/lib/types";
 
 // Upper bound for one kit build. The agent's own time budget (lib/agent/run.ts) stays below
 // this; confirm it fits the Vercel plan's function limit when deploying.
@@ -23,6 +24,13 @@ export async function POST(request: Request) {
       { error: "Invalid profile.", issues: z.flattenError(parsed.error).fieldErrors },
       { status: 400 },
     );
+  }
+
+  // D9: a sudden change is reported for medical evaluation, never treated as a reason for an
+  // activity. Checked before anything else: no kit, and no Qloo or Claude call.
+  if (parsed.data.suddenChange) {
+    const stop: SafetyStop = { mode: "safety_stop", message: SAFETY_STOP_MESSAGE, profile: parsed.data };
+    return Response.json(stop);
   }
 
   switch (kitSource()) {

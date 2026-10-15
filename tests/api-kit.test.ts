@@ -1,11 +1,17 @@
-import { describe, expect, it } from "vitest";
-import { POST } from "@/app/api/kit/route";
-import { KitSchema } from "@/lib/types";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+const buildLiveKit = vi.fn();
+vi.mock("@/lib/agent/run", () => ({ buildLiveKit: (...args: unknown[]) => buildLiveKit(...args) }));
+
+const { POST } = await import("@/app/api/kit/route");
+const { KitSchema, SafetyStopSchema } = await import("@/lib/types");
 
 const post = (body: string) =>
   POST(new Request("http://localhost/api/kit", { method: "POST", body, headers: { "content-type": "application/json" } }));
 
 const walt = {
+  suddenChange: false,
+  supportLevel: "middle",
   displayName: "Walt",
   birthYear: 1950,
   hometown: "Memphis",
@@ -34,7 +40,7 @@ describe("POST /api/kit (fixture mode)", () => {
     const res = await post(JSON.stringify({}));
     expect(res.status).toBe(400);
     const { issues } = await res.json();
-    for (const field of ["displayName", "birthYear", "hometown", "favorites", "thingsToAvoid"]) {
+    for (const field of ["suddenChange", "displayName", "supportLevel", "birthYear", "hometown", "favorites", "thingsToAvoid"]) {
       expect(issues[field]?.[0]).toBeTruthy();
       expect(issues[field][0]).not.toMatch(/Invalid input|expected/);
     }
@@ -43,5 +49,34 @@ describe("POST /api/kit (fixture mode)", () => {
   it("returns 400 for a non-JSON body", async () => {
     const res = await post("not json");
     expect(res.status).toBe(400);
+  });
+});
+
+describe("POST /api/kit: sudden-change safety stop (D9)", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    buildLiveKit.mockReset();
+  });
+
+  it("returns a safety stop and never runs the agent, even in live mode", async () => {
+    vi.stubEnv("KIT_SOURCE", "agent");
+    const res = await post(JSON.stringify({ ...walt, suddenChange: true }));
+    expect(res.status).toBe(200);
+    const stop = SafetyStopSchema.parse(await res.json());
+    expect(stop.message).toMatch(/nurse or doctor/);
+    expect(buildLiveKit).not.toHaveBeenCalled();
+  });
+
+  it("requires an answer to the sudden-change question", async () => {
+    const withoutAnswer: Partial<typeof walt> = { ...walt };
+    delete withoutAnswer.suddenChange;
+    const res = await post(JSON.stringify(withoutAnswer));
+    expect(res.status).toBe(400);
+    expect((await res.json()).issues.suddenChange[0]).toMatch(/sudden changes/);
+  });
+
+  it("requires a support level, with a plain message", async () => {
+    const res = await post(JSON.stringify({ ...walt, supportLevel: undefined }));
+    expect((await res.json()).issues.supportLevel[0]).toMatch(/how much support/i);
   });
 });

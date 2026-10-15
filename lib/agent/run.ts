@@ -32,12 +32,16 @@ export async function buildLiveKit(profile: Profile, opts: { client?: Anthropic;
     {
       role: "user",
       content: `Build a session kit for this person.\n\n${JSON.stringify({
-        name: profile.displayName,
+        likes_to_be_called: profile.displayName,
+        support_level: profile.supportLevel,
         born: profile.birthYear,
         grew_up_in: profile.hometown,
         formative_years: `${ctx.era.start}–${ctx.era.end}`,
         favorites: profile.favorites,
         things_to_avoid: profile.thingsToAvoid,
+        former_work: profile.formerWork,
+        first_language: profile.firstLanguage,
+        traditions: profile.traditions,
       })}`,
     },
   ];

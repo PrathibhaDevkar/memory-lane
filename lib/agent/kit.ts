@@ -1,16 +1,37 @@
 // Turns Claude's submit_kit call into a Kit. Grounding happens here: every pick must be an ID a
 // tool returned in this run, and names and years come from Qloo, not from Claude's text.
 
+import { KIT_LIMITS } from "@/lib/care";
 import { spotifySearchUrl, youtubeSearchUrl } from "@/lib/links";
-import type { DishItem, Kit, MediaItem, PlaceItem } from "@/lib/types";
+import type { ActivityIdea, DishItem, Kit, MediaItem, PlaceItem, SupportLevel } from "@/lib/types";
 import type { RunContext, SeenKind } from "@/lib/qloo/tools";
 import type { Submission } from "./prompts";
 import { validatePrompts } from "./validate-prompts";
 
 const DISH_CAVEAT = "Something to talk about, not to serve. Check diet, chewing and swallowing needs before offering any food.";
-const MAX = { music: 5, screen: 2, dish: 1, place: 1 };
+type Section = "music" | "screen" | "dish" | "place";
 
-type Section = keyof typeof MAX;
+// Activity ideas are model-written suggestions (D12): short, adult, and physically safe.
+const UNSAFE_IDEA = /\b(eat|eating|taste|tasting|food|snack|drink|swallow|coins?|buttons?|beads?|marbles?|pins?|needles?|scissors|knife|knives|sharp|hot water|candles?|matches)\b/i;
+const CHILDLIKE_IDEA = /\b(colou?ring book|nursery|toddler|baby toys?|sticker chart|playdough)\b/i;
+
+export function checkIdeas(ideas: string[], level: SupportLevel) {
+  const kept: ActivityIdea[] = [];
+  const dropped: { title: string; reason: string }[] = [];
+  for (const raw of ideas) {
+    const text = raw.trim();
+    const reason =
+      level === "early" ? "Ideas are only added for people who need more support."
+      : !text || text.length > 200 ? "Empty or too long."
+      : UNSAFE_IDEA.test(text) ? "Involves food or small, sharp or hot items."
+      : CHILDLIKE_IDEA.test(text) ? "Not adult."
+      : kept.length >= 3 ? "More than 3 ideas."
+      : null;
+    if (reason) dropped.push({ title: text || "(empty)", reason });
+    else kept.push({ text, source: "llm" });
+  }
+  return { kept, dropped };
+}
 
 const words = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
 const humanize = (slug: string) => slug.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
@@ -18,6 +39,8 @@ const tidy = (why: string) => why.trim().slice(0, 240);
 
 export function buildKit(ctx: RunContext, sub: Submission | null, failure?: string): Kit {
   const started = Date.now();
+  const level = ctx.profile.supportLevel;
+  const MAX = { ...KIT_LIMITS[level], dish: 1, place: 1 };
   const ungrounded: { title: string; reason: string }[] = [];
 
   // A pick counts only if a tool returned that ID, as the right kind of thing.
@@ -70,15 +93,16 @@ export function buildKit(ctx: RunContext, sub: Submission | null, failure?: stri
       place.push({ source: "qloo", qlooId: p.id, name: s.name, genre: s.genre, whyPicked: `${tidy(p.why)} A place to talk about, not a visit suggestion.` });
   }
 
-  const prompts = validatePrompts(sub?.prompts ?? []);
+  const prompts = validatePrompts(sub?.prompts ?? [], level);
+  const ideas = checkIdeas(sub?.activity_ideas ?? [], level);
 
   ctx.trace.push({
     id: ctx.nextId(),
     kind: "validator",
     label: "grounding + question check",
     input: {},
-    outputSummary: `${ungrounded.length} ungrounded picks removed; ${prompts.kept.length} questions kept (${prompts.open} open-ended), ${prompts.dropped.length} dropped.`,
-    excluded: [...ungrounded, ...prompts.dropped],
+    outputSummary: `Support level: ${level}. ${ungrounded.length} ungrounded picks removed; ${prompts.kept.length} questions kept (${prompts.open} open-ended${prompts.meetsLevel ? "" : `, fewer than ${KIT_LIMITS[level].minOpenPrompts} wanted`}), ${prompts.dropped.length} dropped; ${ideas.kept.length} activity ideas kept, ${ideas.dropped.length} dropped.`,
+    excluded: [...ungrounded, ...prompts.dropped, ...ideas.dropped],
     ms: Date.now() - started,
     status: "ok",
   });
@@ -100,6 +124,7 @@ export function buildKit(ctx: RunContext, sub: Submission | null, failure?: stri
     dish: section(dish, "dish"),
     place: section(place, "place"),
     prompts: prompts.kept,
+    activityIdeas: ideas.kept,
     trace: ctx.trace,
   };
 }

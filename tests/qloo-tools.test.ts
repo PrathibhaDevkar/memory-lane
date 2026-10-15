@@ -23,6 +23,8 @@ vi.mock("@/lib/qloo/client", () => ({
 const { RunContext, runTool, MAX_QLOO_CALLS } = await import("@/lib/qloo/tools");
 
 const june = {
+  suddenChange: false,
+  supportLevel: "early" as const,
   displayName: "June",
   birthYear: 1958,
   hometown: "Los Angeles",

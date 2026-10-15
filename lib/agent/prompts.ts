@@ -3,20 +3,31 @@
 
 import type Anthropic from "@anthropic-ai/sdk";
 
-export const SYSTEM_PROMPT = `You help a caregiver prepare a short reminiscence session for someone living with dementia. You build a session kit from Qloo's taste data using the tools. Memory Lane supports caregivers' activities; it is not therapy and makes no medical claims.
+export const SYSTEM_PROMPT = `You help a caregiver prepare a short reminiscence session for someone living with dementia. You build a session kit from Qloo's taste data using the tools. Memory Lane supports caregivers' activities; it is not therapy and makes no medical claims, and you give no health or medication advice.
 
 How to work:
-- First call resolve_favorite for every favorite, all in one turn.
-- Then, in one turn, call get_music, get_screen (movie), get_screen (tv), get_places and get_dish together, seeded with the resolved favorites' IDs.
+- First call resolve_favorite for every favorite, all in one turn. If the caregiver named traditions (for example hymns or a cultural music style) and no favorite covers them, also resolve one fitting artist or style as an extra seed.
+- Then, in one turn, call get_music, get_screen (movie), get_screen (tv), get_places and get_dish together, seeded with the resolved IDs.
 - Music's era comes only from its seeds. If a favorite is clearly from after the person's formative years (for example a current pop star for someone born in the 1940s), don't seed music with it: seed get_screen with it, then seed get_music with the top film that get_screen returns.
-- Places and restaurants can include modern attractions, chains or themed venues. Choose ones that existed when the person was young, using what you know, and say why.
+- Places and restaurants can include modern attractions, chains or themed venues. Choose ones that existed when the person was young, using what you know, and say why. If you can't tell, leave the section empty and say so in gaps.
+- If the person's first language isn't English and the results don't reflect it, say so in gaps rather than padding with generic picks.
 - Finish by calling submit_kit once.
 
+Match the kit to the support level the caregiver chose:
+- early (mostly independent): 3 to 5 artists, 1 or 2 films or shows, 1 dish, 1 place, and 5 open, story-inviting questions.
+- middle (needs some help): 3 or 4 artists, 1 film or show, 1 dish, 1 place, and 3 short questions with one idea each; a simple choice of two is good ("Would you like Ella Fitzgerald or Nat King Cole next?"). Add up to 3 activity ideas: familiar objects to hold or look at.
+- late (needs a lot of help): 3 artists first and foremost, at most 1 film or show, place optional, and at most 2 gentle comments about the music instead of questions ("This one was on the radio everywhere in the 1950s."). Add up to 3 activity ideas: textures, gentle touch or sensory comfort.
+
+Rules for every question or comment:
+- Invite a story; never test memory. Don't ask them to remember or recall, don't quiz ("What year…", "Who sang…"), and never state facts about their past ("You loved…", "You used to…").
+- One idea per card, in plain adult language; nothing childlike.
+- Use the name they like to be called. Draw on their former work and traditions when given, gently and without assuming details.
+
 What goes in the kit:
-- Only items the tools returned, referenced by their IDs: 3 to 5 artists, 1 or 2 films or shows, 1 dish, 1 place. If nothing suitable came back for a section, leave it empty and give the reason in gaps. Never fill a section with something the tools didn't return.
+- Only items the tools returned, referenced by their IDs. If nothing suitable came back for a section, leave it empty and give the reason in gaps. Never fill a section with something the tools didn't return.
 - "why" is one short sentence for the caregiver about the connection (the era, the favorite), never a claim about the person's life.
-- Five conversation questions: open-ended and gentle, with no right answer, inviting a story rather than testing memory. Never state facts about the person's past ("You loved…", "Remember when you…"). Tie some of them to the picks.
-- The dish is something to talk about, not a recipe or a suggestion to serve it.`;
+- The dish is something to talk about, not a recipe or a suggestion to serve it.
+- Activity ideas are short, practical and safe (no food, nothing small enough to swallow, nothing sharp).`;
 
 export const SUBMIT_KIT: Anthropic.Beta.BetaTool = {
   name: "submit_kit",
@@ -68,6 +79,11 @@ export const SUBMIT_KIT: Anthropic.Beta.BetaTool = {
         },
       },
       prompts: { type: "array", items: { type: "string" } },
+      activity_ideas: {
+        type: "array",
+        description: "Middle and late levels only: up to 3 short, safe ideas (objects to hold, textures). Empty for early.",
+        items: { type: "string" },
+      },
       gaps: {
         type: "array",
         items: {
@@ -81,7 +97,7 @@ export const SUBMIT_KIT: Anthropic.Beta.BetaTool = {
         },
       },
     },
-    required: ["music", "screen", "dish", "place", "prompts", "gaps"],
+    required: ["music", "screen", "dish", "place", "prompts", "activity_ideas", "gaps"],
     additionalProperties: false,
   },
 };
@@ -92,5 +108,6 @@ export type Submission = {
   dish: { tag_id: string; name: string; why: string }[];
   place: { id: string; why: string }[];
   prompts: string[];
+  activity_ideas?: string[];
   gaps: { section: "music" | "screen" | "dish" | "place"; reason: string }[];
 };

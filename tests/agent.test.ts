@@ -1,7 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
-import { buildKit } from "@/lib/agent/kit";
-import { validatePrompts } from "@/lib/agent/validate-prompts";
+import { buildKit, checkIdeas } from "@/lib/agent/kit";
 import { KitSchema } from "@/lib/types";
 
 vi.mock("@/lib/qloo/client", () => ({
@@ -19,6 +18,8 @@ const { RunContext } = await import("@/lib/qloo/tools");
 const { buildLiveKit } = await import("@/lib/agent/run");
 
 const rosa = {
+  suddenChange: false,
+  supportLevel: "early" as const,
   displayName: "Rosa",
   birthYear: 1942,
   hometown: "Chicago",
@@ -26,7 +27,7 @@ const rosa = {
   thingsToAvoid: ["none"],
 };
 const era = { start: 1952, end: 1972 };
-const empty = { music: [], screen: [], dish: [], place: [], prompts: [], gaps: [] };
+const empty = { music: [], screen: [], dish: [], place: [], prompts: [], activity_ideas: [], gaps: [] };
 
 function ctxWithSeen() {
   const ctx = new RunContext(rosa, era);
@@ -82,23 +83,37 @@ describe("buildKit (grounding)", () => {
   });
 });
 
-describe("validatePrompts", () => {
-  it("keeps open questions and drops statements about the person's past", () => {
-    const { kept, dropped, open } = validatePrompts([
-      "What music did people dance to when you were young?",
-      "Do you remember the first record you bought?",
-      "You loved Sinatra, didn't you?",
-      "Remember when you went to the market?",
-      "Tell me about a street you liked to walk down.",
-      "Sinatra was popular.",
-    ]);
+describe("support levels and activity ideas", () => {
+  const manyArtists = Array.from({ length: 6 }, (_, i) => ({ id: `A${i}`, why: "x" }));
+  const ctxAt = (supportLevel: "early" | "middle" | "late") => {
+    const ctx = new RunContext({ ...rosa, supportLevel }, era);
+    for (let i = 0; i < 6; i++) ctx.seen.set(`A${i}`, { kind: "artist", name: `Artist ${i}` });
+    return ctx;
+  };
+
+  it("limits songs per level: 5 early, 4 middle, 3 late", () => {
+    expect(buildKit(ctxAt("early"), { ...empty, music: manyArtists }).music.items).toHaveLength(5);
+    expect(buildKit(ctxAt("middle"), { ...empty, music: manyArtists }).music.items).toHaveLength(4);
+    expect(buildKit(ctxAt("late"), { ...empty, music: manyArtists }).music.items).toHaveLength(3);
+  });
+
+  it("keeps safe ideas as labeled suggestions; drops food, small or sharp items, and anything at the early level", () => {
+    const { kept, dropped } = checkIdeas(
+      ["A soft wool scarf to hold", "Taste a little chocolate", "A jar of buttons to sort", "Scissors and old magazines", "Photos of 1950s Chicago"],
+      "late",
+    );
     expect(kept).toEqual([
-      "What music did people dance to when you were young?",
-      "Do you remember the first record you bought?",
-      "Tell me about a street you liked to walk down.",
+      { text: "A soft wool scarf to hold", source: "llm" },
+      { text: "Photos of 1950s Chicago", source: "llm" },
     ]);
     expect(dropped).toHaveLength(3);
-    expect(open).toBe(2);
+    expect(checkIdeas(["A soft scarf"], "early").kept).toEqual([]);
+  });
+
+  it("puts ideas in the kit", () => {
+    const kit = buildKit(ctxAt("middle"), { ...empty, activity_ideas: ["An old record sleeve to look at"] });
+    expect(kit.activityIdeas).toEqual([{ text: "An old record sleeve to look at", source: "llm" }]);
+    expect(KitSchema.safeParse(kit).success).toBe(true);
   });
 });
 

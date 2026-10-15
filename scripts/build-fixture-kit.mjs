@@ -72,7 +72,9 @@ const kit = {
     note: "This is a sample kit for Rosa, built from real Qloo results saved on Oct 8. Every request shows this sample until live kits are switched on.",
   },
   profile: {
+    suddenChange: false,
     displayName: "Rosa",
+    supportLevel: "early",
     birthYear: 1942,
     hometown: "Chicago",
     favorites: [{ text: SEED, kind: "artist" }],
@@ -117,6 +119,7 @@ const kit = {
       whyPicked: `Qloo: a Chicago place popular with people who love ${SEED}. A place to talk about, not a visit suggestion.`,
     }],
   },
+  activityIdeas: [],
   prompts: [
     "What music did people dance to when you were young?",
     "Which singer's voice do you like best, and what do you like about it?",
