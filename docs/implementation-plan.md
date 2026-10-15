@@ -1,6 +1,6 @@
 # Memory Lane: Implementation Plan
 
-> **Status:** Draft v1 · 2026-10-14
+> **Status:** Draft v1 · 2026-10-14 · updated 2026-10-15 to the [official rules](https://qloo.devpost.com/rules)
 > This plan covers how we build it. *Why* we made each product decision (D1–D7) lives in [approach.md](approach.md). The evidence behind them is in [phase0-results.md](phase0-results.md).
 > Diagrams are Mermaid, so GitHub renders them inline and they can be copied into slides.
 
@@ -60,7 +60,7 @@ flowchart LR
 ```
 
 **Why this shape**
-- **`/api/kit` is public, so it's rate-limited** (a few kits per IP per hour, plus a daily cap). Judges get one-click cached personas that cost nothing, which keeps a stranger from draining the Claude/Qloo quota.
+- **The demo must stay open to judges "without any restriction" until Nov 16** ([official rules](https://qloo.devpost.com/rules)). Saved demo kits are always available with no limit and cost nothing. Live kits get a generous abuse limit that a judge won't hit, so a stranger can't drain the Claude/Qloo budget.
 - **All API calls happen server-side.** `QLOO_API_KEY` and `ANTHROPIC_API_KEY` exist only in `.env.local` and Vercel env vars. The browser only ever sees the finished kit.
 - **Rules live in code, not in the prompt.** Claude decides *what to ask Qloo*. The wrappers in `lib/qloo/` enforce the year filter (D1), the content filter (D3) and dropping the age signal (D7) regardless of what Claude asks for. Prompts can be ignored; code can't.
 - **Qloo drives the picks.** Claude can only put an item into the kit if it came back from a Qloo tool call in this request. The kit builder checks this by entity ID.
@@ -316,7 +316,7 @@ gantt
     section Phase 1: Skeleton
     Scaffold + types + era + tests       :active,  p1a, 2026-10-14, 1d
     Fixture kit + intake + kit page live :         p1b, 2026-10-15, 1d
-    Recruit caregiver tester (async)     :         p1c, 2026-10-15, 9d
+    Recruit testers (async)              :         p1c, 2026-10-15, 9d
 
     section Phase 2: Real data
     Re-check + filters + client          :         p2a, 2026-10-16, 1d
@@ -325,12 +325,12 @@ gantt
     GATE live URL end-to-end             :milestone, g2, 2026-10-18, 0d
 
     section Phase 3: Make it shine
-    Buffer + prompt validator            :         p3a, 2026-10-19, 1d
+    Buffer + Wikidata era check          :         p3a, 2026-10-19, 1d
     Trace panel + model timing           :         p3b, 2026-10-20, 1d
     LLM-only vs Memory Lane toggle       :         p3f, 2026-10-21, 1d
-    Cached demo personas                 :         p3c, 2026-10-22, 1d
-    Feedback loop (cut first if late)    :         p3d, 2026-10-23, 1d
-    Real caregiver test + fixes          :         p3e, 2026-10-24, 2d
+    Demo kits + session mode             :         p3c, 2026-10-22, 1d
+    Feedback + WhatsApp share            :         p3d, 2026-10-23, 1d
+    Tester comparison + fixes            :         p3e, 2026-10-24, 2d
 
     section Phase 4: Ship
     Mobile + loading/error states        :         p4a, 2026-10-26, 1d
@@ -348,7 +348,7 @@ gantt
 | 1.4 | `POST /api/kit`: zod-validates the Profile, sets `maxDuration`, returns the fixture (`KIT_SOURCE=fixture`) | `curl` returns Kit JSON; bad input gets a 400 |
 | 1.5 | Basic intake form → kit page rendering every section + gap state | Works locally end to end |
 | 1.6 | Vercel project linked. Env vars for Preview + Production: `QLOO_API_KEY`, `ANTHROPIC_API_KEY`, `CLAUDE_MODEL` (a fast default, revisited Oct 20), `SMOKE_TOKEN`, Upstash Redis via the Vercel integration | Production URL shows 1.5 |
-| 1.7 | Ask for one caregiver tester now (needs lead time) | A tester and a date are booked for Oct 24–25 |
+| 1.7 | Find 2–3 testers: adults aged 60+ (era accuracy) and people who have looked after an older relative ([business-case.md §6](business-case.md#6-evidence-plan-no-caregiver-available)) | Testers and dates booked for Oct 24–25 |
 
 ### Phase 2: Real data (Oct 16–18) · PR 2 · **gate: live production URL by Oct 18**
 | # | Task | Day | Done when |
@@ -358,16 +358,24 @@ gantt
 | 2.2 | `qloo/client.ts`: header auth, 8 s timeout, retry once on 5xx, in-memory cache keyed by URL (small: the Phase 0 script already has the fetch logic) | Oct 16 PM | Unit test with mocked fetch |
 | 2.3 | `qloo/tools.ts`: tools from §4.1 | Oct 17 | Era score through the tools matches Phase 0 (100% movies/TV) |
 | 2.4 | `agent/run.ts` + system prompt; the loop pushes a `TraceStep` for every call (a plain array, no UI yet) | Oct 17 | Rosa / Walt / June each produce a kit locally in ≤ 4 Claude turns |
-| 2.5 | Grounding check (IDs + dish-name words ⊆ slug words) + `lib/ratelimit.ts` (`@upstash/ratelimit`, a few lines; requests carrying the server-side `SMOKE_TOKEN` header are exempt so smoke runs never hit the limit), `KIT_SOURCE=agent` | Oct 18 AM | Ungrounded test pick is dropped; the 4th normal request in an hour gets a 429; smoke requests don't |
+| 2.5 | Grounding check (IDs + dish-name words ⊆ slug words) + `lib/ratelimit.ts` (`@upstash/ratelimit`, a few lines; a generous per-IP abuse limit on **live** kits only; requests carrying the server-side `SMOKE_TOKEN` header are exempt), `KIT_SOURCE=agent` | Oct 18 AM | Ungrounded test pick is dropped; a burst well beyond normal use gets a 429, normal use and smoke requests don't; demo kits are never limited |
 | 2.6 | Production deploy + `scripts/smoke.mjs` | Oct 18 PM | All 3 personas pass smoke on the **production** URL (preview URLs can sit behind Vercel's deployment protection) |
 
 **If Oct 17 runs late:** ship the gate with music + film/TV + prompts, and add places and dish on Oct 19 (two small tools on the same client). The prompt validator is on Oct 19 and model timing on Oct 20; until then the system prompt carries the open-question rule alone. Oct 18 afternoon is deploy and smoke only, because the route, zod and env vars have been live since Oct 15.
 
 ### Phase 3: Make it shine (Oct 19–25) · PR 3
-**Oct 19:** half buffer for anything left from the gate (including places/dish if the fallback was used), plus the prompt validator (§5). **Oct 20:** trace panel (renders `TraceStep[]`; the agent already records every step from Phase 2), plus timing the 3 personas on two models to confirm `CLAUDE_MODEL`. **Oct 21:** LLM-only toggle (`llm-only.ts`, same prompt, no tools, clearly labeled). **Oct 22–25:** · cached demo personas in `fixtures/kits/` (labeled "cached run from <date>" so they don't count as invented data) · feedback buttons (👍/👎 per item); **first to cut if behind**, stored in the same Upstash Redis as the rate limit · real caregiver walkthrough and fixes.
+Priorities follow the official judging criteria ([business-case.md §4](business-case.md#4-how-the-hackathon-judges-it)).
+- **Oct 19:** buffer for anything left from the gate. **Wikidata era check:** opening and release dates confirm a place, venue or title existed in the person's era (public domain, no key), so the check doesn't rely on the model's memory. The prompt validator is already done.
+- **Oct 20:** **trace panel** (renders `TraceStep[]`; shows Qloo's work and what was screened out) + timing the personas on two models to confirm `CLAUDE_MODEL`.
+- **Oct 21:** **LLM-only toggle** (`llm-only.ts`, same prompt, no tools, clearly labeled).
+- **Oct 22:** **demo kits** in `fixtures/kits/` for each persona (labeled "saved run from <date>", never rate-limited) + **session mode** (large type, one item at a time, "next").
+- **Oct 23:** **feedback buttons** (👍/👎 per item, stored in Upstash; first to cut if behind) + **"Send to WhatsApp"** share link with a text version of the kit (no API).
+- **Oct 24–25:** **tester comparison** (blind AI-only vs Memory Lane with adults aged 60+) and fixes. Results reported exactly as they happened.
 
 ### Phase 4: Ship (Oct 26–29) · PR 4
-Mobile layout, loading and error states · README with screenshots and these diagrams · 2-minute video · Devpost text · a stranger uses it unassisted · check the repo About shows MIT and the live URL · submit Oct 29 (hard deadline Oct 30, 10:45 PM CDT).
+Mobile layout, loading and error states · README with screenshots and these diagrams · Devpost text (features, the reminiscence reasoning, tester results) · 2-minute video (not required by the rules, but judges may score from the description and video alone) · a stranger uses it unassisted · check the repo About shows MIT and the live URL · submit Oct 29 (hard deadline Oct 30, 11:45 PM ET).
+
+**After submission (Oct 30 – Nov 16):** the demo must keep working, free and unrestricted, until judging ends. Keep the Qloo key valid, Claude credits funded and Vercel up; check the live URL every few days.
 
 ---
 
@@ -452,9 +460,11 @@ The README frames Memory Lane as scaling **from individual caregivers to nursing
 | Places return modern businesses (D4) | High | Medium | `primary_genre` allowlist (verified in Phase 0 data); frame as "a place to talk about"; show a gap if nothing passes |
 | Filters remove too much, sections come back empty | Medium | Medium | `take=25` then filter to 5; phrase-based theme matching, not single words; tests include a title that must be kept |
 | Reviews arrive slowly | High | Medium | Review never blocks: 24 h comment window, then merge or promote the branch to production |
-| Public endpoint drains API quota | Medium | High | Per-IP rate limit + daily cap (task 2.5); cached personas for judges |
+| Public endpoint drains API quota | Medium | High | Generous abuse limit on live kits (task 2.5); unlimited saved demo kits for judges |
+| Demo stops working during judging (credits run out, key expires) | Medium | High | Budget Claude credits through Nov 16 from the measured cost per kit; demo kits need no API at all; check the live URL every few days |
+| A rate limit blocks a judge (rules require access "without any restriction") | Low | High | Demo kits are never limited; the live-kit limit only stops bursts far above normal use |
 | June-style cities have no landmark or dish in Qloo results | Medium | Medium | Task 2.0 re-check on Oct 16; restaurants-only call; honest gap otherwise |
-| No caregiver available for the test | Medium | Medium | Ask on Oct 15, not Oct 24; fallback is a structured walkthrough with someone who has done caregiving |
+| No caregiver available for the test | Confirmed | Medium | Test era accuracy with adults aged 60+ and usefulness with people who have looked after a relative; report exactly who tested ([business-case.md §6](business-case.md#6-evidence-plan-no-caregiver-available)) |
 | Claude asserts facts about the person | Medium | High | Validator + one repair call + remove what still fails |
 | Keys leak | Low | High | `.env*` gitignored, server-only modules, no keys in URLs (Qloo key goes in header) |
 

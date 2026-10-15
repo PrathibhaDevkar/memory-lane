@@ -48,7 +48,7 @@ Re-baselined Oct 14. Day-by-day schedule: [implementation-plan.md §8](implement
 | 3 | Oct 19–25 | LLM-only vs Memory Lane toggle, trace panel, feedback loop, cached demo personas, one real caregiver test | |
 | 4 | Oct 26–29 | Mobile, loading/error states, README, 2-min video, Devpost text, stranger test, **submit Oct 29** (hard deadline Oct 30, 10:45 PM CDT) | |
 
-Submission needs: live hosted demo, **public** repo (already public as of Oct 14), MIT license visible in About, text description, 2-min video.
+Submission needs ([official rules](https://qloo.devpost.com/rules)): a working demo link, a **public** repo with an open-source license visible in About (MIT; repo public since Oct 14), and a text description. A video isn't required, but judges may score from the description and video alone, so we make one. The demo must stay free and unrestricted until judging ends **Nov 16**. Other APIs and data are allowed if we're authorized under their terms; Qloo must stay central. Business view and judging criteria: [business-case.md](business-case.md).
 
 ## Open questions
 - ~~Places for Los Angeles?~~ Answered Oct 14: 7 allowlisted places for June with `take=50` (Hollywood Sign, Spadena House, Natural History Museum…).
