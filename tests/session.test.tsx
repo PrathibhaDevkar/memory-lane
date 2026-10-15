@@ -66,6 +66,12 @@ describe("buildCareNote", () => {
     expect(note).toContain("an earlier time of day may suit better");
   });
 
+  it("only promises to leave out what the next kit can actually leave out", () => {
+    const entries = [{ cardId: "i", kind: "idea" as const, title: "Hold a soft scarf", reaction: "stopped" as const }];
+    expect(buildCareNote(kit, log(entries))).not.toContain("leave out");
+    expect(avoidNextTime(log(entries))).toEqual([]);
+  });
+
   it("treats 'not today' as useful information, not failure", () => {
     const note = buildCareNote(kit, log([{ cardId: "a", kind: "place", title: "Maxwell Street Market", reaction: "not_today" }]));
     expect(note).toContain(`Said "not today" to Maxwell Street Market. That's fine`);
@@ -106,7 +112,7 @@ describe("share", () => {
 
 describe("screens", () => {
   it("session mode shows the first card, its link, and the five reactions", () => {
-    const html = renderToStaticMarkup(<SessionMode kit={kit} onEnd={() => {}} />);
+    const html = renderToStaticMarkup(<SessionMode kit={kit} onEnd={() => {}} onBack={() => {}} />);
     expect(html).toContain("1 of ");
     expect(html).toContain("Ella Fitzgerald");
     for (const label of ["Lit up", "Calm", "Not interested", "Not today", "Stop"]) expect(html).toContain(`>${label}<`);

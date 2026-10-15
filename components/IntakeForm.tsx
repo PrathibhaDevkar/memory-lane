@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { SUDDEN_CHANGE_QUESTION, SUPPORT_LEVELS } from "@/lib/care";
 import {
   BIRTH_YEAR_MAX,
@@ -60,6 +60,17 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
   const [formerWork, setFormerWork] = useState(initial?.formerWork ?? "");
   const [firstLanguage, setFirstLanguage] = useState(initial?.firstLanguage ?? "");
   const [traditions, setTraditions] = useState(initial?.traditions ?? "");
+  // Open when there's something in it to start with; after that only the caregiver opens or
+  // closes it, so clearing a box while typing doesn't collapse the section.
+  const [moreOpen, setMoreOpen] = useState(Boolean(initial?.formerWork || initial?.firstLanguage || initial?.traditions));
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // After the server rejects a submit, put the caregiver on the first field to fix.
+  useEffect(() => {
+    if (Object.values(errors).some((e) => e?.length)) {
+      formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"], [data-invalid="true"]')?.focus();
+    }
+  }, [errors]);
 
   function fill(p: Profile) {
     setSuddenChange(p.suddenChange);
@@ -67,6 +78,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
     setFormerWork(p.formerWork ?? "");
     setFirstLanguage(p.firstLanguage ?? "");
     setTraditions(p.traditions ?? "");
+    if (p.formerWork || p.firstLanguage || p.traditions) setMoreOpen(true);
     setDisplayName(p.displayName);
     setBirthYear(String(p.birthYear));
     setHometown(p.hometown);
@@ -82,9 +94,11 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (busy) return;
+    // One item per line, as the hint says: a title like "Hello, Dolly!" stays whole.
     const thingsToAvoid = nothingToAvoid
       ? ["none"]
-      : avoidText.split(/[\n,]/).map((s) => s.trim()).filter(Boolean);
+      : avoidText.split("\n").map((s) => s.trim()).filter(Boolean);
     // Unanswered choices are sent as-is so the server's caregiver-friendly message explains them.
     onSubmit({
       suddenChange: suddenChange as boolean,
@@ -113,7 +127,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
     "mt-1 block w-full rounded-lg border border-line bg-card px-3 py-2.5 text-ink placeholder:text-muted/70 aria-[invalid=true]:border-2 aria-[invalid=true]:border-error";
 
   return (
-    <form onSubmit={submit} className="space-y-7">
+    <form ref={formRef} onSubmit={submit} className="space-y-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-muted">A few details are enough. We don’t save these details.</p>
         <button
@@ -144,6 +158,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
                 checked={suddenChange === o.value}
                 onChange={() => setSuddenChange(o.value)}
                 required
+                data-invalid={errors.suddenChange?.length ? true : undefined}
               />
               {o.label}
             </label>
@@ -186,6 +201,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
                 checked={supportLevel === level}
                 onChange={() => setSupportLevel(level)}
                 required
+                data-invalid={errors.supportLevel?.length ? true : undefined}
               />
               <span>
                 <span className="block font-medium">{SUPPORT_LEVELS[level].label}</span>
@@ -316,7 +332,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
           onChange={(e) => setAvoidText(e.target.value)}
           disabled={nothingToAvoid}
           required={!nothingToAvoid}
-          placeholder="e.g. hospitals, a particular sad song"
+          placeholder={"e.g. hospitals\nanything about the war\nMoon River"}
           aria-invalid={Boolean(errors.thingsToAvoid?.length)}
           aria-describedby={describedBy("thingsToAvoid", `${id}-avoid-hint`)}
         />
@@ -332,7 +348,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
         {err("thingsToAvoid")}
       </div>
 
-      <details className="rounded-lg border border-line bg-card p-4" open={Boolean(formerWork || firstLanguage || traditions)}>
+      <details className="rounded-lg border border-line bg-card p-4" open={moreOpen} onToggle={(e) => setMoreOpen(e.currentTarget.open)}>
         <summary className="cursor-pointer font-semibold">More about them (optional)</summary>
         <p className="mt-2 text-sm text-muted">Helps make the questions personal. Used for this kit only, not saved.</p>
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
@@ -383,8 +399,8 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
 
       <button
         type="submit"
-        disabled={busy}
-        className="w-full rounded-xl bg-accent px-6 py-3.5 text-lg font-semibold text-accent-ink disabled:opacity-60 sm:w-auto"
+        aria-disabled={busy || undefined}
+        className="w-full rounded-xl bg-accent px-6 py-3.5 text-lg font-semibold text-accent-ink aria-disabled:opacity-60 sm:w-auto"
       >
         {busy ? "Putting the kit together…" : "Build the session kit"}
       </button>

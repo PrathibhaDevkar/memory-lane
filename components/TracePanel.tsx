@@ -13,12 +13,31 @@ const KIND_LABEL: Record<TraceStep["kind"], string> = {
 
 const seconds = (ms: number) => (ms >= 1000 ? `${(ms / 1000).toFixed(1)} s` : `${ms} ms`);
 
+/**
+ * How long the build took. Claude turns and checks run one after another, but each turn's Qloo
+ * lookups run together and each one's time already includes any wait for a free slot, so a run of
+ * lookups counts as its longest one.
+ */
+export function buildMs(trace: TraceStep[]): number {
+  let total = 0;
+  let lookups = 0;
+  for (const s of trace) {
+    if (s.kind === "tool") {
+      lookups = Math.max(lookups, s.ms);
+    } else {
+      total += lookups + s.ms;
+      lookups = 0;
+    }
+  }
+  return total + lookups;
+}
+
 export function TracePanel({ trace }: { trace: TraceStep[] }) {
   if (!trace.length) return null;
   const claude = trace.filter((s) => s.kind === "llm").length;
   const qloo = trace.filter((s) => s.kind === "tool").length;
   const excluded = trace.reduce((n, s) => n + s.excluded.length, 0);
-  const totalMs = trace.reduce((n, s) => n + s.ms, 0);
+  const totalMs = buildMs(trace);
   const summary = [
     claude ? `${claude} Claude ${claude === 1 ? "turn" : "turns"}` : null,
     `${qloo} Qloo ${qloo === 1 ? "lookup" : "lookups"}`,

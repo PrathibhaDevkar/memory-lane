@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { DEMOS } from "@/lib/demos";
 import type { SessionLog } from "@/lib/session";
 import { kitAsText, whatsappUrl } from "@/lib/share";
-import { KitResponseSchema, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
+import { KitResponseSchema, MAX_THINGS_TO_AVOID, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
 import { IntakeForm, type FieldErrors } from "./IntakeForm";
 import { KitView } from "./KitView";
 import { SafetyStop } from "./SafetyStop";
@@ -27,10 +27,11 @@ export function MemoryLaneApp() {
   const [lastProfile, setLastProfile] = useState<Profile | undefined>();
   const kitRef = useRef<HTMLDivElement>(null);
 
-  // Move focus to the kit when it appears, so screen-reader and keyboard users land on it.
+  // Move focus to the kit when it appears, so screen-reader and keyboard users land on it. A view
+  // that places focus itself (session mode focuses its first card, and runs its effect first) keeps it.
   useEffect(() => {
     if (state.view !== "form") {
-      kitRef.current?.focus();
+      if (!kitRef.current?.contains(document.activeElement)) kitRef.current?.focus();
       window.scrollTo({ top: 0 });
     }
   }, [state.view]);
@@ -90,7 +91,7 @@ export function MemoryLaneApp() {
     const kit = state.kit;
     return (
       <div ref={kitRef} tabIndex={-1} className="outline-none">
-        <SessionMode kit={kit} onEnd={(log) => setState({ view: "note", kit, log })} />
+        <SessionMode kit={kit} onEnd={(log) => setState({ view: "note", kit, log })} onBack={() => setState({ view: "kit", kit })} />
       </div>
     );
   }
@@ -105,16 +106,27 @@ export function MemoryLaneApp() {
           onBackToKit={() => setState({ view: "kit", kit })}
           onBuildNext={(extraAvoid) => {
             // Back to the form, ready to review: the support level can change from day to day.
-            const base = lastProfile ?? kit.profile;
-            const avoid = [...base.thingsToAvoid.filter((t) => t !== "none"), ...extraAvoid.filter((t) => !base.thingsToAvoid.includes(t))];
+            // The next kit is for the person this session was about, even after a demo.
+            const base = kit.profile;
+            const current = base.thingsToAvoid.filter((t) => t !== "none");
+            // Stay within the form's limit; anything that doesn't fit is named in the notice.
+            const fresh = extraAvoid.filter((t) => !current.includes(t));
+            const added = fresh.slice(0, Math.max(0, MAX_THINGS_TO_AVOID - current.length));
+            const avoid = [...current, ...added];
             setLastProfile({ ...base, thingsToAvoid: avoid.length ? avoid : ["none"] });
+            const skipped = fresh.slice(added.length);
             setState({
               view: "form",
               busy: false,
               askSafetyAgain: true,
-              notice: extraAvoid.length
-                ? `Ready for the next kit. Added to things to avoid: ${extraAvoid.join(", ")}. Check today's answers before building.`
-                : "Ready for the next kit. Check today's answers before building.",
+              notice: [
+                "Ready for the next kit.",
+                added.length ? `Added to things to avoid: ${added.join(", ")}.` : "",
+                skipped.length ? `The list is full (${MAX_THINGS_TO_AVOID}), so these weren't added: ${skipped.join(", ")}.` : "",
+                "Check today's answers before building.",
+              ]
+                .filter(Boolean)
+                .join(" "),
             });
           }}
         />
@@ -196,7 +208,6 @@ export function MemoryLaneApp() {
         {state.busy && <p className="sr-only">Putting the kit together…</p>}
       </div>
       <IntakeForm
-        key={lastProfile ? "edit" : "new"}
         initial={lastProfile}
         askSafetyAgain={state.askSafetyAgain}
         errors={state.errors}

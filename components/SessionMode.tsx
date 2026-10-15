@@ -7,9 +7,9 @@ import { useEffect, useRef, useState } from "react";
 import { buildCards, CARD_LABEL, REACTIONS, type LogEntry, type Reaction, type SessionLog } from "@/lib/session";
 import type { Kit } from "@/lib/types";
 
-type Props = { kit: Kit; onEnd: (log: SessionLog) => void };
+type Props = { kit: Kit; onEnd: (log: SessionLog) => void; onBack: () => void };
 
-export function SessionMode({ kit, onEnd }: Props) {
+export function SessionMode({ kit, onEnd, onBack }: Props) {
   const [cards] = useState(() => buildCards(kit));
   const [startedAt] = useState(() => new Date().toISOString());
   const [index, setIndex] = useState(0);
@@ -58,8 +58,8 @@ export function SessionMode({ kit, onEnd }: Props) {
     return (
       <section className="mx-auto max-w-2xl rounded-2xl border border-line bg-card p-6 text-center">
         <p className="text-lg">This kit has nothing to show in a session yet.</p>
-        <button type="button" onClick={() => finish([])} className="mt-6 rounded-full border border-line px-4 py-2 font-medium">
-          Back
+        <button type="button" onClick={onBack} className="mt-6 rounded-full border border-line px-4 py-2 font-medium">
+          ← Back to the kit
         </button>
       </section>
     );
