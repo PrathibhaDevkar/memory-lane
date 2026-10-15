@@ -5,9 +5,9 @@
 //       node scripts/qloo-recheck.mjs --retrim        (no API calls: re-trims everything from scripts/out/)
 // Out:  scripts/out/recheck/*.json   full responses (gitignored, for debugging)
 //       fixtures/qloo/*.json         trimmed responses for tests (committed)
-//       docs/phase2-recheck.md       findings (committed)
+//       scripts/out/recheck/report.md  findings (gitignored; summarized in docs/research.md §2)
 //
-// What changed since Phase 0 (implementation-plan.md §4.1, §14):
+// What changed since Phase 0 (docs/research.md §2):
 //   - no signal.demographics.age (D7)
 //   - take=25 for media, take=50 for places, so filters have room to drop items
 //   - places and restaurants are separate calls (get_places / get_dish)
@@ -31,7 +31,7 @@ if (!KEY && !OFFLINE) {
 
 const RAW = new URL("./out/recheck/", import.meta.url);
 const FIX = new URL("../fixtures/qloo/", import.meta.url);
-const DOC = new URL("../docs/phase2-recheck.md", import.meta.url);
+const DOC = new URL("./out/recheck/report.md", import.meta.url);
 await mkdir(RAW, { recursive: true });
 await mkdir(FIX, { recursive: true });
 
@@ -62,7 +62,7 @@ const PERSONAS = [
   { name: "June", born: 1958, hometown: "Los Angeles", favorite: "The Sound of Music", type: "urn:entity:movie" },
 ];
 
-// Same rules the tools will apply (implementation-plan.md §4.1 D4, §5 D3). Kept here only to
+// Same rules the tools apply (docs/plan.md §7.1 D4, §8 D3). Kept here only to
 // report on the data; the tested versions live in lib/qloo/filters.ts (task 2.1).
 const LANDMARK = /:(historical_landmark|heritage_building|market|sculpture|park|[a-z_]*museum)$/;
 const NOT_LANDMARK = /:(water_park|amusement_park_ride)$/;
@@ -145,11 +145,11 @@ const inWindow = (ents, lo, hi) => {
 const lines = [
   "# Phase 2 re-check of Qloo (task 2.0)",
   "",
-  `Run: ${new Date().toISOString().slice(0, 10)} · script: [\`scripts/qloo-recheck.mjs\`](../scripts/qloo-recheck.mjs) · trimmed responses: [\`fixtures/qloo/\`](../fixtures/qloo/)`,
+  `Run: ${new Date().toISOString().slice(0, 10)} · script: scripts/qloo-recheck.mjs · trimmed responses: fixtures/qloo/`,
   "",
   "Same personas as Phase 0, with the call shapes Phase 2 uses: no age signal (D7), `take=25` for media, `take=50` for places, separate places and restaurants calls.",
   "",
-  "This file is generated and overwritten on each run. Conclusions drawn from it live in [approach.md](approach.md) (D2, D3, D4) and [implementation-plan.md](implementation-plan.md) §5 and §14.",
+  "Generated on each run. The curated summary and the decisions drawn from it are in docs/research.md and docs/plan.md.",
   "",
 ];
 const answers = {};

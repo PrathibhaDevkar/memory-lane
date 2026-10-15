@@ -1,5 +1,5 @@
 // Conversation prompts must be gentle open questions, never statements about the person's past
-// (approach.md rules; implementation-plan.md §5). Failing prompts are dropped with a reason.
+// (docs/plan.md §4, §8). Failing prompts are dropped with a reason.
 
 const PRESUMES = /^(you\b|remember when\b)|\byou (loved|used to|were always|always)\b/i;
 const OPEN_START = /^(what|how|who|where|which|why|tell me)\b/i;

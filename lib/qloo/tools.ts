@@ -1,5 +1,5 @@
 // The tools Claude can call. Each one wraps Qloo and applies the rules in code, so a prompt
-// can't skip them (implementation-plan.md §4.1):
+// can't skip them (docs/plan.md §7.1):
 //   - the era window and hometown come from the caregiver's profile, never from Claude (D1)
 //   - no age signal is sent (D7)
 //   - every result is screened (D3 + avoid list) before Claude sees it, with reasons in the trace

@@ -1,7 +1,7 @@
 // Shared contract between the server (/api/kit, agent, Qloo tools) and the UI.
 // Each zod schema is the single source of truth: TypeScript types are inferred from it,
 // and the same schema validates request bodies, fixture files and (later) agent output.
-// See docs/implementation-plan.md §6.
+// See docs/plan.md §9.
 
 import { z } from "zod";
 

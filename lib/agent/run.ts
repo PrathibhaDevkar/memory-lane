@@ -1,4 +1,4 @@
-// The agent loop (implementation-plan.md §4.2). Claude decides which Qloo lookups to make; the
+// The agent loop (docs/plan.md §7.2). Claude decides which Qloo lookups to make; the
 // tools enforce the rules; buildKit() keeps only grounded picks.
 //
 // Guardrails: at most MAX_TURNS Claude calls, a wall-clock budget, and a final turn where only

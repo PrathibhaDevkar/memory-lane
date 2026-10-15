@@ -4,11 +4,8 @@ An AI agent that helps caregivers put together personal reminiscence sessions fo
 
 Supports caregivers' activities. Not therapy and makes no medical claims.
 Building a support system scalable to caregivers, from individuals to Nursing Care.
-- **Implementation plan (architecture, agent loop, timeline, diagrams):** [docs/implementation-plan.md](docs/implementation-plan.md)
-- **Change plan (care-practice features, what changes in the code):** [docs/change-plan.md](docs/change-plan.md)
-- **Business case (audience, judging criteria, roadmap):** [docs/business-case.md](docs/business-case.md)
-- **Approach & decisions:** [docs/approach.md](docs/approach.md)
-- **Phase 0 era-matching results:** [docs/phase0-results.md](docs/phase0-results.md)
+- **Plan:** [docs/plan.md](docs/plan.md): what we're building and why, decisions, care principles, design and diagrams, schedule, planned changes
+- **Research:** [docs/research.md](docs/research.md): what our tests against the Qloo API showed
 
 **Live demo:** https://memory-lane-two-umber.vercel.app (for now every request returns a sample kit built from saved Qloo results; live kits arrive in Phase 2)
 
@@ -25,6 +22,13 @@ npm test                     # vitest
 npm run typecheck            # next typegen + tsc
 npm run lint
 ```
+
+Live agent locally (needs `QLOO_API_KEY` and `ANTHROPIC_API_KEY` in `.env.local`):
+```bash
+npm run dev:agent                                  # KIT_SOURCE=agent
+node scripts/smoke.mjs http://localhost:3000       # builds a kit per persona and prints it
+```
+Live Qloo check without Claude: `set -a; source .env.local; set +a; LIVE=1 npx vitest run tests/live`.
 
 Phase 0 era-matching test: `node --env-file=.env.local scripts/phase0-era-test.mjs`.
 Rebuild the sample kit from its output: `node scripts/build-fixture-kit.mjs`.

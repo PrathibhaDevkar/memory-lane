@@ -58,7 +58,7 @@ const deepDish = giordanos.properties.specialty_dishes.find((d) => d.id === "urn
 if (!deepDish) throw new Error("chicago_style_pizza tag missing from Giordano's");
 const maxwell = pick(places, "49BECC83-406C-446B-A460-C64579EFB2B0");
 
-// Same rule get_places will apply (implementation-plan.md §4.1, D4).
+// Same rule get_places will apply (docs/plan.md §7.1, D4).
 const LANDMARK = /:(historical_landmark|heritage_building|market|sculpture|park|[a-z_]*museum)$/;
 const genreOf = (e) => e.properties.primary_genre?.id ?? "no genre";
 const keptPlaces = places.entities.filter((e) => LANDMARK.test(genreOf(e)));

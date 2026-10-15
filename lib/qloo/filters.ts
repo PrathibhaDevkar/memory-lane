@@ -1,5 +1,5 @@
 // Safety and relevance rules applied to every Qloo result before Claude or the caregiver sees it.
-// Design and evidence: docs/approach.md (D3, D4), docs/phase2-recheck.md.
+// Design: docs/plan.md §3 (D3, D4). Evidence: docs/research.md §2.
 
 import type { Excluded, QlooEntity } from "./types";
 
