@@ -17,7 +17,7 @@ Built for the [Qloo Agentic Hackathon](https://qloo.devpost.com/) ("Agents, but 
 
 Demos open instantly in your browser: no sign-in, no wait, nothing sent.
 
-> **Status (Oct 15):** the demos, safety check and session mode reach the live site with the next deploy, and live kits from the agent are being switched on. *[Update this line at each deploy.]*
+> **Status (Oct 15):** the live site shows the demos, safety check, session mode and trace with saved kits. Kits built live by the agent are being switched on. *[Update this line at each deploy.]*
 
 ---
 
