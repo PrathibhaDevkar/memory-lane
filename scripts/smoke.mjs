@@ -52,7 +52,7 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
   console.log(`  era      ${kit.era.start}–${kit.era.end} · support: ${kit.profile.supportLevel} · source: ${kit.provenance.kind}`);
   show("music", kit.music, (i) => i.title);
   show("screen", kit.screen, (i) => `${i.title} (${i.year})`);
-  show("dish", kit.dish, (i) => `${i.name} @ ${i.fromPlace}`);
+  show("dish", kit.dish, (i) => (i.fromPlace ? `${i.name} @ ${i.fromPlace}` : i.name));
   show("place", kit.place, (i) => i.name);
   console.log(`  prompts  ${kit.prompts.length}${kit.activityIdeas.length ? ` · ideas: ${kit.activityIdeas.map((i) => i.text).join(" | ")}` : ""}`);
   for (const p of kit.prompts) console.log(`           - ${p}`);

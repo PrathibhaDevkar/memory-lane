@@ -3,6 +3,8 @@
 
 import type { Excluded, QlooEntity } from "./types";
 
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 // ---------- D3: content safety ----------
 
 const BLOCKED_RATINGS = new Set(["R", "NC-17", "X", "TV-MA"]);
@@ -31,6 +33,9 @@ const SENSITIVE_THEMES = [
   "rape",
 ];
 
+// Matched at the start of a word, so "rape" doesn't fire on "therapeutic", "grapes" or "skyscraper".
+const THEME_PATTERNS = SENSITIVE_THEMES.map((theme) => ({ theme, re: new RegExp(`\\b${escapeRe(theme)}`) }));
+
 const PROFANE_TITLE_WORDS = ["cocksucker", "fuck", "shit"];
 
 /** Why a title is unsafe for a reminiscence session, or null if it's fine. */
@@ -39,7 +44,7 @@ export function contentConcern(e: QlooEntity): string | null {
   if (rating && BLOCKED_RATINGS.has(rating)) return `Mature content: rated ${rating}.`;
   if (e.genres.includes("War")) return "War film or series.";
   const themes = (e.properties.plot_themes_description ?? "").toLowerCase();
-  const theme = SENSITIVE_THEMES.find((p) => themes.includes(p));
+  const theme = THEME_PATTERNS.find(({ re }) => re.test(themes))?.theme;
   if (theme) return `Sensitive theme: ${theme}.`;
   const title = e.name.toLowerCase();
   if (PROFANE_TITLE_WORDS.some((w) => title.includes(w))) return "Explicit title.";
@@ -48,16 +53,47 @@ export function contentConcern(e: QlooEntity): string | null {
 
 // ---------- The caregiver's "things to avoid" ----------
 
-const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// Answers that mean "nothing to avoid" rather than a word to look for.
+const NOTHING = new Set(["none", "nothing", "no", "n/a", "na", "nil", "none known", "nothing to avoid"]);
 
-/** Matches a caregiver term as a whole word, singular or plural ("hospitals" ~ "Hospital"). */
-function termPattern(term: string): RegExp | null {
-  const t = term.trim().toLowerCase();
-  if (!t || t === "none") return null;
-  const singular = t.replace(/(es|s)$/, "");
-  const forms = [...new Set([t, singular].filter((f) => f.length >= 3))].map(escapeRe);
-  if (!forms.length) return null;
-  return new RegExp(`\\b(${forms.join("|")})(s|es)?\\b`, "i");
+// Caregivers often describe a topic instead of naming a title ("anything about hospitals",
+// "songs about my mother", "war films"). The topic is matched as well as the whole line.
+const LEAD_IN = /^(?:(?:anything|something|songs?|films?|movies?|shows?|music|programmes?|programs?|stories)\s+)?(?:about|to do with|related to|involving)\s+/;
+const DETERMINER = /^(?:my|his|her|their|our|the|a|an|any)\s+/;
+const MEDIA_TAIL = /\s+(?:films?|movies?|songs?|music|shows?|programmes?|programs?)$/;
+
+const tidy = (s: string) => s.toLowerCase().replace(/\s+/g, " ").replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, "");
+
+/**
+ * What one line of the caregiver's list asks to avoid: the whole line, each comma-separated part
+ * (so "hospitals, war" works on one line), and the topic of a description. Over-matching is the
+ * safe side here.
+ */
+export function avoidPhrases(line: string): string[] {
+  if (NOTHING.has(tidy(line))) return [];
+  const phrases = new Set<string>();
+  for (const part of [line, ...line.split(/[,;]/)]) {
+    const p = tidy(part);
+    if (!p || NOTHING.has(p)) continue;
+    phrases.add(p);
+    const topic = tidy(p.replace(LEAD_IN, "").replace(DETERMINER, "").replace(MEDIA_TAIL, ""));
+    if (topic) phrases.add(topic);
+  }
+  return [...phrases];
+}
+
+/** A phrase and its singular: "horses" ~ "horse", "churches" ~ "church", "war films" ~ "war film". */
+function forms(phrase: string): string[] {
+  const out = [phrase];
+  if (phrase.endsWith("es")) out.push(phrase.slice(0, -2));
+  if (phrase.endsWith("s")) out.push(phrase.slice(0, -1));
+  return out.filter((f) => f.length >= 3);
+}
+
+/** Matches any of the phrases as whole words, singular or plural ("hospitals" ~ "Hospital"). */
+function phrasePattern(phrases: string[]): RegExp | null {
+  const all = [...new Set(phrases.flatMap(forms))].map(escapeRe);
+  return all.length ? new RegExp(`\\b(${all.join("|")})(s|es)?\\b`, "i") : null;
 }
 
 /** The caregiver term this title touches, or null. Checks keywords too: here the caregiver chose the words. */
@@ -70,7 +106,7 @@ export function avoidMatch(e: QlooEntity, thingsToAvoid: string[]): string | nul
     e.properties.description ?? "",
   ].join(" | ");
   for (const term of thingsToAvoid) {
-    const re = termPattern(term);
+    const re = phrasePattern(avoidPhrases(term));
     if (re?.test(haystack)) return term.trim();
   }
   return null;
