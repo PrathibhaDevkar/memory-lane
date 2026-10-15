@@ -25,13 +25,15 @@ const cache = new Map<string, { at: number; entities: QlooEntity[] }>();
 let inFlight = 0;
 const waiting: (() => void)[] = [];
 async function withSlot<T>(fn: () => Promise<T>): Promise<T> {
-  if (inFlight >= MAX_IN_FLIGHT) await new Promise<void>((resolve) => waiting.push(resolve));
-  inFlight++;
+  // A freed slot is handed straight to the next waiter, so a newcomer can't slip in between.
+  if (inFlight < MAX_IN_FLIGHT) inFlight++;
+  else await new Promise<void>((resolve) => waiting.push(resolve));
   try {
     return await fn();
   } finally {
-    inFlight--;
-    waiting.shift()?.();
+    const next = waiting.shift();
+    if (next) next();
+    else inFlight--;
   }
 }
 
@@ -50,7 +52,8 @@ export function clearQlooCache() {
 export async function qlooGet(
   path: "/search" | "/v2/insights",
   params: Params,
-  opts: { fetchImpl?: typeof fetch; apiKey?: string } = {},
+  // deadline: epoch ms after which no attempt starts or keeps running (the kit's time budget).
+  opts: { fetchImpl?: typeof fetch; apiKey?: string; deadline?: number } = {},
 ): Promise<QlooResult> {
   const url = new URL(path, BASE);
   for (const [k, v] of Object.entries(params)) if (v !== undefined) url.searchParams.set(k, String(v));
@@ -66,14 +69,17 @@ export async function qlooGet(
   const doFetch = opts.fetchImpl ?? fetch;
 
   const started = Date.now();
+  const deadline = opts.deadline ?? Infinity;
   return withSlot(async () => {
     let last: QlooResult | null = null;
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+      const left = deadline - Date.now();
+      if (left <= 0) return last ?? { ok: false, status: null, url: where, ms: Date.now() - started, error: "Out of time for this kit" };
       let res: Response | null = null;
       try {
         res = await doFetch(url, {
           headers: { "X-Api-Key": apiKey, accept: "application/json" },
-          signal: AbortSignal.timeout(TIMEOUT_MS),
+          signal: AbortSignal.timeout(Math.min(TIMEOUT_MS, left)),
         });
         const body = await res.json().catch(() => null);
         const ms = Date.now() - started;
@@ -89,7 +95,11 @@ export async function qlooGet(
         const timedOut = err instanceof Error && err.name === "TimeoutError";
         last = { ok: false, status: null, url: where, ms: Date.now() - started, error: timedOut ? "Qloo timed out" : "Could not reach Qloo" };
       }
-      if (attempt < MAX_ATTEMPTS - 1) await sleep(backoffMs(res, attempt));
+      if (attempt < MAX_ATTEMPTS - 1) {
+        const wait = backoffMs(res, attempt);
+        if (Date.now() + wait >= deadline) break; // no time left for another try
+        await sleep(wait);
+      }
     }
     return last!;
   });

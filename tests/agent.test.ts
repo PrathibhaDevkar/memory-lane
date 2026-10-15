@@ -1,4 +1,4 @@
-import type Anthropic from "@anthropic-ai/sdk";
+import Anthropic from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
 import { buildKit, checkIdeas } from "@/lib/agent/kit";
 import { KitSchema } from "@/lib/types";
@@ -15,7 +15,8 @@ vi.mock("@/lib/qloo/client", () => ({
 }));
 
 const { RunContext } = await import("@/lib/qloo/tools");
-const { buildLiveKit } = await import("@/lib/agent/run");
+const { buildLiveKit, FINISH_NOW } = await import("@/lib/agent/run");
+const { qlooGet } = await import("@/lib/qloo/client");
 
 const rosa = {
   suddenChange: false,
@@ -33,7 +34,8 @@ function ctxWithSeen() {
   const ctx = new RunContext(rosa, era);
   ctx.seen.set("ELLA", { kind: "artist", name: "Ella Fitzgerald" });
   ctx.seen.set("FILM", { kind: "movie", name: "Designing Woman", year: 1957 });
-  ctx.seen.set("urn:tag:specialty_dish:place:chicago_style_pizza", { kind: "dish", name: "chicago_style_pizza", place: "Giordano's" });
+  ctx.seen.set("urn:tag:specialty_dish:place:chicago_style_pizza", { kind: "dish", name: "chicago_style_pizza" });
+  ctx.dishPlaces.set("urn:tag:specialty_dish:place:chicago_style_pizza", new Map([["GINOS", "Gino's East"], ["GIORDANOS", "Giordano's"]]));
   ctx.seen.set("MARKET", { kind: "place", name: "Maxwell Street Market", genre: "urn:tag:genre:place:market" });
   return ctx;
 }
@@ -44,14 +46,15 @@ describe("buildKit (grounding)", () => {
       ...empty,
       music: [{ id: "ELLA", why: "Sinatra fans love her." }],
       screen: [{ id: "FILM", why: "A 1950s favorite." }],
-      dish: [{ tag_id: "urn:tag:specialty_dish:place:chicago_style_pizza", name: "Chicago style pizza", why: "A Chicago classic." }],
+      dish: [{ tag_id: "urn:tag:specialty_dish:place:chicago_style_pizza", place_id: "GINOS", name: "Chicago style pizza", why: "A Chicago classic." }],
       place: [{ id: "MARKET", why: "A long-running market." }],
       prompts: ["What music did people dance to back then?"],
     });
     expect(KitSchema.safeParse(kit).success).toBe(true);
     expect(kit.music.items[0]).toMatchObject({ title: "Ella Fitzgerald", qlooId: "ELLA", source: "qloo" });
     expect(kit.screen.items[0]).toMatchObject({ title: "Designing Woman", year: 1957 });
-    expect(kit.dish.items[0]).toMatchObject({ name: "Chicago style pizza", fromPlace: "Giordano's" });
+    // Two restaurants list this dish; the kit credits the one Claude chose.
+    expect(kit.dish.items[0]).toMatchObject({ name: "Chicago style pizza", fromPlace: "Gino's East" });
     expect(kit.provenance.kind).toBe("live");
   });
 
@@ -69,9 +72,19 @@ describe("buildKit (grounding)", () => {
   it("falls back to Qloo's dish name if Claude adds words that aren't in it", () => {
     const kit = buildKit(ctxWithSeen(), {
       ...empty,
-      dish: [{ tag_id: "urn:tag:specialty_dish:place:chicago_style_pizza", name: "Famous deep-dish pizza", why: "x" }],
+      dish: [{ tag_id: "urn:tag:specialty_dish:place:chicago_style_pizza", place_id: "GINOS", name: "Famous deep-dish pizza", why: "x" }],
     });
     expect(kit.dish.items[0].name).toBe("Chicago style pizza");
+  });
+
+  it("names no restaurant if the one Claude gives didn't list the dish", () => {
+    const kit = buildKit(ctxWithSeen(), {
+      ...empty,
+      dish: [{ tag_id: "urn:tag:specialty_dish:place:chicago_style_pizza", place_id: "SOMEWHERE-ELSE", name: "Chicago style pizza", why: "x" }],
+    });
+    expect(kit.dish.items[0].fromPlace).toBeUndefined();
+    expect(kit.trace.at(-1)!.excluded[0].reason).toMatch(/didn't list this dish/);
+    expect(KitSchema.safeParse(kit).success).toBe(true);
   });
 
   it("shows Claude's gap reason, or a failure reason, instead of inventing content (D6)", () => {
@@ -118,11 +131,17 @@ describe("support levels and activity ideas", () => {
 });
 
 describe("buildLiveKit (loop control, fake Claude)", () => {
+  type Body = { tools: { name: string }[]; messages: Anthropic.Beta.BetaMessageParam[] };
   const msg = (content: unknown[], stop_reason = "tool_use") =>
     ({ id: "m", model: "claude-opus-5-5", role: "assistant", content, stop_reason, usage: {} }) as unknown as Anthropic.Beta.BetaMessage;
   const fakeClient = (responses: Anthropic.Beta.BetaMessage[]) => {
-    const create = vi.fn(async () => responses.shift()!);
-    return { client: { beta: { messages: { create } } } as unknown as Anthropic, create };
+    // Copies of each request as sent: the loop keeps appending to the same messages array.
+    const sent: { body: Body; options: { signal?: AbortSignal } }[] = [];
+    const create = vi.fn(async (body: Body, options: { signal?: AbortSignal }) => {
+      sent.push({ body: structuredClone(body), options });
+      return responses.shift()!;
+    });
+    return { client: { beta: { messages: { create } } } as unknown as Anthropic, create, sent };
   };
 
   it("runs this turn's tools in parallel, returns all results in one message, then builds the kit", async () => {
@@ -144,13 +163,44 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     expect(kit.music.items[0]?.title).toBe("Frank Sinatra");
   });
 
-  it("offers only submit_kit on the last turn, and still ends if Claude never submits", async () => {
-    const { client, create } = fakeClient(Array.from({ length: 6 }, () => msg([{ type: "text", text: "thinking out loud" }], "end_turn")));
+  it("sends the same tools every turn, asks Claude to finish on the last one, and still ends if Claude never submits", async () => {
+    const { client, create, sent } = fakeClient(Array.from({ length: 6 }, () => msg([{ type: "text", text: "thinking out loud" }], "end_turn")));
     const kit = await buildLiveKit(rosa, { client });
     expect(create).toHaveBeenCalledTimes(6);
-    const last = create.mock.calls[5] as unknown as [{ tools: { name: string }[] }];
-    expect(last[0].tools.map((t) => t.name)).toEqual(["submit_kit"]);
+    // Changing the tool list mid-conversation would invalidate Claude's earlier thinking blocks.
+    for (const { body } of sent) expect(body.tools.map((t) => t.name)).toEqual(sent[0].body.tools.map((t) => t.name));
+    expect(sent[0].body.tools.map((t) => t.name)).toContain("submit_kit");
+    // The finish request goes into the user turn being sent, not into history already sent.
+    expect(JSON.stringify(sent[5].body.messages.at(-1))).toContain(FINISH_NOW);
+    for (const { body } of sent.slice(0, 5)) expect(JSON.stringify(body.messages)).not.toContain(FINISH_NOW);
     expect(kit.music).toMatchObject({ status: "gap", gapReason: "The agent didn't finish within its limits." });
+  });
+
+  it("refuses lookups once it's the last turn, without calling Qloo", async () => {
+    const { client, sent } = fakeClient([
+      msg([{ type: "tool_use", id: "a", name: "resolve_favorite", input: { name: "Frank Sinatra", kind: "artist" } }]),
+      msg([{ type: "tool_use", id: "b", name: "submit_kit", input: empty }]),
+    ]);
+    vi.mocked(qlooGet).mockClear();
+    // A budget this short makes the first turn the last one.
+    const kit = await buildLiveKit(rosa, { client, budgetMs: 30_000 });
+    expect(qlooGet).not.toHaveBeenCalled();
+    const results = sent[1].body.messages.at(-1)!.content as { tool_use_id: string; is_error: boolean; content: string }[];
+    expect(results[0]).toMatchObject({ tool_use_id: "a", is_error: true });
+    expect(results[0].content).toMatch(/Lookups are closed/);
+    expect(KitSchema.safeParse(kit).success).toBe(true);
+  });
+
+  it("gives every Claude call a signal that stops it at the deadline, and turns a cut-off call into an honest gap", async () => {
+    const create = vi.fn(async (_body: unknown, options: { signal?: AbortSignal }) => {
+      expect(options.signal).toBeInstanceOf(AbortSignal);
+      throw new Anthropic.APIUserAbortError();
+    });
+    const client = { beta: { messages: { create } } } as unknown as Anthropic;
+    const kit = await buildLiveKit(rosa, { client });
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(kit.music).toMatchObject({ status: "gap", gapReason: "The agent ran out of time before finishing." });
+    expect(KitSchema.safeParse(kit).success).toBe(true);
   });
 
   it("turns a refusal into an honest gap", async () => {

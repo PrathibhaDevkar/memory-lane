@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { avoidMatch, cleanDishes, contentConcern, landmarks, screen } from "@/lib/qloo/filters";
+import { avoidMatch, avoidPhrases, cleanDishes, contentConcern, landmarks, screen } from "@/lib/qloo/filters";
 import type { QlooEntity } from "@/lib/qloo/types";
 
 // Real Qloo responses: the Oct 14 re-check plus the Phase 0 offenders.
@@ -39,6 +39,12 @@ describe("contentConcern (D3)", () => {
     },
   );
 
+  it("matches sensitive themes at the start of a word only", () => {
+    const about = (plot_themes_description: string): QlooEntity => ({ ...byName("Mary Poppins"), properties: { plot_themes_description } });
+    expect(contentConcern(about("A therapeutic friendship between skyscraper window washers and grape pickers."))).toBeNull();
+    expect(contentConcern(about("A widow's grief in a small town."))).toMatch(/grief/);
+  });
+
   it("leaves most of each era list intact", () => {
     for (const f of ["rosa-movies", "walt-movies", "june-movies"]) {
       const list = load(`fixtures/qloo/${f}.json`);
@@ -63,6 +69,34 @@ describe("avoidMatch (caregiver's list)", () => {
 
   it("matches whole words only", () => {
     expect(avoidMatch({ ...kramer, keywords: ["Warehouse"] , genres: [], name: "X", properties: {} }, ["war"])).toBeNull();
+  });
+
+  const named = (name: string): QlooEntity => ({ ...kramer, name, keywords: [], genres: [], properties: {} });
+
+  it("matches plurals ending in -es, such as horses, nurses and graves", () => {
+    expect(avoidMatch(named("The Horse Soldiers"), ["horses"])).toBe("horses");
+    expect(avoidMatch(named("Nurse Betty"), ["nurses"])).toBe("nurses");
+    expect(avoidMatch(named("The Grave"), ["graves"])).toBe("graves");
+    expect(avoidMatch(named("Battle Cry"), ["battles"])).toBe("battles");
+    expect(avoidMatch(named("Church Bells"), ["churches"])).toBe("churches");
+  });
+
+  it("matches the topic of a description, not only the whole line", () => {
+    expect(avoidMatch(kramer, ["anything about hospitals"])).toBe("anything about hospitals");
+    expect(avoidMatch(named("Mother"), ["songs about my mother"])).toBe("songs about my mother");
+    expect(avoidMatch(named("War and Peace"), ["war films"])).toBe("war films");
+    expect(avoidMatch(named("Moon River"), ["songs about the sea"])).toBeNull();
+  });
+
+  it("matches each part of a list typed on one line, and a title with a comma as a whole", () => {
+    expect(avoidMatch(kramer, ["funerals, hospitals"])).toBe("funerals, hospitals");
+    expect(avoidMatch(named("Hello, Dolly!"), ["Hello, Dolly!"])).toBe("Hello, Dolly!");
+  });
+
+  it("treats answers like 'Nothing' or 'n/a' as no entry", () => {
+    expect(avoidPhrases("Nothing")).toEqual([]);
+    expect(avoidPhrases("n/a")).toEqual([]);
+    expect(avoidMatch(named("Much Ado About Nothing"), ["Nothing"])).toBeNull();
   });
 
   it("screen() puts the caregiver's reason first and keeps the rest", () => {

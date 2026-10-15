@@ -82,7 +82,10 @@ export function buildKit(ctx: RunContext, sub: Submission | null, failure?: stri
       // Claude may only reword the dish with the dish's own words; otherwise use Qloo's name.
       const slugWords = new Set(words(s.name));
       const name = words(p.name).every((w) => slugWords.has(w)) && p.name.trim() ? p.name.trim() : humanize(s.name);
-      dish.push({ source: "qloo", name, qlooTagId: p.tag_id, fromPlace: s.place, caveat: DISH_CAVEAT });
+      // Credit only a restaurant that listed this dish in this run; otherwise show no restaurant.
+      const fromPlace = ctx.dishPlaces.get(p.tag_id)?.get(p.place_id);
+      if (!fromPlace) ungrounded.push({ title: `dish: ${p.tag_id} at ${p.place_id}`, reason: "That restaurant didn't list this dish in this run; shown without a restaurant." });
+      dish.push({ source: "qloo", name, qlooTagId: p.tag_id, fromPlace, caveat: DISH_CAVEAT });
     }
   }
 

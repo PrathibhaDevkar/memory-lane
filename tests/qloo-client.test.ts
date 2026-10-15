@@ -94,6 +94,20 @@ describe("qlooGet", () => {
     expect(peak).toBe(2);
   });
 
+  it("starts no attempt, and schedules no retry, past the kit's deadline", async () => {
+    const fetchImpl = vi.fn(async () => ok({}, 503));
+    const past = await qlooGet("/v2/insights", { d: 1 }, { fetchImpl, apiKey: "k", deadline: Date.now() - 1 });
+    expect(fetchImpl).not.toHaveBeenCalled();
+    expect(past).toMatchObject({ ok: false, error: "Out of time for this kit" });
+
+    // 503s are normally retried after 1 s; with 200 ms left there is no time for that.
+    const started = Date.now();
+    const r = await qlooGet("/v2/insights", { d: 2 }, { fetchImpl, apiKey: "k", deadline: Date.now() + 200 });
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    expect(r).toMatchObject({ ok: false, status: 503 });
+    expect(Date.now() - started).toBeLessThan(500);
+  });
+
   it("does not retry a 400, and returns Qloo's message instead of throwing", async () => {
     const fetchImpl = vi.fn(async () => ok({ errors: [{ message: "at least one valid signal or filter is required" }] }, 400));
     const r = await qlooGet("/v2/insights", { c: 1 }, { fetchImpl, apiKey: "k" });

@@ -24,6 +24,7 @@ Rules for every question or comment:
 - Use the name they like to be called. Draw on their former work and traditions when given, gently and without assuming details.
 
 What goes in the kit:
+- Nothing that touches the caregiver's things_to_avoid, even loosely: not in picks, questions or activity ideas. The tools drop exact matches; you catch the rest.
 - Only items the tools returned, referenced by their IDs. If nothing suitable came back for a section, leave it empty and give the reason in gaps. Never fill a section with something the tools didn't return.
 - "why" is one short sentence for the caregiver about the connection (the era, the favorite), never a claim about the person's life.
 - The dish is something to talk about, not a recipe or a suggestion to serve it.
@@ -61,10 +62,11 @@ export const SUBMIT_KIT: Anthropic.Beta.BetaTool = {
           type: "object",
           properties: {
             tag_id: { type: "string" },
+            place_id: { type: "string", description: "The place_id of the restaurant you chose the dish from." },
             name: { type: "string", description: "Short display name using the dish's own words." },
             why: { type: "string" },
           },
-          required: ["tag_id", "name", "why"],
+          required: ["tag_id", "place_id", "name", "why"],
           additionalProperties: false,
         },
       },
@@ -105,7 +107,7 @@ export const SUBMIT_KIT: Anthropic.Beta.BetaTool = {
 export type Submission = {
   music: { id: string; why: string }[];
   screen: { id: string; why: string }[];
-  dish: { tag_id: string; name: string; why: string }[];
+  dish: { tag_id: string; place_id: string; name: string; why: string }[];
   place: { id: string; why: string }[];
   prompts: string[];
   activity_ideas?: string[];

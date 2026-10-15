@@ -15,11 +15,13 @@ import type { Excluded, QlooEntity } from "./types";
 export const MAX_QLOO_CALLS = 12;
 
 export type SeenKind = "favorite" | "artist" | "movie" | "tv" | "place" | "dish";
-export type Seen = { kind: SeenKind; name: string; year?: number; genre?: string; place?: string };
+export type Seen = { kind: SeenKind; name: string; year?: number; genre?: string };
 
 /** Per-request state shared by the tools and the kit builder. */
 export class RunContext {
   readonly seen = new Map<string, Seen>();
+  /** For each dish tag ID, the restaurants (ID → name) that listed it in this run. */
+  readonly dishPlaces = new Map<string, Map<string, string>>();
   readonly trace: TraceStep[] = [];
   qlooCalls = 0;
   private step = 0;
@@ -27,6 +29,8 @@ export class RunContext {
     readonly profile: Profile,
     readonly era: EraWindow,
     readonly fetchImpl?: typeof fetch,
+    /** Epoch ms when the kit's time budget runs out. Qloo calls don't run past it. */
+    readonly deadline = Infinity,
   ) {}
 
   nextId() {
@@ -42,7 +46,7 @@ export class RunContext {
       return { ok: false, status: null, url: path, ms: 0, error: `Qloo call limit (${MAX_QLOO_CALLS}) reached for this kit` };
     }
     this.qlooCalls++;
-    return qlooGet(path, params, { fetchImpl: this.fetchImpl });
+    return qlooGet(path, params, { fetchImpl: this.fetchImpl, deadline: this.deadline });
   }
 }
 
@@ -216,13 +220,21 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
         .map((e) => ({ e, dishes: cleanDishes(e).slice(0, 3) }))
         .filter((x) => x.dishes.length)
         .slice(0, 8);
+      // The same dish tag can be a specialty at several restaurants (bbq_beans in Memphis), so
+      // remember every restaurant that listed it; the kit credits the one Claude chose.
       for (const { e, dishes } of withDishes) {
-        for (const d of dishes) ctx.seen.set(d.id, { kind: "dish", name: d.slug, place: e.name });
+        for (const d of dishes) {
+          ctx.seen.set(d.id, { kind: "dish", name: d.slug });
+          const places = ctx.dishPlaces.get(d.id) ?? new Map<string, string>();
+          places.set(e.entity_id, e.name);
+          ctx.dishPlaces.set(d.id, places);
+        }
       }
       record(`${r.entities.length} restaurants returned, ${withDishes.length} with dishes offered`, excluded, withDishes.length ? "ok" : "gap");
       return {
         content: JSON.stringify({
           restaurants: withDishes.map(({ e, dishes }) => ({
+            place_id: e.entity_id,
             place: e.name,
             about: short(e.properties.short_description ?? e.properties.description, 100),
             dishes: dishes.map((d) => ({ tag_id: d.id, dish: d.slug.replace(/_/g, " ") })),
