@@ -364,6 +364,8 @@ gantt
 **If Oct 17 runs late:** ship the gate with music + film/TV + prompts, and add places and dish on Oct 19 (two small tools on the same client). The prompt validator is on Oct 19 and model timing on Oct 20; until then the system prompt carries the open-question rule alone. Oct 18 afternoon is deploy and smoke only, because the route, zod and env vars have been live since Oct 15.
 
 ### Phase 3: Make it shine (Oct 19–25) · PR 3
+> **Updated Oct 15:** the care-practice features (support levels, sudden-change check, stricter question rules, session notes) and the revised day-by-day schedule are in [change-plan.md](change-plan.md), which takes precedence over the list below where they differ.
+
 Priorities follow the official judging criteria ([business-case.md §4](business-case.md#4-how-the-hackathon-judges-it)).
 - **Oct 19:** buffer for anything left from the gate. **Wikidata era check:** opening and release dates confirm a place, venue or title existed in the person's era (public domain, no key), so the check doesn't rely on the model's memory. The prompt validator is already done.
 - **Oct 20:** **trace panel** (renders `TraceStep[]`; shows Qloo's work and what was screened out) + timing the personas on two models to confirm `CLAUDE_MODEL`.
