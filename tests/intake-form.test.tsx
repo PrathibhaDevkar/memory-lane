@@ -24,6 +24,23 @@ describe("IntakeForm", () => {
     expect(html).toMatch(/aria-invalid="true"[^>]*placeholder="City or town"|placeholder="City or town"[^>]*aria-invalid="true"/);
   });
 
+  it("asks the sudden-change question first, with no answer preselected", () => {
+    const html = render();
+    expect(html.indexOf("safety check")).toBeLessThan(html.indexOf("like to be called"));
+    expect(html.match(/name="[^"]*-sudden"[^>]*checked/)).toBeNull();
+  });
+
+  it("offers the three support levels in plain words", () => {
+    const html = render();
+    for (const label of ["Mostly independent", "Needs some help", "Needs a lot of help"]) expect(html).toContain(label);
+  });
+
+  it("keeps optional life-story details in a collapsed group that says they aren't saved", () => {
+    const html = render();
+    expect(html).toContain("More about them (optional)");
+    expect(html).toContain("not saved");
+  });
+
   it("disables the button while building", () => {
     expect(render({ busy: true })).toContain("Putting the kit together…");
   });

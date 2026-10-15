@@ -1,31 +1,109 @@
 # Memory Lane
 
-An AI agent that helps caregivers put together personal reminiscence sessions for people living with dementia. Built for the Qloo Agentic Hackathon.
+**Personal reminiscence sessions for people living with dementia, put together in a minute.**
+An agent that uses Qloo's taste graph to find the music, films, food and places from someone's youth, and turns them into a gentle, one-card-at-a-time session for the person caring for them.
 
-Supports caregivers' activities. Not therapy and makes no medical claims.
-Building a support system scalable to caregivers, from individuals to Nursing Care.
-- **Implementation plan (architecture, agent loop, timeline, diagrams):** [docs/implementation-plan.md](docs/implementation-plan.md)
-- **Approach & decisions:** [docs/approach.md](docs/approach.md)
-- **Phase 0 era-matching results:** [docs/phase0-results.md](docs/phase0-results.md)
+Built for the [Qloo Agentic Hackathon](https://qloo.devpost.com/) ("Agents, but with taste").
 
-**Live demo:** https://memory-lane-two-umber.vercel.app (for now every request returns a sample kit built from saved Qloo results; live kits arrive in Phase 2)
+> Memory Lane supports caregivers' activities. It is not therapy, makes no medical claims, and gives no health advice.
 
-## Local setup
+---
+
+## Try it
+
+**[memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app)**: click **Try a demo**.
+- **Rosa**, born 1942 in Chicago, loves Frank Sinatra: a full kit, then **Start session**.
+- **Margaret**, a sudden change today: the safety check stops the session and points to her nurse or doctor. No kit.
+
+Demos open instantly in your browser: no sign-in, no wait, nothing sent.
+
+> **Status (Oct 15):** the live site shows the demos, safety check, session mode and trace with saved kits. Kits built live by the agent are being switched on. *[Update this line at each deploy.]*
+
+---
+
+## The problem
+
+Reminiscence (music, films, food and places from someone's youth, plus gentle conversation) is a widely used, non-drug way to connect with people living with dementia. Making it *personal* is the hard part: it takes time, and knowledge of another person's era, hometown and tastes that a caregiver often doesn't have. A generic playlist misses the person; the wrong item can upset them.
+
+## What it does
+
+1. **A few details:** a quick safety check, the name they like to be called, how much support they need today, birth year, hometown, one to three remembered favorites, things to avoid, and optionally their former work, first language and traditions.
+2. **A session kit:** songs, a film or TV show, a place and a dish to talk about, all from the years they were about 10 to 30, plus questions that invite a story instead of testing memory.
+3. **Session mode:** one large card at a time on a tablet: play a song, ask one question, note how it landed (Lit up · Calm · Not interested · Not today · Stop).
+4. **A session note:** what sparked a reaction, written up for the family or care team. Copy, print or send it to WhatsApp. It's built in your browser; Memory Lane keeps no copy.
+
+## How Qloo drives it
+
+Qloo picks; the agent decides what to ask Qloo; code enforces the rules.
+
+| What | How Qloo is used |
+|---|---|
+| **Finding the favorite** | `/search` resolves "Frank Sinatra" or *The Sound of Music* to a Qloo entity |
+| **Music** | `/v2/insights` seeded with that entity: what people who love it also love |
+| **Films and TV** | `/v2/insights` with a **release-year window** from the birth year, so every title is from their youth |
+| **Places** | `/v2/insights` with **location** = hometown, ranked to historic landmarks first |
+| **A dish** | `/v2/insights` with a **restaurant tag** filter in the hometown, using restaurants' specialty dishes |
+| **A modern favorite** | Someone born in 1942 who names Taylor Swift: the agent finds an in-era film through Qloo (*Mary Poppins*, 1964) and seeds music with it, which gives Frank Sinatra, Dean Martin and Carole King |
+| **Safety** | Qloo's ratings, genres and theme summaries screen out mature titles and anything *about* dementia, illness, war, grief or abuse, before the agent sees them |
+
+Every song, film, place and dish carries the Qloo ID that proves where it came from; anything the agent can't ground in a Qloo result this run is removed. The few activity ideas the agent may add (for people who need more support) are labeled as suggestions, not Qloo data. The **"How this kit was made"** panel shows every Qloo lookup and what was screened out, and why.
+
+## How the agent works
+
+A Claude agent with five Qloo tools and a strict "submit the kit" step:
+1. Resolve each favorite (in parallel).
+2. Look up music, films, TV, places and dishes together.
+3. Choose 3–5 songs, a film or show, a place and a dish that existed in the person's era, and write questions.
+4. Code checks every pick against what Qloo returned, and every question against the communication rules.
+
+The year window, hometown and safety rules come from the caregiver's form and are applied in code, so the agent can't widen them. Diagrams and details: [docs/plan.md §5–8](docs/plan.md#5-architecture).
+
+## Care principles built in
+
+- **A safety check first.** A sudden change (new confusion, unusual drowsiness) is a reason to call a nurse or doctor, not to start an activity, so there is no kit.
+- **Support changes day to day.** "Mostly independent", "needs some help" and "needs a lot of help" change the mix: stories and open questions; one short question at a time; music, touch and calm company.
+- **No memory tests, no invented memories.** Questions never ask someone to remember, never quiz, and never state facts about their past; code rejects any that do.
+- **Distress means stop.** Every kit lists signs to watch for; every card has "Not today" and "Stop"; anything stopped at is left out of the next kit.
+- **Nothing invented.** If Qloo has nothing suitable, the kit says so instead of guessing.
+- **Privacy.** Nothing about a real person is stored. Demo personas are fictional.
+
+## Built with
+
+Next.js 16 (App Router, TypeScript, Tailwind) on Vercel · Claude API (tool use) · Qloo Hackathon API (`/search`, `/v2/insights`) · zod · vitest.
+
+---
+
+## Run it locally
+
 Requires Node 24.
 ```bash
 npm install
-cp .env.example .env.local   # then fill in your keys; .env.local is gitignored
-npm run dev                  # http://localhost:3000
+cp .env.example .env.local   # then add QLOO_API_KEY and ANTHROPIC_API_KEY; .env.local is gitignored
+npm run dev                  # http://localhost:3000, saved sample kit
+npm run dev:agent            # the live agent (KIT_SOURCE=agent)
 ```
+
+Optional settings: `CLAUDE_MODEL` (default `claude-opus-5-5`) and `CLAUDE_EFFORT` (default `medium`).
+
+## Tests
 
 ```bash
-npm test                     # vitest
-npm run typecheck            # next typegen + tsc
+npm test                     # unit, contract and UI tests (no network)
+npm run typecheck
 npm run lint
+node scripts/smoke.mjs http://localhost:3000            # 7 personas end to end against a running app
+set -a; source .env.local; set +a; LIVE=1 npx vitest run tests/live   # the Qloo tools against the real API
 ```
 
-Phase 0 era-matching test: `node --env-file=.env.local scripts/phase0-era-test.mjs`.
-Rebuild the sample kit from its output: `node scripts/build-fixture-kit.mjs`.
+## Docs
+
+- **[docs/plan.md](docs/plan.md):** what we're building and why, decisions, care principles, architecture and diagrams, schedule.
+- **[docs/research.md](docs/research.md):** what our tests against the Qloo API showed, and the tester study.
+
+## What's next
+
+Built to grow from individual caregivers to care homes: saved resident profiles (with consent and proper privacy work first), group sessions that find the overlap in several residents' eras, family contributions, and kits in more languages.
 
 ## License
+
 MIT. See [LICENSE](LICENSE).

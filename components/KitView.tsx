@@ -1,7 +1,9 @@
 // Renders a session kit. Pure (no state, no browser APIs) so it can be rendered and tested on the server.
 
 import type { ReactNode } from "react";
+import { SUPPORT_LEVELS, WATCH_FOR, WATCH_FOR_ACTION } from "@/lib/care";
 import type { DishItem, Kit, MediaItem, PlaceItem, Provenance, Source } from "@/lib/types";
+import { TracePanel } from "./TracePanel";
 
 type Section<T> = { status: "ok" | "gap"; items: T[]; gapReason?: string };
 
@@ -22,9 +24,12 @@ export function KitView({ kit }: { kit: Kit }) {
           </strong>
         </p>
         <p className="text-sm text-muted">
-          Starting from: {profile.favorites.map((f) => f.text).join(", ")}
+          Starting from: {profile.favorites.map((f) => f.text).join(", ")} · Support today:{" "}
+          {SUPPORT_LEVELS[profile.supportLevel].label.toLowerCase()}
         </p>
       </header>
+
+      <WatchFor />
 
       <SectionCard title="Songs to play" section={kit.music}>
         {(items) => (
@@ -57,10 +62,12 @@ export function KitView({ kit }: { kit: Kit }) {
 
       <section className="rounded-2xl border border-line bg-card p-5 sm:p-6" aria-labelledby="prompts-title">
         <h3 id="prompts-title" className="font-serif text-2xl font-semibold">
-          Questions to ask
+          {profile.supportLevel === "late" ? "Things to say" : "Questions to ask"}
         </h3>
         <p className="mt-1 text-sm text-muted">
-          Open questions, with no right answers. Follow where the conversation goes.
+          {profile.supportLevel === "late"
+            ? "A few gentle words while the music plays. Answers aren't needed."
+            : "One at a time, with no right answers. Follow where the conversation goes; a \u201cno\u201d is fine."}
         </p>
         {kit.prompts.length ? (
           <ol className="mt-4 list-decimal space-y-2 pl-6 marker:text-muted">
@@ -68,11 +75,46 @@ export function KitView({ kit }: { kit: Kit }) {
               <li key={p}>{p}</li>
             ))}
           </ol>
+        ) : profile.supportLevel === "late" ? (
+          <p className="mt-4 text-muted">Music first today. No questions needed; your company is enough.</p>
         ) : (
-          <GapNotice reason="No questions passed our open-question check this time." />
+          <GapNotice reason="No questions passed our question check this time." />
         )}
       </section>
+
+      {kit.activityIdeas.length > 0 && (
+        <section className="rounded-2xl border border-line bg-card p-5 sm:p-6" aria-labelledby="ideas-title">
+          <h3 id="ideas-title" className="font-serif text-2xl font-semibold">
+            Ideas to try
+          </h3>
+          <p className="mt-1 text-sm text-muted">Suggestions written by the assistant, not from Qloo. Use what suits the day.</p>
+          <ul className="mt-4 list-disc space-y-2 pl-6 marker:text-muted">
+            {kit.activityIdeas.map((idea) => (
+              <li key={idea.text}>{idea.text}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <TracePanel trace={kit.trace} />
     </article>
+  );
+}
+
+// Shown on every kit (P5): what distress can look like, and that stopping is fine.
+function WatchFor() {
+  return (
+    <aside aria-labelledby="watch-title" className="rounded-xl border border-line bg-gap px-4 py-3">
+      <p id="watch-title" className="font-semibold">
+        Watch for
+      </p>
+      <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        {WATCH_FOR.map((sign) => (
+          <li key={sign}>{sign}</li>
+        ))}
+      </ul>
+      <p className="mt-2 text-sm text-muted">{WATCH_FOR_ACTION}</p>
+    </aside>
   );
 }
 

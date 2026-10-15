@@ -3,10 +3,12 @@
   "provenance": {
     "kind": "fixture",
     "generatedAt": "2026-10-08",
-    "note": "This is a sample kit for Rosa, built from real Qloo results saved on Oct 8. Every request shows this sample until live kits are switched on."
+    "note": "A saved sample kit for Rosa, built from real Qloo results saved on Oct 8."
   },
   "profile": {
+    "suddenChange": false,
     "displayName": "Rosa",
+    "supportLevel": "early",
     "birthYear": 1942,
     "hometown": "Chicago",
     "favorites": [
@@ -124,6 +126,7 @@
       }
     ]
   },
+  "activityIdeas": [],
   "prompts": [
     "What music did people dance to when you were young?",
     "Which singer's voice do you like best, and what do you like about it?",
@@ -231,8 +234,8 @@
     },
     {
       "id": "t6",
-      "kind": "llm",
-      "label": "fixture curation (no Claude call)",
+      "kind": "validator",
+      "label": "hand-picked for this sample (no Claude call)",
       "input": {},
       "outputSummary": "Picks above were chosen by hand for this fixture. Maxwell Street Market over Cloud Gate, which was built in 2006, after Rosa's era. In live runs, Claude makes these choices.",
       "excluded": [],

@@ -58,7 +58,7 @@ const deepDish = giordanos.properties.specialty_dishes.find((d) => d.id === "urn
 if (!deepDish) throw new Error("chicago_style_pizza tag missing from Giordano's");
 const maxwell = pick(places, "49BECC83-406C-446B-A460-C64579EFB2B0");
 
-// Same rule get_places will apply (implementation-plan.md §4.1, D4).
+// Same rule get_places will apply (docs/plan.md §7.1, D4).
 const LANDMARK = /:(historical_landmark|heritage_building|market|sculpture|park|[a-z_]*museum)$/;
 const genreOf = (e) => e.properties.primary_genre?.id ?? "no genre";
 const keptPlaces = places.entities.filter((e) => LANDMARK.test(genreOf(e)));
@@ -69,10 +69,12 @@ const kit = {
   provenance: {
     kind: "fixture",
     generatedAt: PHASE0_RUN,
-    note: "This is a sample kit for Rosa, built from real Qloo results saved on Oct 8. Every request shows this sample until live kits are switched on.",
+    note: "A saved sample kit for Rosa, built from real Qloo results saved on Oct 8.",
   },
   profile: {
+    suddenChange: false,
     displayName: "Rosa",
+    supportLevel: "early",
     birthYear: 1942,
     hometown: "Chicago",
     favorites: [{ text: SEED, kind: "artist" }],
@@ -117,6 +119,7 @@ const kit = {
       whyPicked: `Qloo: a Chicago place popular with people who love ${SEED}. A place to talk about, not a visit suggestion.`,
     }],
   },
+  activityIdeas: [],
   prompts: [
     "What music did people dance to when you were young?",
     "Which singer's voice do you like best, and what do you like about it?",
@@ -153,7 +156,7 @@ const kit = {
       ms: 0, status: "ok",
     },
     {
-      id: "t6", kind: "llm", label: "fixture curation (no Claude call)", input: {},
+      id: "t6", kind: "validator", label: "hand-picked for this sample (no Claude call)", input: {},
       outputSummary: "Picks above were chosen by hand for this fixture. Maxwell Street Market over Cloud Gate, which was built in 2006, after Rosa's era. In live runs, Claude makes these choices.",
       excluded: [], ms: 0, status: "ok",
     },

@@ -1,0 +1,1126 @@
+{
+  "url": "/v2/insights?signal.interests.entities=5D54CE58-DC3E-4294-A359-581A9C072952&filter.type=urn%3Aentity%3Aplace&filter.location.query=Los+Angeles&filter.tags=urn%3Atag%3Agenre%3Aplace%3Arestaurant&take=50",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "A162D7B9-05A9-40EF-B7C9-CD6E24DCDA1F",
+      "name": "The Three Broomsticks",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rustic, Harry Potter–themed British pub serving comfort food, beer, wine and coffee with counter service and outdoor seating near Universal Studios attractions.",
+        "short_description": "Rustic, Harry Potter–themed British pub serving comfort food, beer, wine and coffee with counter service and outdoor seating near Universal Studios attractions.",
+        "primary_genre": "urn:tag:genre:place:restaurant:british"
+      },
+      "genres": [
+        "British",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "187A2783-DBAB-4EB4-9546-0227D69DF64E",
+      "name": "Lard Lad Donuts",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Quick-serve theme-park donut counter serving colorful, creatively topped donuts and coffee for grab-and-go visitors.",
+        "short_description": "Quick-serve theme-park donut counter serving colorful, creatively topped donuts and coffee for grab-and-go visitors.",
+        "primary_genre": "urn:tag:genre:place:restaurant:donut_shop"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Donut shop"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "5A5D06DF-9F1F-494D-9F54-44C2B21E2C73",
+      "name": "Isla Nu-Bar",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Theme-park bar and restaurant inside Universal Studios Hollywood serving cocktails, beer, wine, and food.",
+        "short_description": "Theme-park bar and restaurant inside Universal Studios Hollywood serving cocktails, beer, wine, and food.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8AAE3B06-7DE9-4D53-8813-FE8BF2C444B4",
+      "name": "Jimmy Buffett’s Margaritaville",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Tropical-themed American bar and grill on Universal CityWalk serving cocktails, comfort food, and happy hour favorites in a family-friendly setting.",
+        "short_description": "Tropical-themed American bar and grill on Universal CityWalk serving cocktails, comfort food, and happy hour favorites in a family-friendly setting.",
+        "primary_genre": "urn:tag:genre:place:restaurant:american"
+      },
+      "genres": [
+        "American",
+        "Place",
+        "Restaurant",
+        "Bar + grill"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "CC34BB83-AF4C-457F-A9C5-627553F8335A",
+      "name": "Hog's Head Pub",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual pub inside Universal Studios Hollywood offering a full bar and signature BBQ pork ribs.",
+        "short_description": "Casual pub inside Universal Studios Hollywood offering a full bar and signature BBQ pork ribs.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Place",
+        "Bar",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "44F295D4-14F7-4C36-BA99-E67229F43275",
+      "name": "Moe's Tavern",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sit-down tavern at Universal Studios serving cocktails, beer, wine, and casual pub food in a Simpsons-inspired setting.",
+        "short_description": "Sit-down tavern at Universal Studios serving cocktails, beer, wine, and casual pub food in a Simpsons-inspired setting.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Bar + grill",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "B23BAA70-4E48-4120-B204-1D8080530629",
+      "name": "VIVO Italian Kitchen",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Italian eatery at Universal CityWalk offering pizzas, pastas, small plates, cocktails, and outdoor seating—popular for relaxed meals and post-park dining.",
+        "short_description": "Casual Italian eatery at Universal CityWalk offering pizzas, pastas, small plates, cocktails, and outdoor seating—popular for relaxed meals and post-park dining.",
+        "primary_genre": "urn:tag:genre:place:restaurant:italian",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_fettuccine_alfredo",
+            "name": "Chicken Fettuccine Alfredo"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:lasagna",
+            "name": "And Lasagna"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:margherita_pizza",
+            "name": "Margherita Pizza"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Italian"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "AD5CE191-8186-47A9-AAB1-149B3DF01847",
+      "name": "Krusty Burger",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Theme-park counter-serve joint offering Simpsons-inspired burgers, sandwiches, fries and hot dogs.",
+        "short_description": "Theme-park counter-serve joint offering Simpsons-inspired burgers, sandwiches, fries and hot dogs.",
+        "primary_genre": "urn:tag:genre:place:restaurant:hamburger",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:krusty_burger_fries_cheese",
+            "name": "Krusty Burger And Fries With Cheese"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:mother_nature_burger",
+            "name": "Mother Nature Burger"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:hamburger",
+            "name": "Hamburger"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Hamburger restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "23CAC315-371D-4742-BBA5-36704F8D56D3",
+      "name": "Voodoo Doughnut",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Counter-serve bakeshop offering creative, colorful, novelty donuts in a quirky, Instagram-friendly setting at Universal CityWalk.",
+        "short_description": "Counter-serve bakeshop offering creative, colorful, novelty donuts in a quirky, Instagram-friendly setting at Universal CityWalk.",
+        "primary_genre": "urn:tag:genre:place:restaurant:donut_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Donut shop",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "000D29BF-06B2-48F3-8CA4-C8C1ED865584",
+      "name": "Cletus' Chicken Shack",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rustic Southern-themed counter-serve inside Universal Studios Hollywood offering fried chicken, waffles, comfort food, beer and quick bites for dine-in, takeout, or delivery.",
+        "short_description": "Rustic Southern-themed counter-serve inside Universal Studios Hollywood offering fried chicken, waffles, comfort food, beer and quick bites for dine-in, takeout, or delivery.",
+        "primary_genre": "urn:tag:genre:place:restaurant:chicken"
+      },
+      "genres": [
+        "Place",
+        "Chicken restaurant",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "FC2EBEBF-94CE-450D-AE23-82A8DD9FA984",
+      "name": "In-N-Out Burger",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Fresh made-to-order burgers, hand-cut fries, and shakes near LAX; classic drive-in popular for plane-watching.",
+        "short_description": "Fresh made-to-order burgers, hand-cut fries, and shakes near LAX; classic drive-in popular for plane-watching.",
+        "primary_genre": "urn:tag:genre:place:restaurant:hamburger",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:cheeseburger_grilled_onions",
+            "name": "Cheeseburger Grilled Onions"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:hamburger_fries",
+            "name": "Hamburger And Fries"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:cheese_fries",
+            "name": "Cheese And Fries"
+          }
+        ]
+      },
+      "genres": [
+        "Hamburger restaurant",
+        "Lunch restaurant",
+        "Fast food",
+        "American",
+        "Restaurant",
+        "Diner",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "0FF7F780-FC70-457B-9F42-FD908EF9CCF3",
+      "name": "Ghirardelli Soda Fountain & Chocolate Shop",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Iconic Hollywood soda fountain and chocolate shop offering handmade chocolates, ice cream sundaes, and gift items near the Walk of Fame.",
+        "short_description": "Iconic Hollywood soda fountain and chocolate shop offering handmade chocolates, ice cream sundaes, and gift items near the Walk of Fame.",
+        "primary_genre": "urn:tag:genre:place:chocolate_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Chocolate shop",
+        "Ice cream shop",
+        "Shopping",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "52280AE2-040F-45CB-A452-BA1D5601D6D8",
+      "name": "Bubba Gump Shrimp Co.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Family-friendly seafood restaurant on Santa Monica Pier serving shrimp-forward Southern comfort dishes in a casual, movie-themed setting with ocean views.",
+        "short_description": "Family-friendly seafood restaurant on Santa Monica Pier serving shrimp-forward Southern comfort dishes in a casual, movie-themed setting with ocean views.",
+        "primary_genre": "urn:tag:genre:place:restaurant:seafood",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chowder",
+            "name": "Chowder"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:fried_calamari",
+            "name": "Fried Calamari"
+          }
+        ]
+      },
+      "genres": [
+        "American",
+        "Restaurant",
+        "Seafood",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "CCB60593-0A69-4EBE-852E-CF43324C6494",
+      "name": "Bubba Gump Shrimp Co.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual, family-friendly seafood restaurant serving shrimp-focused and Southern-inspired dishes with movie-themed décor inside Universal CityWalk.",
+        "short_description": "Casual, family-friendly seafood restaurant serving shrimp-focused and Southern-inspired dishes with movie-themed décor inside Universal CityWalk.",
+        "primary_genre": "urn:tag:genre:place:restaurant:seafood"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Seafood",
+        "American"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E31D917B-A460-40FC-AF40-E3E3670E600E",
+      "name": "Duff Brewery Beer Garden",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Shaded beer garden at Universal Studios Hollywood offering craft brews with on-site tacos and nachos.",
+        "short_description": "Shaded beer garden at Universal Studios Hollywood offering craft brews with on-site tacos and nachos.",
+        "primary_genre": "urn:tag:genre:place:restaurant:brewpub"
+      },
+      "genres": [
+        "Restaurant",
+        "Brewpub",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "34FF5E1A-405A-4384-BC9D-003D345EBA17",
+      "name": "Antojitos Cocina Mexicana",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Festive, casual Mexican restaurant on Universal CityWalk serving authentic dishes, cocktails, and generous portions in a lively atmosphere.",
+        "short_description": "Festive, casual Mexican restaurant on Universal CityWalk serving authentic dishes, cocktails, and generous portions in a lively atmosphere.",
+        "primary_genre": "urn:tag:genre:place:restaurant:mexican"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Mexican"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1564C4E7-7E37-488A-BFC5-62810B21CABE",
+      "name": "Starbucks Coffee Company",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Chain coffeehouse offering signature roasts, light bites, Wi‑Fi, and a range of seating including drive-through and outdoor options.",
+        "short_description": "Chain coffeehouse offering signature roasts, light bites, Wi‑Fi, and a range of seating including drive-through and outdoor options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:coffee_shop"
+      },
+      "genres": [
+        "Cafe",
+        "Place",
+        "Restaurant",
+        "Shopping",
+        "Coffee shop",
+        "Coffee store",
+        "Breakfast",
+        "Espresso bar",
+        "Internet cafe"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1E9E3860-3070-43E6-AD4E-DB320CEEF93D",
+      "name": "Pier Burger",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Laid-back counter-serve pier stand offering classic burgers, fries and rich Wisconsin-style frozen custard on the Santa Monica Pier.",
+        "short_description": "Laid-back counter-serve pier stand offering classic burgers, fries and rich Wisconsin-style frozen custard on the Santa Monica Pier.",
+        "primary_genre": "urn:tag:genre:place:restaurant:hamburger"
+      },
+      "genres": [
+        "Fast food",
+        "Hamburger restaurant",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "96E345C0-21E9-404E-8472-984C6340FEF3",
+      "name": "Buca di Beppo Italian Restaurant",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Family-style Italian restaurant offering kitschy décor, large shareable platters, and a lively atmosphere in Universal CityWalk near Universal Studios Hollywood.",
+        "short_description": "Family-style Italian restaurant offering kitschy décor, large shareable platters, and a lively atmosphere in Universal CityWalk near Universal Studios Hollywood.",
+        "primary_genre": "urn:tag:genre:place:restaurant:italian",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:bruschetta",
+            "name": "Bruschetta"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:caesar_salad",
+            "name": "Caesar Salad"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_carbonara",
+            "name": "Chicken Carbonara"
+          }
+        ]
+      },
+      "genres": [
+        "Caterer",
+        "Italian",
+        "Restaurant",
+        "Pizza",
+        "Banquet hall",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "221656F5-578C-49EC-9711-BB3F329233BA",
+      "name": "Cookie Dough Dreams",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Creative dessert shop specializing in customizable edible cookie dough with gluten-free, sugar-free and vegan options, offering takeout, delivery, and in-store pickup.",
+        "short_description": "Creative dessert shop specializing in customizable edible cookie dough with gluten-free, sugar-free and vegan options, offering takeout, delivery, and in-store pickup.",
+        "primary_genre": "urn:tag:genre:place:restaurant:dessert_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Dessert shop",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "762F5F61-0EC1-426A-85E6-F5AA2DDDFF62",
+      "name": "The Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual museum café at the Getty Villa serving locally sourced Mediterranean-inspired dishes with indoor and outdoor seating.",
+        "short_description": "Casual museum café at the Getty Villa serving locally sourced Mediterranean-inspired dishes with indoor and outdoor seating.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Cafe"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FE66747C-C9D2-4371-8860-52FBE801A544",
+      "name": "Barney's Beanery",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Los Angeles roadhouse-style bar and restaurant serving classic American comfort food, extensive draft beer selection, cocktails, and a lively sports atmosphere.",
+        "short_description": "Historic Los Angeles roadhouse-style bar and restaurant serving classic American comfort food, extensive draft beer selection, cocktails, and a lively sports atmosphere.",
+        "primary_genre": "urn:tag:genre:place:restaurant:american"
+      },
+      "genres": [
+        "Place",
+        "American",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "D6490C47-44E5-4C59-8A2E-8CA908511285",
+      "name": "Baskin-Robbins",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Colorful ice cream parlor offering dozens of signature flavors, custom ice cream cakes, sorbets, and coffee in a casual takeout-focused setting.",
+        "short_description": "Colorful ice cream parlor offering dozens of signature flavors, custom ice cream cakes, sorbets, and coffee in a casual takeout-focused setting.",
+        "primary_genre": "urn:tag:genre:place:restaurant:ice_cream_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Cake shop",
+        "Place",
+        "Dessert shop",
+        "Ice cream shop"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "DC0268A8-67C2-459E-A887-93215DAA103F",
+      "name": "Scum and Villainy Cantina",
+      "type": "urn:entity",
+      "properties": {
+        "description": "A Star Wars–inspired, neon-lit geek bar offering pub grub, creative cocktails and immersive events in the heart of Hollywood.",
+        "short_description": "A Star Wars–inspired, neon-lit geek bar offering pub grub, creative cocktails and immersive events in the heart of Hollywood.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:blue_milk",
+            "name": "Blue Milk"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:falcon_burger_fries",
+            "name": "The Falcon Burger And Fries"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:harley_quinn",
+            "name": "Harley Quinn"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "71B29FBB-000F-4865-9639-E011AF65BD5C",
+      "name": "Baskin-Robbins",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Colorful ice cream parlor offering numerous flavors, sorbets, yogurts, and customizable ice cream cakes for takeout, delivery, and dine-in.",
+        "short_description": "Colorful ice cream parlor offering numerous flavors, sorbets, yogurts, and customizable ice cream cakes for takeout, delivery, and dine-in.",
+        "primary_genre": "urn:tag:genre:place:restaurant:ice_cream_shop"
+      },
+      "genres": [
+        "Place",
+        "Dessert shop",
+        "Cake shop",
+        "Ice cream shop",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "09A40E04-F5B0-413F-AA75-8B23CBB8930F",
+      "name": "V Boulevard Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "All-day American cafe offering cocktails, coffee, vegetarian and vegan options, late-night bites, and outdoor seating in Glendale.",
+        "short_description": "All-day American cafe offering cocktails, coffee, vegetarian and vegan options, late-night bites, and outdoor seating in Glendale.",
+        "primary_genre": "urn:tag:genre:place:restaurant:cafe",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:eggs_florentine",
+            "name": "Eggs Florentine"
+          }
+        ]
+      },
+      "genres": [
+        "Cafe",
+        "Place",
+        "American",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E5E74337-4A48-42B6-A30A-49B063EF0A16",
+      "name": "Kendall's Brasserie",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Upscale modern French brasserie serving classic French dishes and cocktails with a lively outdoor patio popular with the theater crowd.",
+        "short_description": "Upscale modern French brasserie serving classic French dishes and cocktails with a lively outdoor patio popular with the theater crowd.",
+        "primary_genre": "urn:tag:genre:place:restaurant:french"
+      },
+      "genres": [
+        "French",
+        "Place",
+        "Modern european",
+        "Modern french restaurant",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "C29C12EA-829F-4215-84F3-1AAA6118954B",
+      "name": "Wine & Design",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Paint-and-sip studio combining guided art sessions with wine, private parties, corporate team-building, and kids' classes in a social, judgement-free setting.",
+        "short_description": "Paint-and-sip studio combining guided art sessions with wine, private parties, corporate team-building, and kids' classes in a social, judgement-free setting.",
+        "primary_genre": "urn:tag:genre:place:painting_studio"
+      },
+      "genres": [
+        "Painting studio",
+        "Event venue",
+        "Restaurant",
+        "Tourist attraction",
+        "Place",
+        "Wine bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "204F6A81-CAE5-49D6-A7BD-B2DBB267A84A",
+      "name": "Costero Bistro",
+      "type": "urn:entity",
+      "properties": {
+        "description": "New American bistro serving cocktails and comfort-forward small plates in a warm, modern space inside the Sheraton Gateway Los Angeles Hotel.",
+        "short_description": "New American bistro serving cocktails and comfort-forward small plates in a warm, modern space inside the Sheraton Gateway Los Angeles Hotel.",
+        "primary_genre": "urn:tag:genre:place:restaurant:new_american",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:fish_chips",
+            "name": "Fish An Chips"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "New american",
+        "American",
+        "Place",
+        "Bar"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "47C0B2AC-1498-47E7-BA28-CE4BA4F815EB",
+      "name": "Loews Hollywood Hotel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Luxury Hollywood hotel with a rooftop heated pool and stylish rooms adjacent to the Hollywood & Highland shopping and entertainment complex.",
+        "short_description": "Luxury Hollywood hotel with a rooftop heated pool and stylish rooms adjacent to the Hollywood & Highland shopping and entertainment complex.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Wedding venue",
+        "Hotel",
+        "Restaurant",
+        "American",
+        "Event venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "AADBD8B1-3602-4F39-BF32-E3EEF90E8973",
+      "name": "Mosaic Hotel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Stylish boutique hotel steps from Rodeo Drive offering luxury rooms, California cuisine, a heated courtyard pool, and an intimate bar.",
+        "short_description": "Stylish boutique hotel steps from Rodeo Drive offering luxury rooms, California cuisine, a heated courtyard pool, and an intimate bar.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Hotel",
+        "Breakfast",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "ABFBE24D-1600-4121-9713-5267938A4E28",
+      "name": "Paddy’s Pub",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Irish-style bar and eatery offering beer, wine, cocktails, and inexpensive pub food with takeout and delivery in downtown Los Angeles.",
+        "short_description": "Casual Irish-style bar and eatery offering beer, wine, cocktails, and inexpensive pub food with takeout and delivery in downtown Los Angeles.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "894DF205-3AA9-4BFC-9065-856FC01BE0DF",
+      "name": "Tam O'Shanter",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Tudor-style Scottish pub serving classic prime rib with tartan-clad service in a cozy, old-world Los Feliz setting.",
+        "short_description": "Historic Tudor-style Scottish pub serving classic prime rib with tartan-clad service in a cozy, old-world Los Feliz setting.",
+        "primary_genre": "urn:tag:genre:place:restaurant:steak_house",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:prime_rib_dinner",
+            "name": "Prime Rib Dinner"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:brisket",
+            "name": "And Brisket"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:french_onion_soup",
+            "name": "French Onion Soup"
+          }
+        ]
+      },
+      "genres": [
+        "Fine dining restaurant",
+        "Place",
+        "Scottish restaurant",
+        "Steak house",
+        "Tourist attraction",
+        "Restaurant",
+        "Pub",
+        "Bar + grill"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "93ADF396-63D7-41FD-A185-C865BE7451CC",
+      "name": "SUR Restaurant and Lounge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Trendy West Hollywood lounge serving upscale New American cuisine, craft cocktails, and a hidden outdoor garden in eclectic old-world decor.",
+        "short_description": "Trendy West Hollywood lounge serving upscale New American cuisine, craft cocktails, and a hidden outdoor garden in eclectic old-world decor.",
+        "primary_genre": "urn:tag:genre:place:restaurant:new_american",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:goat_cheese_balls",
+            "name": "Goat Cheese Balls"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:pumptini",
+            "name": "Pumptini"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:brussels_sprouts",
+            "name": "Brussels Sprouts"
+          }
+        ]
+      },
+      "genres": [
+        "New american",
+        "Cocktail bar",
+        "Restaurant",
+        "Lounge bar",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "C7BFF1A3-493C-4F71-8B94-BE45CA319E69",
+      "name": "The Grove",
+      "type": "urn:entity",
+      "properties": {
+        "description": "High-end outdoor shopping complex with trendy retailers, dining, cinema, bustling promenade, and regular farmers market.",
+        "short_description": "High-end outdoor shopping complex with trendy retailers, dining, cinema, bustling promenade, and regular farmers market.",
+        "primary_genre": "urn:tag:genre:place:shopping_mall"
+      },
+      "genres": [
+        "Shopping mall",
+        "Restaurant",
+        "Place",
+        "Shopping",
+        "Fashion accessories store"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "318AFB57-9BE9-43CF-900C-3B4F68C0881D",
+      "name": "Flora Rooftop Bar and Lounge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Panoramic rooftop bar and lounge offering botanically inspired cocktails, shared plates using rooftop-grown herbs and flowers, fire pits, and an event-friendly atmosphere.",
+        "short_description": "Panoramic rooftop bar and lounge offering botanically inspired cocktails, shared plates using rooftop-grown herbs and flowers, fire pits, and an event-friendly atmosphere.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Bar",
+        "Place",
+        "Restaurant",
+        "Lounge bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "010F92D3-310A-4A19-A54D-1850761E1B67",
+      "name": "The Original Farmers Market",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic open-air market offering diverse international food stalls, trendy shops and gourmet grocers adjacent to a major shopping complex.",
+        "short_description": "Historic open-air market offering diverse international food stalls, trendy shops and gourmet grocers adjacent to a major shopping complex.",
+        "primary_genre": "urn:tag:genre:place:shopping_mall"
+      },
+      "genres": [
+        "Shopping mall",
+        "Ice cream shop",
+        "Shopping",
+        "Grocery store",
+        "Tourist attraction",
+        "Market",
+        "Farmers market",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "9B58A4D9-B7B9-49E6-BD79-6BC940BC04AB",
+      "name": "The Annex",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Upscale restaurant and banquet hall on Hollywood Boulevard offering private event spaces and full-service dining in central Los Angeles.",
+        "short_description": "Upscale restaurant and banquet hall on Hollywood Boulevard offering private event spaces and full-service dining in central Los Angeles.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Banquet hall",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "7AA16E0F-3A3B-46B2-AE82-EA5AB0F8D49E",
+      "name": "Starbucks Coffee Company",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Seattle-origin coffeehouse offering signature roasts, light bites, Wi-Fi, and a range of beverages with dine-in, drive-through, and delivery options.",
+        "short_description": "Seattle-origin coffeehouse offering signature roasts, light bites, Wi-Fi, and a range of beverages with dine-in, drive-through, and delivery options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:coffee_shop"
+      },
+      "genres": [
+        "Breakfast",
+        "Place",
+        "Shopping",
+        "Restaurant",
+        "Coffee shop",
+        "Espresso bar",
+        "Coffee store",
+        "Internet cafe",
+        "Cafe"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "EAE9BDAA-07AA-407A-85CE-43DCB8D3AC12",
+      "name": "Grace E. Simons Lodge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Intimate park-side event lodge offering a landscaped setting, stage, full kitchen, and facilities for weddings and special events.",
+        "short_description": "Intimate park-side event lodge offering a landscaped setting, stage, full kitchen, and facilities for weddings and special events.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Restaurant",
+        "Banquet hall",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "6DAE592E-3FAB-4424-BBDB-A8653F4D3F10",
+      "name": "Novo Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Open-kitchen cafe serving homemade pasta, pizza, and panini in a colorful space with a sunny patio.",
+        "short_description": "Open-kitchen cafe serving homemade pasta, pizza, and panini in a colorful space with a sunny patio.",
+        "primary_genre": "urn:tag:genre:place:restaurant:italian",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:tiramisu",
+            "name": "Il Tiramisu"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Coffee shop",
+        "Pizza",
+        "Place",
+        "Cafe",
+        "Italian"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "C1E5FD52-CA93-4B4F-A80D-332CCAA22C01",
+      "name": "Cielito Lindo",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Olvera Street stand serving hand-rolled taquitos, tamales and burritos since 1934, famous for its water-based avocado sauce.",
+        "short_description": "Historic Olvera Street stand serving hand-rolled taquitos, tamales and burritos since 1934, famous for its water-based avocado sauce.",
+        "primary_genre": "urn:tag:genre:place:restaurant:mexican",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:taquito_plate",
+            "name": "Taquito Plate"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:taquitos_combo",
+            "name": "Taquitos Combo"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:1_tamale",
+            "name": "1 Tamale"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Mexican",
+        "Fast food",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "53FFD123-0BA3-4A6C-AC7A-0F956DCF8E20",
+      "name": "Sushi Roku Santa Monica",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Contemporary Japanese restaurant in Santa Monica serving innovative sushi and California-inspired dishes with craft cocktails and fresh global fish in modern decor.",
+        "short_description": "Contemporary Japanese restaurant in Santa Monica serving innovative sushi and California-inspired dishes with craft cocktails and fresh global fish in modern decor.",
+        "primary_genre": "urn:tag:genre:place:restaurant",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_fried_rice",
+            "name": "Chicken And Fried Rice"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:hamachi_serrano",
+            "name": "Hamachi Serrano"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:katana_roll",
+            "name": "Katana Roll"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Sushi",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "18DB4CB6-1A63-4E91-9DD2-8C6EF9836A44",
+      "name": "Barnes & Noble",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large chain bookstore at The Americana at Brand offering wide adult and children's selections, a house-brand eReader, cafe, and regular in-store events.",
+        "short_description": "Large chain bookstore at The Americana at Brand offering wide adult and children's selections, a house-brand eReader, cafe, and regular in-store events.",
+        "primary_genre": "urn:tag:genre:place:book_store"
+      },
+      "genres": [
+        "Hobby store",
+        "Toy store",
+        "Place",
+        "Restaurant",
+        "Childrens book store",
+        "Shopping",
+        "Book store",
+        "Cafe"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "93AE2B75-0BAA-4E00-A542-1D0CA98E596D",
+      "name": "Starbucks Coffee Company",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Seattle-based coffeehouse serving signature roasts, light bites, beer, and Wi‑Fi in a casual cafe setting.",
+        "short_description": "Seattle-based coffeehouse serving signature roasts, light bites, beer, and Wi‑Fi in a casual cafe setting.",
+        "primary_genre": "urn:tag:genre:place:restaurant:coffee_shop"
+      },
+      "genres": [
+        "Coffee shop",
+        "Espresso bar",
+        "Shopping",
+        "Coffee store",
+        "Restaurant",
+        "Internet cafe",
+        "Place",
+        "Breakfast",
+        "Cafe"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "BDBE9FB7-F35E-4C00-87E6-39720314013C",
+      "name": "Dylan's Candy Bar",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Whimsical candy shop with a wide selection of chocolates, novelty sweets, personalized gifts and a café-style retail experience.",
+        "short_description": "Whimsical candy shop with a wide selection of chocolates, novelty sweets, personalized gifts and a café-style retail experience.",
+        "primary_genre": "urn:tag:genre:place:candy_store"
+      },
+      "genres": [
+        "Place",
+        "Candy store",
+        "Gift shop",
+        "Ice cream shop",
+        "Restaurant",
+        "Shopping",
+        "Gift basket store"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "B0A5DFAF-E7C3-45DD-84DA-79C5F8F40DBF",
+      "name": "Café at the End of the Universe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual, inexpensive café at Griffith Observatory offering soups, salads, sandwiches and coffee with scenic views of Los Angeles and the Hollywood Sign.",
+        "short_description": "Casual, inexpensive café at Griffith Observatory offering soups, salads, sandwiches and coffee with scenic views of Los Angeles and the Hollywood Sign.",
+        "primary_genre": "urn:tag:genre:place:restaurant:cafe"
+      },
+      "genres": [
+        "Place",
+        "Cafe",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "A6583109-38B5-49AD-8C98-191CF8C8E0AD",
+      "name": "Mr. Churro",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Cozy Olvera Street churrería serving filled churros, Mexican-style breakfast burritos and eggs, with affordable takeout.",
+        "short_description": "Cozy Olvera Street churrería serving filled churros, Mexican-style breakfast burritos and eggs, with affordable takeout.",
+        "primary_genre": "urn:tag:genre:place:restaurant:churreria"
+      },
+      "genres": [
+        "Churreria",
+        "Dessert shop",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "0007468A-52E9-4B67-AB8B-A9D9FC54C5BC",
+      "name": "Mini Monster Universal CityWalk",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Community-focused cafe at Universal CityWalk offering coffee, matcha, boba, handmade macarons, vegan options, and handcrafted dried flower arrangements.",
+        "short_description": "Community-focused cafe at Universal CityWalk offering coffee, matcha, boba, handmade macarons, vegan options, and handcrafted dried flower arrangements.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bubble_tea_store"
+      },
+      "genres": [
+        "Dried flower shop",
+        "Place",
+        "Bubble tea store",
+        "Restaurant",
+        "Dessert shop",
+        "Shopping"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "C4106F28-0514-44C5-BF6D-EDD64CE6987A",
+      "name": "DOG PPL",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Membership-based canine social club with off-leash park, on-site restaurant and cafe, trained staff, vaccination checks, and community events in Santa Monica.",
+        "short_description": "Membership-based canine social club with off-leash park, on-site restaurant and cafe, trained staff, vaccination checks, and community events in Santa Monica.",
+        "primary_genre": "urn:tag:genre:place:club"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Cafe",
+        "Tourist attraction",
+        "Bar",
+        "Park",
+        "Club"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import type { EraWindow } from "./types";
 
-// "Formative window" = ages 10–30, when the reminiscence bump peaks (approach.md, Phase 0).
+// "Formative window" = ages 10–30, when the reminiscence bump peaks (docs/research.md §1).
 // Every movie/TV Qloo call uses this window as filter.release_year (D1), so it lives in code,
 // never in Claude's tool input.
 export const ERA_START_AGE = 10;

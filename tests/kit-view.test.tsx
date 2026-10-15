@@ -52,6 +52,28 @@ describe("KitView", () => {
     expect(render(fixture)).not.toContain("Not checked against Qloo");
   });
 
+  it("shows the watch-for signs and the support level on every kit", () => {
+    const html = render(fixture);
+    expect(html).toContain("Watch for");
+    expect(html).toContain("Stopping is a good outcome");
+    expect(html).toContain("mostly independent");
+  });
+
+  it("labels activity ideas as suggestions, not Qloo data", () => {
+    const html = render({ ...fixture, activityIdeas: [{ text: "A soft scarf to hold", source: "llm" }] });
+    expect(html).toContain("A soft scarf to hold");
+    expect(html).toContain("not from Qloo");
+    expect(render(fixture)).not.toContain("Ideas to try");
+  });
+
+  it("at the late level, an empty question list is calm, not a failure", () => {
+    const late = { ...fixture, prompts: [], profile: { ...fixture.profile, supportLevel: "late" as const } };
+    const html = render(late);
+    expect(html).toContain("Things to say");
+    expect(html).toContain("No questions needed");
+    expect(html).not.toContain("couldn&#x27;t find this one");
+  });
+
   it("links out to searches in a new tab, never embeds", () => {
     const html = render(fixture);
     expect(html).not.toMatch(/<iframe|<audio|<video/);

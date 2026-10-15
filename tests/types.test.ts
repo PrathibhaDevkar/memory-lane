@@ -3,6 +3,8 @@ import rosa from "@/fixtures/kits/rosa.json";
 import { KitSchema, MediaItemSchema, ProfileSchema } from "@/lib/types";
 
 const profile = {
+  suddenChange: false,
+  supportLevel: "early",
   displayName: "Rosa",
   birthYear: 1942,
   hometown: "Chicago",
@@ -32,6 +34,17 @@ describe("ProfileSchema", () => {
     expect(ProfileSchema.safeParse({ ...profile, favorites: [] }).success).toBe(false);
     const four = Array(4).fill({ text: "x", kind: "other" });
     expect(ProfileSchema.safeParse({ ...profile, favorites: four }).success).toBe(false);
+  });
+
+  it("treats blank optional details as not given, and limits their length", () => {
+    const parsed = ProfileSchema.parse({ ...profile, formerWork: "  ", traditions: "Sunday hymns" });
+    expect(parsed.formerWork).toBeUndefined();
+    expect(parsed.traditions).toBe("Sunday hymns");
+    expect(ProfileSchema.safeParse({ ...profile, formerWork: "x".repeat(81) }).success).toBe(false);
+  });
+
+  it("rejects an unknown support level", () => {
+    expect(ProfileSchema.safeParse({ ...profile, supportLevel: "severe" }).success).toBe(false);
   });
 
   it("rejects implausible birth years", () => {

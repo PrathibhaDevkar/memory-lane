@@ -1,4 +1,4 @@
-// Media is linked out as a search, never embedded (approach.md rules: no embeds, no lyrics).
+// Media is linked out as a search, never embedded (docs/plan.md §4.1: no embeds, no lyrics).
 // Built server-side from the title so the agent never writes URLs itself.
 
 export function youtubeSearchUrl(query: string): string {

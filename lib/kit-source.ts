@@ -1,12 +1,14 @@
 import rosaFixture from "@/fixtures/kits/rosa.json";
 import { KitSchema, type Kit, type Profile } from "./types";
 
-// KIT_SOURCE picks where kits come from. Phase 1 only has "fixture"; Phase 2 adds "agent".
-export type KitSource = "fixture";
+// KIT_SOURCE picks where kits come from:
+//   "fixture" (default): the saved sample kit for Rosa, no API calls
+//   "agent": the live agent (Qloo tools + Claude)
+export type KitSource = "fixture" | "agent";
 
 export function kitSource(): KitSource {
   const v = process.env.KIT_SOURCE ?? "fixture";
-  if (v !== "fixture") throw new Error(`KIT_SOURCE="${v}" is not available yet (only "fixture")`);
+  if (v !== "fixture" && v !== "agent") throw new Error(`KIT_SOURCE="${v}" is not valid (use "fixture" or "agent")`);
   return v;
 }
 
@@ -18,7 +20,7 @@ export function fixtureKit(requested: Profile): Kit {
     ...kit,
     provenance: {
       ...kit.provenance,
-      note: `${kit.provenance.note} You asked for ${requested.displayName} (born ${requested.birthYear}, ${requested.hometown}).`,
+      note: `${kit.provenance.note} Every request shows this sample until live kits are switched on. You asked for ${requested.displayName} (born ${requested.birthYear}, ${requested.hometown}).`,
     },
   };
 }

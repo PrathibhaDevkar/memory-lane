@@ -1,7 +1,7 @@
 // Shared contract between the server (/api/kit, agent, Qloo tools) and the UI.
 // Each zod schema is the single source of truth: TypeScript types are inferred from it,
 // and the same schema validates request bodies, fixture files and (later) agent output.
-// See docs/implementation-plan.md §6.
+// See docs/plan.md §9.
 
 import { z } from "zod";
 
@@ -20,8 +20,25 @@ export const BIRTH_YEAR_MIN = 1920;
 export const BIRTH_YEAR_MAX = 1990;
 export const MAX_FAVORITES = 3;
 
+// How much support the person needs today (chosen by the caregiver, not a diagnosis).
+// Labels and what changes per level live in lib/care.ts.
+export const SupportLevelSchema = z.enum(["early", "middle", "late"], { error: "Choose how much support they need today." });
+
+// Optional life-story details: used for this kit only, never stored.
+const optionalText = (max: number, label: string) =>
+  z
+    .string()
+    .trim()
+    .max(max, `Keep ${label} under ${max} characters.`)
+    .transform((v) => v || undefined) // a blank box counts as not given
+    .optional();
+
 export const ProfileSchema = z.object({
-  displayName: z.string({ error: "Add a first name or nickname." }).trim().min(1, "Add a first name or nickname.").max(60, "Keep the name under 60 characters."),
+  // Asked first. "Yes" means no kit: a sudden change is reported, not assumed to be progression.
+  suddenChange: z.boolean({ error: "Answer the question about sudden changes." }),
+  // The name they like to be called.
+  displayName: z.string({ error: "Add the name they like to be called." }).trim().min(1, "Add the name they like to be called.").max(60, "Keep the name under 60 characters."),
+  supportLevel: SupportLevelSchema,
   birthYear: z
     .number({ error: "Add the year of birth." })
     .int("Use a whole year, like 1948.")
@@ -39,6 +56,9 @@ export const ProfileSchema = z.object({
     })
     .min(1, "Add at least one thing to avoid, or tick “Nothing to avoid”.")
     .max(10, "Add up to 10 things to avoid."),
+  formerWork: optionalText(80, "their former work"),
+  firstLanguage: optionalText(40, "the language"),
+  traditions: optionalText(80, "traditions"),
 });
 
 // ---------- Output: the session kit ----------
@@ -120,6 +140,9 @@ export const ProvenanceSchema = z.object({
   note: z.string().optional(),
 });
 
+// Model-written suggestions (objects to hold, textures). Never presented as Qloo data (D12).
+export const ActivityIdeaSchema = z.object({ text: z.string().min(1).max(200), source: z.literal("llm") });
+
 export const KitSchema = z.object({
   mode: z.enum(["memory_lane", "llm_only"]),
   provenance: ProvenanceSchema,
@@ -130,8 +153,18 @@ export const KitSchema = z.object({
   dish: section(DishItemSchema),
   place: section(PlaceItemSchema),
   prompts: z.array(z.string().min(1)),
+  activityIdeas: z.array(ActivityIdeaSchema).max(3),
   trace: z.array(TraceStepSchema),
 });
+
+// Returned instead of a kit when the caregiver reports a sudden change (D9).
+export const SafetyStopSchema = z.object({
+  mode: z.literal("safety_stop"),
+  message: z.string(),
+  profile: ProfileSchema,
+});
+
+export const KitResponseSchema = z.union([KitSchema, SafetyStopSchema]);
 
 export type FavoriteKind = z.infer<typeof FavoriteKindSchema>;
 export type Favorite = z.infer<typeof FavoriteSchema>;
@@ -145,3 +178,7 @@ export type Excluded = z.infer<typeof ExcludedSchema>;
 export type TraceStep = z.infer<typeof TraceStepSchema>;
 export type Provenance = z.infer<typeof ProvenanceSchema>;
 export type Kit = z.infer<typeof KitSchema>;
+export type SupportLevel = z.infer<typeof SupportLevelSchema>;
+export type ActivityIdea = z.infer<typeof ActivityIdeaSchema>;
+export type SafetyStop = z.infer<typeof SafetyStopSchema>;
+export type KitResponse = z.infer<typeof KitResponseSchema>;
