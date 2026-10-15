@@ -5,6 +5,7 @@
 // and the log is never sent to the server (D11).
 
 import { useEffect, useRef, useState } from "react";
+import { DEMOS } from "@/lib/demos";
 import type { SessionLog } from "@/lib/session";
 import { kitAsText, whatsappUrl } from "@/lib/share";
 import { KitResponseSchema, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
@@ -163,6 +164,28 @@ export function MemoryLaneApp() {
 
   return (
     <div>
+      <section aria-labelledby="demo-title" className="no-print mb-8 rounded-2xl border border-line bg-card p-5">
+        <h2 id="demo-title" className="font-semibold">
+          Try a demo
+        </h2>
+        <p className="mt-1 text-sm text-muted">Fictional people with saved kits. Opens instantly; nothing is sent.</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          {DEMOS.map((d) => (
+            <button
+              key={d.id}
+              type="button"
+              onClick={() =>
+                setState(d.response.mode === "safety_stop" ? { view: "stop", stop: d.response } : { view: "kit", kit: d.response })
+              }
+              className="rounded-xl border border-line px-4 py-2.5 text-left hover:bg-accent-soft"
+            >
+              <span className="block font-medium">{d.name}</span>
+              <span className="block text-sm text-muted">{d.description}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       <div aria-live="polite" className="min-h-0">
         {state.message && (
           <p role="alert" className="mb-6 rounded-xl border border-error/40 px-4 py-3 font-medium text-error">

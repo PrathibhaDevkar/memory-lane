@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { SUPPORT_LEVELS, WATCH_FOR, WATCH_FOR_ACTION } from "@/lib/care";
 import type { DishItem, Kit, MediaItem, PlaceItem, Provenance, Source } from "@/lib/types";
+import { TracePanel } from "./TracePanel";
 
 type Section<T> = { status: "ok" | "gap"; items: T[]; gapReason?: string };
 
@@ -94,6 +95,8 @@ export function KitView({ kit }: { kit: Kit }) {
           </ul>
         </section>
       )}
+
+      <TracePanel trace={kit.trace} />
     </article>
   );
 }

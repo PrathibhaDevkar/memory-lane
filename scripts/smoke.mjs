@@ -1,11 +1,17 @@
 // End-to-end check: builds a kit for each persona through the running app and prints what came back.
 //
 // Run:  npm run dev:agent            (in another terminal; KIT_SOURCE=agent)
-//       node scripts/smoke.mjs [base-url] [persona...]
+//       node scripts/smoke.mjs [base-url] [persona...] [--save]
+// --save writes each live kit to fixtures/kits/<persona>.json, labeled as a saved run, for use
+// as a demo (then add it to lib/demos.ts).
 // Default base URL: http://localhost:3000. Personas: rosa walt june swift margaret okafor elena (default: all).
 
-const BASE = process.argv[2]?.startsWith("http") ? process.argv[2] : "http://localhost:3000";
-const only = process.argv.slice(2).filter((a) => !a.startsWith("http"));
+import { writeFile } from "node:fs/promises";
+
+const args = process.argv.slice(2);
+const BASE = args.find((a) => a.startsWith("http")) ?? "http://localhost:3000";
+const SAVE = args.includes("--save");
+const only = args.filter((a) => !a.startsWith("http") && !a.startsWith("--"));
 
 const base = { suddenChange: false, supportLevel: "early", thingsToAvoid: ["none"] };
 const PERSONAS = {
@@ -58,7 +64,16 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
   if (excluded.length) console.log(`  excluded ${excluded.slice(0, 8).map((e) => `${e.title}: ${e.reason}`).join("\n           ")}`);
   const sections = ["music", "screen", "dish", "place"].filter((s) => kit[s].status === "ok").length;
   const minPrompts = { early: 3, middle: 1, late: 0 }[kit.profile.supportLevel];
-  if (sections < 2 || kit.prompts.length < minPrompts) failures++;
+  const passed = sections >= 2 && kit.prompts.length >= minPrompts;
+  if (!passed) failures++;
+  if (SAVE && passed && kit.provenance.kind === "live") {
+    const date = kit.provenance.generatedAt;
+    const saved = { ...kit, provenance: { kind: "cached", generatedAt: date, note: `A saved live run from ${date}, shown as a demo.` } };
+    await writeFile(new URL(`../fixtures/kits/${key}.json`, import.meta.url), JSON.stringify(saved, null, 2) + "\n");
+    console.log(`  saved    fixtures/kits/${key}.json (add it to lib/demos.ts)`);
+  } else if (SAVE && kit.provenance.kind !== "live") {
+    console.log("  not saved: this kit isn't from a live run (is KIT_SOURCE=agent?)");
+  }
 }
 console.log(failures ? `\n${failures} persona(s) failed.` : "\nAll personas produced a kit.");
 process.exit(failures ? 1 : 0);

@@ -20,7 +20,7 @@ export function fixtureKit(requested: Profile): Kit {
     ...kit,
     provenance: {
       ...kit.provenance,
-      note: `${kit.provenance.note} You asked for ${requested.displayName} (born ${requested.birthYear}, ${requested.hometown}).`,
+      note: `${kit.provenance.note} Every request shows this sample until live kits are switched on. You asked for ${requested.displayName} (born ${requested.birthYear}, ${requested.hometown}).`,
     },
   };
 }

@@ -69,7 +69,7 @@ const kit = {
   provenance: {
     kind: "fixture",
     generatedAt: PHASE0_RUN,
-    note: "This is a sample kit for Rosa, built from real Qloo results saved on Oct 8. Every request shows this sample until live kits are switched on.",
+    note: "A saved sample kit for Rosa, built from real Qloo results saved on Oct 8.",
   },
   profile: {
     suddenChange: false,
@@ -156,7 +156,7 @@ const kit = {
       ms: 0, status: "ok",
     },
     {
-      id: "t6", kind: "llm", label: "fixture curation (no Claude call)", input: {},
+      id: "t6", kind: "validator", label: "hand-picked for this sample (no Claude call)", input: {},
       outputSummary: "Picks above were chosen by hand for this fixture. Maxwell Street Market over Cloud Gate, which was built in 2006, after Rosa's era. In live runs, Claude makes these choices.",
       excluded: [], ms: 0, status: "ok",
     },
