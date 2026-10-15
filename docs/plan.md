@@ -412,6 +412,8 @@ gantt
 
 **Cut order if late:** place era check → AI-only toggle → print layout for the note → activity ideas. **Never cut:** the safety stop, the question rules, session mode.
 
+**Submission draft:** Devpost text, judge testing instructions and the official checklist are in [submission.md](submission.md).
+
 **After submission (Oct 30 – Nov 16):** keep the demo working, free and unrestricted: Qloo key valid, Claude credits funded, Vercel up; check the live URL every few days.
 
 ---

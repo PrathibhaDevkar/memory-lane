@@ -105,4 +105,111 @@ Checked on the Oct 14 responses: **films 25 of 25** carry `properties.wikidata_i
 ## 4. Still to measure
 
 - Live kits with Claude (needs an API key): era of music picks, choice of place and restaurant, question quality, time and cost per kit
-- Tester comparison: AI-only vs. Memory Lane, with adults aged 60+ ([plan.md §12.8](plan.md#128-evidence-plan))
+- Tester study: script and results sheet in §5 below
+
+---
+
+## 5. Tester study: script and results
+
+Plan: [plan.md §12.8](plan.md#128-evidence-plan). No professional caregiver is available, so three groups test what each can honestly judge. Results go in §5.6 and are reported **exactly as they happened**.
+
+### 5.1 Ground rules (read before every session)
+- **Who:** adults aged 60+ (group A), people who have looked after an older relative (group B), and one first-time user (group C).
+- **Never** a real person living with dementia, and never details about one. Group A builds a kit about *themselves*; groups B and C use fictional personas.
+- **Consent, out loud:** "We're testing an app for a hackathon. It takes about 20 minutes. You can skip anything or stop at any time. We'll write down your answers without your name. Is it OK if we quote you anonymously?" Note yes/no.
+- **Record only:** tester ID (A1, B1…), group, an age range (60–69, 70–79, 80+), answers and quotes. No names, contact details or health information.
+- **Write what they say, not what you think they meant.** Don't defend the app or explain it unless they're stuck.
+- If anything upsets a tester, stop, thank them, and note it as a finding.
+
+### 5.2 Before the session
+- [ ] Laptop or tablet with the app (live URL, or `npm run dev:agent` locally), charged, sound on.
+- [ ] For group A: **two kits per tester, prepared from their details**: the Memory Lane kit, and an **AI-only kit** made from the same details without Qloo (the comparison toggle, or the same request to Claude with no tools). Print or show them as **"List A" and "List B"**; flip a coin for which is which, and note it on the sheet only.
+- [ ] Persona cards for groups B and C (fictional; see §5.5).
+- [ ] This sheet, a pen, and a timer.
+
+### 5.3 Group A: era accuracy and the blind comparison (adults 60+, about 20 min)
+
+**Setup (2 min).** Ask: birth year (or decade), the town they grew up in, one favorite singer, film or show from their youth, and anything they'd rather not see. Build both kits.
+
+**Part 1: Is this your era? (8 min)** Show List A, one item at a time. For each song, film, place and dish ask:
+1. "Do you know this one?" → *Yes / Heard of it / No*
+2. If yes: "When was it part of your life? About ages 10 to 30, later, or earlier?" → *Then / Later / Earlier*
+3. "Does it bring anything to mind?" Note a short quote if they offer one.
+
+Repeat for List B.
+
+**Part 2: Which list? (5 min)**
+4. "Which list feels more like your youth: A or B?" → *A / B / Same*
+5. "What made you choose it?" (quote)
+6. "Is there anything in either list that feels wrong, or that you wouldn't want brought up?" (quote, and which list)
+
+**Part 3: The questions (5 min)** Show the kit's conversation questions.
+7. "Would you be comfortable being asked these?" → *All / Most / Few*
+8. "Does any of them feel like a test, or like it assumes something about you?" Note which.
+
+### 5.4 Group B: usefulness in a session (people who've looked after a relative, about 20 min)
+Use the **Rosa demo** or a persona card, and walk through the flow: form → kit → **Start session** → mark reactions → **Stop** on one card → session note.
+1. Safety check at the top of the form: "Is this question clear? Would you answer it honestly?" (quote)
+2. "Watch for" strip: "Are these the signs you'd look for? Anything missing?" (quote)
+3. Session mode: "Could you use this with someone next to you, on a tablet?" → *Yes / With changes / No*. What would you change?
+4. The note: "Would this note be useful to share with family or a care team?" → 1–5
+5. "Would you use Memory Lane?" → *Yes / Maybe / No*, and why
+6. "What's missing, or what worries you?" (quote)
+
+### 5.5 Group C: first-time use (about 10 min)
+Give the persona card and say only: **"Please make a session kit for this person, then start a session."** Don't help unless they're stuck for 60 seconds; if you help, note where.
+
+> **Persona card:** Frank, born 1948, grew up in Pittsburgh. Loves Johnny Cash. Mostly independent. No sudden changes today. Please avoid anything about hospitals.
+
+Note: time to a kit, whether they found **Start session**, where they hesitated, and their first words after finishing.
+
+### 5.6 Results sheet
+
+**Testers**
+
+| ID | Group | Age range | Quotes OK? | Date |
+|---|---|---|---|---|
+| A1 | A | | | |
+| A2 | A | | | |
+| A3 | A | | | |
+| B1 | B | | | |
+| B2 | B | | | |
+| C1 | C | | | |
+
+**Group A: era accuracy** (counts per tester; "known" = Yes or Heard of it)
+
+| ID | Memory Lane list was | Items | Known | Known *and* "then" | AI-only items | Known | Known *and* "then" | Prefers | Questions comfortable | Felt like a test |
+|---|---|---|---|---|---|---|---|---|---|---|
+| A1 | A / B | | | | | | | A / B / Same | All / Most / Few | |
+| A2 | | | | | | | | | | |
+| A3 | | | | | | | | | | |
+
+**Group B: usefulness**
+
+| ID | Safety question clear | Watch-for complete | Session mode on a tablet | Note useful (1–5) | Would use | Missing or worrying |
+|---|---|---|---|---|---|---|
+| B1 | | | Yes / With changes / No | | Yes / Maybe / No | |
+| B2 | | | | | | |
+
+**Group C: first-time use**
+
+| ID | Time to kit | Found Start session | Got stuck at | First words |
+|---|---|---|---|---|
+| C1 | | | | |
+
+**Quotes** (anonymous, only with permission)
+
+| ID | Quote | About |
+|---|---|---|
+| | | |
+
+**Issues found → what we changed**
+
+| Issue | Seen by | Change | Done |
+|---|---|---|---|
+| | | | |
+
+### 5.7 How results are reported
+- Use the numbers as counted, with group sizes. *Format only, these are not results:* "3 adults aged 65+ preferred the Memory Lane list in 3 of 3 blind comparisons; 21 of 24 items were known and placed in their youth, against 9 of 20 for the AI-only list". Never round up, never drop a tester.
+- Name the groups honestly: **"adults aged 60+"** and **"people who have looked after an older relative"**, never "caregivers" or "people with dementia".
+- Report anything a tester found wrong or upsetting, and what we changed.
