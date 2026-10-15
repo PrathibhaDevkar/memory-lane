@@ -34,12 +34,14 @@ export const EXAMPLE_PROFILE: Profile = {
 
 type Props = {
   initial?: Profile;
+  /** Ask the sudden-change question fresh, even when other answers are prefilled (a new session). */
+  askSafetyAgain?: boolean;
   errors?: FieldErrors;
   busy: boolean;
   onSubmit: (profile: Profile) => void;
 };
 
-export function IntakeForm({ initial, errors = {}, busy, onSubmit }: Props) {
+export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy, onSubmit }: Props) {
   const id = useId();
   const [displayName, setDisplayName] = useState(initial?.displayName ?? "");
   const [birthYear, setBirthYear] = useState(initial ? String(initial.birthYear) : "");
@@ -53,7 +55,7 @@ export function IntakeForm({ initial, errors = {}, busy, onSubmit }: Props) {
   const [nothingToAvoid, setNothingToAvoid] = useState(initialNothing);
   const [avoidText, setAvoidText] = useState(initial && !initialNothing ? initial.thingsToAvoid.join("\n") : "");
   // No defaults for these two: the caregiver has to choose.
-  const [suddenChange, setSuddenChange] = useState<boolean | null>(initial?.suddenChange ?? null);
+  const [suddenChange, setSuddenChange] = useState<boolean | null>(askSafetyAgain ? null : (initial?.suddenChange ?? null));
   const [supportLevel, setSupportLevel] = useState<SupportLevel | null>(initial?.supportLevel ?? null);
   const [formerWork, setFormerWork] = useState(initial?.formerWork ?? "");
   const [firstLanguage, setFirstLanguage] = useState(initial?.firstLanguage ?? "");

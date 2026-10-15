@@ -333,11 +333,12 @@ memory-lane/
 ├── app/
 │   ├── page.tsx                   one page: form → kit (profile never in the URL)
 │   └── api/kit/route.ts           POST /api/kit (KIT_SOURCE=fixture | agent)
-├── components/                    MemoryLaneApp, IntakeForm, KitView, SafetyStop
+├── components/                    MemoryLaneApp, IntakeForm, KitView, SafetyStop, SessionMode, SessionNote
 ├── lib/
 │   ├── types.ts                   shared server ↔ UI contract (zod)
 │   ├── era.ts                     birthYear → { start, end }
 │   ├── care.ts                    support levels, watch-for, safety wording (one place)
+│   ├── session.ts, share.ts       session cards, care note, plain-text kit, WhatsApp link
 │   ├── kit-source.ts, links.ts    fixture kit; search links
 │   ├── qloo/
 │   │   ├── client.ts              header auth, timeout, retries, 2 in flight, cache, normalize
@@ -372,7 +373,7 @@ Planned files are listed in §12.
 | 0 | Can Qloo match an era? | ✅ Done (GO) |
 | 1 | Scaffold, contract, form → kit, deployed | ✅ Live at [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) (sample kit). PR open for review |
 | 2 | Live agent: Qloo tools, filters, Claude loop | 🟡 Built and tested on its own branch, not pushed. Qloo side verified live; **Claude side waiting on an API key** |
-| 3 | Care-practice features, session mode, trace, comparison | 🟡 Intake, safety stop, question rules, support levels and watch-for built (Oct 15); session mode, notes, trace and comparison next (§12) |
+| 3 | Care-practice features, session mode, trace, comparison | 🟡 Built Oct 15: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share. Next: trace panel, AI-only comparison, demo buttons (§12) |
 | 4 | Ship: polish, README, description, video, submit | ⏳ |
 
 ```mermaid
@@ -395,7 +396,7 @@ gantt
     section Phase 3: Product
     Buffer, place era check (optional)   :         b1, 2026-10-19, 1d
     Trace panel, model timing            :         b2, 2026-10-20, 1d
-    Session mode, note, WhatsApp share   :         b3, 2026-10-21, 1d
+    Session mode, note, WhatsApp share   :done,    b3, 2026-10-15, 1d
     AI-only toggle, demo buttons         :         b4, 2026-10-22, 1d
     Polish: watch-for, ideas, print      :         b5, 2026-10-23, 1d
     Tester comparison, fixes             :         b6, 2026-10-24, 2d
@@ -450,15 +451,15 @@ No rule changes; traditions and former work reach Qloo only as seeds Claude reso
 |---|---|
 | ✅ `IntakeForm.tsx` | Sudden-change question first; preferred name; support level (three plain choices); favorites; things to avoid; collapsed "More about them (optional)": former work, first language, traditions |
 | ✅ `SafetyStop.tsx` | Calm full-page message, no kit |
-| `KitView.tsx` | ✅ Support level in the header, **"Watch for"** strip, "Ideas" labeled as suggestions, calm late-level wording. Next: Start session · Send to WhatsApp |
-| **New** `SessionMode.tsx` | Full-screen, large type, one card at a time; each card: Play/Search · **Lit up · Calm · Not interested · Not today · Stop**. Stop ends with brief reassurance guidance |
-| **New** `SessionNote.tsx` | Reactions and time of day + a short care note from a template; Copy · Send to WhatsApp · Print; nothing sent to the server; "Build next kit" adds anything marked Stop to things to avoid |
+| ✅ `KitView.tsx` | Support level in the header, **"Watch for"** strip, "Ideas" labeled as suggestions, calm late-level wording; Start session · Send to WhatsApp · Print in the toolbar |
+| ✅ `SessionMode.tsx` | Full-screen, large type, one card at a time; each card: Play/Search · **Lit up · Calm · Not interested · Not today · Stop**. Stop ends with brief reassurance guidance |
+| ✅ `SessionNote.tsx` | Reactions and time of day + a short care note from a template; Copy · Send to WhatsApp · Print; nothing sent to the server; "Build next kit" adds anything marked Stop to things to avoid |
 | **New** `TracePanel.tsx` | "How this kit was made": Claude turns, Qloo calls, what was screened out and why |
-| **New** `lib/share.ts` | Plain-text kit and note + `https://wa.me/?text=` link (no API) |
-| `MemoryLaneApp.tsx` | Form → kit or safety stop → session → note; everything in memory |
+| ✅ `lib/share.ts` | Plain-text kit and note + `https://wa.me/?text=` link (no API) |
+| ✅ `MemoryLaneApp.tsx` | Form → kit or safety stop → session → note; everything in memory; the next session asks the safety question again |
 | Demo buttons | Saved kits per persona from `fixtures/kits/`, loaded in the browser (no API, never limited) |
 
-### 12.6 Session log and note (browser only)
+### 12.6 Session log and note (browser only) ✅
 ```
 SessionLog = { startedAt, supportLevel, entries: [{ itemKind, itemTitle, reaction, note? }] }
 reaction   = "lit_up" | "calm" | "not_interested" | "not_today" | "stopped"
@@ -485,12 +486,12 @@ No professional caregiver is available. **Adults aged 60+** judge era accuracy (
 
 | Layer | What | Tool |
 |---|---|---|
-| Unit | Era window, content filter on real offenders, avoid list, landmarks, dishes, client retries and concurrency, tools' rules, grounding, question rules per level, activity ideas, safety stop (no API calls), loop control | vitest (113 tests) |
+| Unit | Era window, content filter on real offenders, avoid list, landmarks, dishes, client retries and concurrency, tools' rules, grounding, question rules per level, activity ideas, safety stop (no API calls), loop control | vitest (126 tests) |
 | Contract | Tools against recorded Qloo responses in `fixtures/qloo/` | vitest, no network |
 | UI | Kit view (gaps, banners, labels, no embeds), intake form | vitest, server-rendered |
 | Live | Tools against the real Qloo API | `LIVE=1 npx vitest run tests/live` |
 | End to end | Personas through a running app | `node scripts/smoke.mjs <url>` |
-| Planned (§12) | Session flow; share text | vitest |
+| Session | Card order per level, care note from the log, avoid-next-time, share text and link, screens, safety question asked again | vitest |
 | Human | Testers per §12.8; a stranger | Phase 3–4 |
 
 ---
