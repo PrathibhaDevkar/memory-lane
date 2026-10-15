@@ -600,6 +600,7 @@ gitGraph
 - One branch and one PR per phase; review is welcome but never blocks: a PR stays open up to 24 h for comments, then merges.
 - Production is the URL to share; preview links require a Vercel login.
 - Short, plain commit messages.
+- Team workspace (brief, task board, decision log): [shared doc](https://claude.ai/code/artifact/26055603-1597-46c1-869f-5894d51f3f96), team access only.
 
 ---
 
