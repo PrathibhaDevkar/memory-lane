@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import rosa from "@/fixtures/kits/rosa.json";
 import { KitView } from "@/components/KitView";
-import { TracePanel } from "@/components/TracePanel";
+import { buildMs, TracePanel } from "@/components/TracePanel";
 import { DEMOS } from "@/lib/demos";
 import { fixtureKit } from "@/lib/kit-source";
 import { KitResponseSchema, KitSchema, type TraceStep } from "@/lib/types";
@@ -34,6 +34,13 @@ describe("TracePanel", () => {
     expect(html).toContain("1 Claude turn ·");
     expect(html).toContain("2.4 s");
     expect(html).toContain(">gap<");
+  });
+
+  it("times a turn's parallel lookups as their longest one, not their sum", () => {
+    const step = (id: string, kind: TraceStep["kind"], ms: number): TraceStep => ({ id, kind, label: id, input: {}, outputSummary: "", excluded: [], ms, status: "ok" });
+    const trace = [step("t1", "llm", 1000), step("q1", "tool", 3000), step("q2", "tool", 2800), step("q3", "tool", 3100), step("t2", "llm", 2000), step("v", "validator", 5)];
+    expect(buildMs(trace)).toBe(1000 + 3100 + 2000 + 5);
+    expect(renderToStaticMarkup(<TracePanel trace={trace} />)).toContain("6.1 s");
   });
 
   it("appears at the bottom of every kit, and renders nothing for an empty trace", () => {

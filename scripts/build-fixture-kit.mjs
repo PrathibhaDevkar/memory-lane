@@ -105,7 +105,7 @@ const kit = {
       source: "qloo",
       name: "Chicago-style deep-dish pizza",
       qlooTagId: deepDish.id,
-      fromPlace: giordanos.name,
+      // No fromPlace: Giordano's opened in 1974, after Rosa's 1952–1972 window.
       caveat: "Something to talk about, not to serve. Check diet, chewing and swallowing needs before offering any food.",
     }],
   },
@@ -157,7 +157,7 @@ const kit = {
     },
     {
       id: "t6", kind: "validator", label: "hand-picked for this sample (no Claude call)", input: {},
-      outputSummary: "Picks above were chosen by hand for this fixture. Maxwell Street Market over Cloud Gate, which was built in 2006, after Rosa's era. In live runs, Claude makes these choices.",
+      outputSummary: "Picks above were chosen by hand for this fixture. Maxwell Street Market over Cloud Gate, which was built in 2006, after Rosa's era. The dish is shown without its restaurant: Giordano's opened in 1974, also after her era. In live runs, Claude makes these choices.",
       excluded: [], ms: 0, status: "ok",
     },
   ],

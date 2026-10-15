@@ -6,6 +6,7 @@
 // so it can't invent anything.
 
 import { SUPPORT_LEVELS } from "./care";
+import { isSpotifySearch } from "./links";
 import type { Kit } from "./types";
 
 export type CardKind = "song" | "film" | "show" | "place" | "dish" | "question" | "comment" | "idea";
@@ -31,7 +32,11 @@ export const REACTIONS: { value: Reaction; label: string }[] = [
 export type LogEntry = { cardId: string; kind: CardKind; title: string; reaction: Reaction };
 export type SessionLog = { startedAt: string; endedAt?: string; entries: LogEntry[] };
 
-const linkLabel = (href: string) => (href.includes("spotify.com") ? "Search on Spotify" : "Search on YouTube");
+const linkLabel = (href: string) => (isSpotifySearch(href) ? "Search on Spotify" : "Search on YouTube");
+
+/** Cards that name something Qloo found, so the next kit can leave it out. Questions, comments and
+ * the agent's activity ideas aren't, so "Stop" on them isn't carried into the avoid list. */
+const canLeaveOut = (kind: CardKind) => kind !== "question" && kind !== "comment" && kind !== "idea";
 
 /**
  * Cards in session order: an item, then a question about it, alternating, so there is one idea
@@ -112,7 +117,7 @@ export function buildCareNote(kit: Kit, log: SessionLog): string {
 
   const next: string[] = [];
   if (litUp.length) next.push(`more like ${litUp[0]}`);
-  if (stopped && stopped.kind !== "question" && stopped.kind !== "comment") next.push(`leave out ${stopped.title}`);
+  if (stopped && canLeaveOut(stopped.kind)) next.push(`leave out ${stopped.title}`);
   if (stopped && when === "evening") next.push("an earlier time of day may suit better");
   if (next.length) lines.push(`Next time: ${list(next)}.`);
   return lines.join("\n");
@@ -121,6 +126,6 @@ export function buildCareNote(kit: Kit, log: SessionLog): string {
 /** Things to add to the avoid list for the next kit: anything the session was stopped at (P5). */
 export function avoidNextTime(log: SessionLog): string[] {
   return log.entries
-    .filter((e) => e.reaction === "stopped" && e.kind !== "question" && e.kind !== "comment" && e.kind !== "idea")
+    .filter((e) => e.reaction === "stopped" && canLeaveOut(e.kind))
     .map((e) => e.title.replace(/ \(\d{4}\)$/, ""));
 }

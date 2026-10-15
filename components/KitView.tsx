@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { SUPPORT_LEVELS, WATCH_FOR, WATCH_FOR_ACTION } from "@/lib/care";
+import { isSpotifySearch } from "@/lib/links";
 import type { DishItem, Kit, MediaItem, PlaceItem, Provenance, Source } from "@/lib/types";
 import { TracePanel } from "./TracePanel";
 
@@ -172,7 +173,7 @@ function SourceBadge({ source }: { source: Source }) {
 }
 
 function MediaRow({ item }: { item: MediaItem }) {
-  const where = item.searchUrl.includes("spotify.com") ? "Spotify" : "YouTube";
+  const where = isSpotifySearch(item.searchUrl) ? "Spotify" : "YouTube";
   return (
     <li className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
       <div>

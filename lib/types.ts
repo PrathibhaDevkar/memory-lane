@@ -19,6 +19,7 @@ export const FavoriteSchema = z.object({
 export const BIRTH_YEAR_MIN = 1920;
 export const BIRTH_YEAR_MAX = 1990;
 export const MAX_FAVORITES = 3;
+export const MAX_THINGS_TO_AVOID = 10;
 
 // How much support the person needs today (chosen by the caregiver, not a diagnosis).
 // Labels and what changes per level live in lib/care.ts.
@@ -55,7 +56,7 @@ export const ProfileSchema = z.object({
       error: "Add at least one thing to avoid, or tick “Nothing to avoid”.",
     })
     .min(1, "Add at least one thing to avoid, or tick “Nothing to avoid”.")
-    .max(10, "Add up to 10 things to avoid."),
+    .max(MAX_THINGS_TO_AVOID, `Add up to ${MAX_THINGS_TO_AVOID} things to avoid.`),
   formerWork: optionalText(80, "their former work"),
   firstLanguage: optionalText(40, "the language"),
   traditions: optionalText(80, "traditions"),

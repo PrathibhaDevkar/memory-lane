@@ -16,7 +16,8 @@
   --error: #a3221b;
 }
 
-@media (prefers-color-scheme: dark) {
+/* Screens only, so a kit printed from a device in dark mode still prints on the light palette. */
+@media screen and (prefers-color-scheme: dark) {
   :root {
     --paper: #1b1714;
     --card: #25201c;
