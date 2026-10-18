@@ -51,10 +51,13 @@ export function MemoryLaneApp() {
         return;
       }
       if (!res.ok) {
+        // Limits and paused live kits come with the server's own wording.
+        const fromServer = (res.status === 429 || res.status === 503) && typeof body?.error === "string" ? body.error : null;
         const message =
-          res.status === 429
+          fromServer ??
+          (res.status === 429
             ? "Too many kits in a short time. Please try again in a little while."
-            : "Something went wrong on our side. Please try again.";
+            : "Something went wrong on our side. Please try again.");
         setState({ view: "form", busy: false, message });
         return;
       }

@@ -1,7 +1,10 @@
+import Anthropic from "@anthropic-ai/sdk";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const buildLiveKit = vi.fn();
 vi.mock("@/lib/agent/run", () => ({ buildLiveKit: (...args: unknown[]) => buildLiveKit(...args) }));
+const liveKitBlocked = vi.fn(async (): Promise<string | null> => null);
+vi.mock("@/lib/ratelimit", () => ({ liveKitBlocked: (...args: unknown[]) => liveKitBlocked(...(args as [])) }));
 
 const { POST } = await import("@/app/api/kit/route");
 const { KitSchema, SafetyStopSchema } = await import("@/lib/types");
@@ -65,6 +68,8 @@ describe("POST /api/kit: sudden-change safety stop (D9)", () => {
     const stop = SafetyStopSchema.parse(await res.json());
     expect(stop.message).toMatch(/nurse or doctor/);
     expect(buildLiveKit).not.toHaveBeenCalled();
+    // The safety stop is never rate limited.
+    expect(liveKitBlocked).not.toHaveBeenCalled();
   });
 
   it("requires an answer to the sudden-change question", async () => {
@@ -78,5 +83,54 @@ describe("POST /api/kit: sudden-change safety stop (D9)", () => {
   it("requires a support level, with a plain message", async () => {
     const res = await post(JSON.stringify({ ...walt, supportLevel: undefined }));
     expect((await res.json()).issues.supportLevel[0]).toMatch(/how much support/i);
+  });
+});
+
+describe("POST /api/kit (live mode): limits and spend", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    buildLiveKit.mockReset();
+    liveKitBlocked.mockReset();
+    liveKitBlocked.mockResolvedValue(null);
+  });
+  const apiError = (status: number, type: string, message: string) =>
+    Anthropic.APIError.generate(status, { type: "error", error: { type, message } }, undefined, new Headers());
+
+  it("answers 429 with the limit's own message, without running the agent", async () => {
+    vi.stubEnv("KIT_SOURCE", "agent");
+    liveKitBlocked.mockResolvedValue("You've built 3 kits in the last hour. Try a sample kit, or come back a little later.");
+    const res = await post(JSON.stringify(walt));
+    expect(res.status).toBe(429);
+    expect((await res.json()).error).toMatch(/3 kits in the last hour/);
+    expect(buildLiveKit).not.toHaveBeenCalled();
+  });
+
+  it("never checks the limits for saved sample kits", async () => {
+    vi.stubEnv("KIT_SOURCE", "fixture");
+    const res = await post(JSON.stringify(walt));
+    expect(res.status).toBe(200);
+    expect(liveKitBlocked).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [400, "invalid_request_error", "You have reached your specified workspace API usage limits. You will regain access on 2026-11-01 at 00:00 UTC."],
+    [400, "invalid_request_error", "Your credit balance is too low to access the Anthropic API."],
+    [429, "rate_limit_error", "You have reached your API usage limits: your organization has crossed its monthly API usage threshold."],
+  ])("says live kits are paused when Claude's spend limit is reached (%i)", async (status, type, message) => {
+    vi.stubEnv("KIT_SOURCE", "agent");
+    const quiet = vi.spyOn(console, "error").mockImplementation(() => {});
+    buildLiveKit.mockRejectedValue(apiError(status, type, message));
+    const res = await post(JSON.stringify(walt));
+    expect(res.status).toBe(503);
+    expect((await res.json()).error).toMatch(/Live kits are paused/);
+    quiet.mockRestore();
+  });
+
+  it("still treats an ordinary Claude rate limit as 'try again'", async () => {
+    vi.stubEnv("KIT_SOURCE", "agent");
+    buildLiveKit.mockRejectedValue(apiError(429, "rate_limit_error", "Number of request tokens has exceeded your per-minute rate limit"));
+    const res = await post(JSON.stringify(walt));
+    expect(res.status).toBe(429);
+    expect((await res.json()).error).toMatch(/Too many requests to Claude/);
   });
 });

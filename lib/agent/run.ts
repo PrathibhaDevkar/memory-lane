@@ -8,6 +8,11 @@
 // Every request repeats the same system prompt and tools, and the history only grows. Thinking
 // blocks are bound to that prefix: changing it, even removing a tool, makes the API reject the next
 // request on accounts created on or after Aug 31, 2026.
+//
+// Cost: the tools and system prompt are cached (a breakpoint on the system prompt, which comes after
+// the tools), and top-level caching covers the history as it grows. The favorites are looked up in
+// code before the first call, which saves Claude a turn. Each call's token use goes into the trace
+// and the server log.
 
 import Anthropic from "@anthropic-ai/sdk";
 import { eraWindow } from "@/lib/era";
@@ -55,6 +60,14 @@ export async function buildLiveKit(
   const deadline = Date.now() + (opts.budgetMs ?? BUDGET_MS);
   const ctx = new RunContext(profile, eraWindow(profile.birthYear), opts.fetchImpl, deadline);
 
+  // One Qloo search per favorite, in parallel, so Claude's first turn can go straight to the lookups.
+  const resolved = await Promise.all(
+    profile.favorites.map(async (f) => ({
+      favorite: f.text,
+      ...JSON.parse((await runTool(ctx, "resolve_favorite", { name: f.text, kind: f.kind })).content),
+    })),
+  );
+
   const messages: Anthropic.Beta.BetaMessageParam[] = [
     {
       role: "user",
@@ -65,6 +78,7 @@ export async function buildLiveKit(
         grew_up_in: profile.hometown,
         formative_years: `${ctx.era.start}–${ctx.era.end}`,
         favorites: profile.favorites,
+        favorites_resolved: resolved,
         things_to_avoid: profile.thingsToAvoid,
         former_work: profile.formerWork,
         first_language: profile.firstLanguage,
@@ -91,10 +105,13 @@ export async function buildLiveKit(
         {
           model,
           max_tokens: 16000,
-          system: SYSTEM_PROMPT,
+          // Cached together with the tools before it. Both stay the same on every turn.
+          system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
           tools: ALL_TOOLS, // the same on every turn (see the note at the top)
           output_config: { effort },
           messages,
+          // Automatic caching of the history, moving forward as it grows.
+          cache_control: { type: "ephemeral" },
           // Server-side fallback: if a safety classifier declines, the API retries on a recommended
           // model inside the same call. Not available for Haiku.
           ...(model.startsWith("claude-haiku") ? {} : { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const }),
@@ -109,12 +126,22 @@ export async function buildLiveKit(
       throw err;
     }
 
+    // Token use for this call. Logged without any profile details: nothing about a person is kept.
+    const u = response.usage;
+    const usage = {
+      in: u?.input_tokens ?? 0,
+      cacheWrite: u?.cache_creation_input_tokens ?? 0,
+      cacheRead: u?.cache_read_input_tokens ?? 0,
+      out: u?.output_tokens ?? 0, // includes thinking, which is billed as output
+    };
+    console.log(JSON.stringify({ event: "claude_turn", turn, model: response.model, effort, ...usage }));
+
     const toolUses = response.content.filter((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === "tool_use");
     ctx.trace.push({
       id: ctx.nextId(),
       kind: "llm",
       label: `Claude, turn ${turn}`,
-      input: { model: response.model, effort },
+      input: { model: response.model, effort, usage },
       outputSummary: toolUses.length ? `Asked for: ${toolUses.map((t) => t.name).join(", ")}` : `Stopped: ${response.stop_reason}`,
       excluded: [],
       ms: Date.now() - t0,

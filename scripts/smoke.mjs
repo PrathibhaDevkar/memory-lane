@@ -5,6 +5,8 @@
 // --save writes each live kit to fixtures/kits/<persona>.json, labeled as a saved run, for use
 // as a demo (then add it to lib/demos.ts).
 // Default base URL: http://localhost:3000. Personas: rosa walt june swift margaret okafor elena (default: all).
+// With SMOKE_TOKEN set (npm run smoke reads .env.local), the run skips the live-kit limits.
+// Each live kit prints its Claude token use and cost at list prices.
 
 import { writeFile } from "node:fs/promises";
 
@@ -28,11 +30,24 @@ const PERSONAS = {
   elena: { ...base, supportLevel: "late", displayName: "Elena", birthYear: 1938, hometown: "Chicago", favorites: [{ text: "Perry Como", kind: "artist" }], traditions: "Catholic hymns" },
 };
 
+// US$ per million tokens, list prices on Oct 17, 2026: platform.claude.com/docs/en/about-claude/pricing
+const PRICES = {
+  "claude-opus-5-5": { in: 4, cacheWrite: 5, cacheRead: 0.2, out: 20 },
+  "claude-sonnet-5-5": { in: 2, cacheWrite: 2.5, cacheRead: 0.1, out: 10 },
+  "claude-haiku-5-5": { in: 0.1, cacheWrite: 0.125, cacheRead: 0.01, out: 0.5 },
+};
+const usd = (step) => {
+  const price = Object.entries(PRICES).find(([model]) => String(step.input.model).startsWith(model))?.[1];
+  const usage = step.input.usage;
+  return price && usage ? Object.keys(price).reduce((n, k) => n + ((usage[k] ?? 0) * price[k]) / 1e6, 0) : NaN;
+};
+const headers = { "content-type": "application/json", ...(process.env.SMOKE_TOKEN ? { "x-smoke-token": process.env.SMOKE_TOKEN } : {}) };
+
 let failures = 0;
 for (const [key, profile] of Object.entries(PERSONAS)) {
   if (only.length && !only.includes(key)) continue;
   const t0 = Date.now();
-  const res = await fetch(`${BASE}/api/kit`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(profile) });
+  const res = await fetch(`${BASE}/api/kit`, { method: "POST", headers, body: JSON.stringify(profile) });
   const secs = ((Date.now() - t0) / 1000).toFixed(1);
   const kit = await res.json().catch(() => null);
   console.log(`\n=== ${profile.displayName}: born ${profile.birthYear}, ${profile.hometown}, favorite ${profile.favorites[0].text} (${secs}s, HTTP ${res.status})`);
@@ -60,6 +75,11 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
   const tools = kit.trace.filter((s) => s.kind === "tool");
   const excluded = kit.trace.flatMap((s) => s.excluded);
   console.log(`  agent    ${claude.length} Claude turns, ${tools.length} tool calls, ${excluded.length} exclusions`);
+  if (claude.length) {
+    const used = (k) => claude.reduce((n, s) => n + (s.input.usage?.[k] ?? 0), 0);
+    const cost = claude.reduce((n, s) => n + usd(s), 0);
+    console.log(`  tokens   in ${used("in")} · cache write ${used("cacheWrite")} · cache read ${used("cacheRead")} · out ${used("out")} · ${Number.isNaN(cost) ? "cost unknown for this model" : `$${cost.toFixed(3)}`}`);
+  }
   for (const s of kit.trace) console.log(`           ${s.kind.padEnd(9)} ${s.label}: ${s.outputSummary} (${s.ms}ms)`);
   if (excluded.length) console.log(`  excluded ${excluded.slice(0, 8).map((e) => `${e.title}: ${e.reason}`).join("\n           ")}`);
   const sections = ["music", "screen", "dish", "place"].filter((s) => kit[s].status === "ok").length;

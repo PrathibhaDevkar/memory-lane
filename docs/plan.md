@@ -230,7 +230,7 @@ flowchart TD
     FAILK --> OUT
 ```
 
-**Expected path:** 3 Claude turns (resolve favorites → five lookups together → submit), 4 with the modern-favorite hop; 6–9 Qloo calls per kit. **Model:** `CLAUDE_MODEL` (default `claude-opus-5-5`) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals. Names and years in the kit always come from Qloo, never from Claude's text.
+**Expected path:** the favorites are looked up in code first (one `/search` each), then 2 Claude turns (five lookups together → submit), 3 with the modern-favorite hop or a traditions seed; 6–9 Qloo calls per kit. The tools and system prompt are cached, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-opus-5-5`) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals. Names and years in the kit always come from Qloo, never from Claude's text.
 
 ---
 
@@ -434,7 +434,7 @@ gantt
 
 ### 12.2 API (`app/api/kit/route.ts`)
 - ✅ **Safety stop first:** `suddenChange` yes → `SafetyStop`, **no Qloo or Claude call**. Message: a sudden change can have a medical cause; tell their nurse or doctor now; Memory Lane isn't the right activity for today.
-- Generous abuse limit on live kits (`lib/ratelimit.ts`, Upstash); demo kits never limited; `SMOKE_TOKEN` exempt.
+- ✅ Abuse limit on live kits (`lib/ratelimit.ts`, Upstash): 3 per visitor an hour and 100 a day, set by `VISITOR_KITS_PER_HOUR` and `DAILY_LIVE_KITS`; production refuses live kits until Redis is configured; demo kits and the safety stop never limited; `SMOKE_TOKEN` exempt. A Claude spend limit answers 503 "live kits are paused".
 
 ### 12.3 Agent (`lib/agent/*`)
 

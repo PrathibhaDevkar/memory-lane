@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { buildKit, checkIdeas } from "@/lib/agent/kit";
 import { KitSchema } from "@/lib/types";
 
@@ -131,9 +131,20 @@ describe("support levels and activity ideas", () => {
 });
 
 describe("buildLiveKit (loop control, fake Claude)", () => {
-  type Body = { tools: { name: string }[]; messages: Anthropic.Beta.BetaMessageParam[] };
-  const msg = (content: unknown[], stop_reason = "tool_use") =>
-    ({ id: "m", model: "claude-opus-5-5", role: "assistant", content, stop_reason, usage: {} }) as unknown as Anthropic.Beta.BetaMessage;
+  type Body = {
+    tools: { name: string }[];
+    messages: Anthropic.Beta.BetaMessageParam[];
+    system: { type: string; text: string; cache_control?: unknown }[];
+    cache_control?: unknown;
+  };
+  const msg = (content: unknown[], stop_reason = "tool_use", usage: object = {}) =>
+    ({ id: "m", model: "claude-opus-5-5", role: "assistant", content, stop_reason, usage }) as unknown as Anthropic.Beta.BetaMessage;
+  // Each call's token use goes to the server log; keep test output quiet.
+  const log = vi.spyOn(console, "log").mockImplementation(() => {});
+  beforeEach(() => {
+    log.mockClear();
+    vi.mocked(qlooGet).mockClear();
+  });
   const fakeClient = (responses: Anthropic.Beta.BetaMessage[]) => {
     // Copies of each request as sent: the loop keeps appending to the same messages array.
     const sent: { body: Body; options: { signal?: AbortSignal } }[] = [];
@@ -144,9 +155,8 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     return { client: { beta: { messages: { create } } } as unknown as Anthropic, create, sent };
   };
 
-  it("runs this turn's tools in parallel, returns all results in one message, then builds the kit", async () => {
-    const { client, create } = fakeClient([
-      msg([{ type: "tool_use", id: "a", name: "resolve_favorite", input: { name: "Frank Sinatra", kind: "artist" } }]),
+  it("looks up favorites before the first call, so the usual kit takes two Claude calls", async () => {
+    const { client, create, sent } = fakeClient([
       msg([
         { type: "tool_use", id: "b", name: "get_music", input: { seed_ids: ["SINATRA"] } },
         { type: "tool_use", id: "c", name: "get_places", input: { seed_ids: ["SINATRA"] } },
@@ -154,9 +164,15 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
       msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "SINATRA", why: "x" }] } }]),
     ]);
     const kit = await buildLiveKit(rosa, { client });
-    expect(create).toHaveBeenCalledTimes(3);
-    const third = create.mock.calls[2] as unknown as [{ messages: Anthropic.Beta.BetaMessageParam[] }];
-    const lastUser = third[0].messages.at(-1)!;
+    // The favorite was searched in code, and Claude's first message already carries its candidates.
+    expect(vi.mocked(qlooGet).mock.calls[0][0]).toBe("/search");
+    const first = JSON.stringify(sent[0].body.messages[0]);
+    expect(first).toContain("favorites_resolved");
+    expect(first).toContain("SINATRA");
+    expect(kit.trace[0]).toMatchObject({ kind: "tool", label: "resolve_favorite" });
+    // A turn's tools run in parallel and all their results go back in one message.
+    expect(create).toHaveBeenCalledTimes(2);
+    const lastUser = sent[1].body.messages.at(-1)!;
     expect(Array.isArray(lastUser.content) && lastUser.content.map((c) => (c as { tool_use_id: string }).tool_use_id)).toEqual(["b", "c"]);
     expect(KitSchema.safeParse(kit).success).toBe(true);
     // "SINATRA" was returned as a favorite and as an artist (by get_music), so it's grounded.
@@ -176,15 +192,14 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     expect(kit.music).toMatchObject({ status: "gap", gapReason: "The agent didn't finish within its limits." });
   });
 
-  it("refuses lookups once it's the last turn, without calling Qloo", async () => {
+  it("refuses lookups once it's the last turn: only the up-front favorite search reaches Qloo", async () => {
     const { client, sent } = fakeClient([
       msg([{ type: "tool_use", id: "a", name: "resolve_favorite", input: { name: "Frank Sinatra", kind: "artist" } }]),
       msg([{ type: "tool_use", id: "b", name: "submit_kit", input: empty }]),
     ]);
-    vi.mocked(qlooGet).mockClear();
     // A budget this short makes the first turn the last one.
     const kit = await buildLiveKit(rosa, { client, budgetMs: 30_000 });
-    expect(qlooGet).not.toHaveBeenCalled();
+    expect(vi.mocked(qlooGet).mock.calls.map((c) => c[0])).toEqual(["/search"]);
     const results = sent[1].body.messages.at(-1)!.content as { tool_use_id: string; is_error: boolean; content: string }[];
     expect(results[0]).toMatchObject({ tool_use_id: "a", is_error: true });
     expect(results[0].content).toMatch(/Lookups are closed/);
@@ -201,6 +216,32 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     expect(create).toHaveBeenCalledTimes(1);
     expect(kit.music).toMatchObject({ status: "gap", gapReason: "The agent ran out of time before finishing." });
     expect(KitSchema.safeParse(kit).success).toBe(true);
+  });
+
+  it("caches the tools and system prompt, and the history, the same way on every turn", async () => {
+    const { client, sent } = fakeClient([
+      msg([{ type: "tool_use", id: "b", name: "get_music", input: { seed_ids: ["SINATRA"] } }]),
+      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }]),
+    ]);
+    await buildLiveKit(rosa, { client });
+    for (const { body } of sent) {
+      expect(body.system).toHaveLength(1);
+      expect(body.system[0].cache_control).toEqual({ type: "ephemeral" });
+      expect(body.cache_control).toEqual({ type: "ephemeral" });
+      expect(body.system).toEqual(sent[0].body.system);
+    }
+  });
+
+  it("records each call's token use in the trace and logs it without profile details", async () => {
+    const usage = { input_tokens: 3100, output_tokens: 900, cache_creation_input_tokens: 2950, cache_read_input_tokens: null };
+    const { client } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }], "tool_use", usage)]);
+    const kit = await buildLiveKit(rosa, { client });
+    const turn = kit.trace.find((s) => s.kind === "llm")!;
+    expect(turn.input.usage).toEqual({ in: 3100, cacheWrite: 2950, cacheRead: 0, out: 900 });
+    expect(log).toHaveBeenCalledTimes(1);
+    const line = String(log.mock.calls[0][0]);
+    expect(JSON.parse(line)).toMatchObject({ event: "claude_turn", turn: 1, in: 3100, out: 900 });
+    for (const detail of ["Rosa", "Chicago", "Sinatra", "1942"]) expect(line).not.toContain(detail);
   });
 
   it("turns a refusal into an honest gap", async () => {

@@ -3,11 +3,15 @@ import { z } from "zod";
 import { buildLiveKit } from "@/lib/agent/run";
 import { SAFETY_STOP_MESSAGE } from "@/lib/care";
 import { fixtureKit, kitSource } from "@/lib/kit-source";
+import { liveKitBlocked } from "@/lib/ratelimit";
 import { KitSchema, ProfileSchema, type SafetyStop } from "@/lib/types";
 
 // Upper bound for one kit build. The agent's own time budget (lib/agent/run.ts) stays below
 // this; confirm it fits the Vercel plan's function limit when deploying.
 export const maxDuration = 120;
+
+// Next.js allows only handlers and segment config as exports from a route file.
+const LIVE_KITS_PAUSED = "Live kits are paused for now. The sample kits show what a full kit looks like.";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -36,11 +40,20 @@ export async function POST(request: Request) {
   switch (kitSource()) {
     case "fixture":
       return Response.json(fixtureKit(parsed.data));
-    case "agent":
+    case "agent": {
+      // Visitor and daily limits on live kits; sample kits and the safety stop never get here.
+      const blocked = await liveKitBlocked(request);
+      if (blocked) return Response.json({ error: blocked }, { status: 429 });
       try {
         // Validate the agent's kit against the shared contract before sending it.
         return Response.json(KitSchema.parse(await buildLiveKit(parsed.data)));
       } catch (err) {
+        // Out of budget: a spend limit set in the Claude Console (400), the tier's monthly cap (429), or
+        // no credits left. Retrying won't help until it's raised, so say live kits are paused.
+        if (err instanceof Anthropic.APIError && (err.status === 400 || err.status === 429) && /usage limits|credit balance/i.test(err.message)) {
+          console.error(`Claude API spend limit: ${err.message}`);
+          return Response.json({ error: LIVE_KITS_PAUSED }, { status: 503 });
+        }
         if (err instanceof Anthropic.RateLimitError) {
           return Response.json({ error: "Too many requests to Claude right now." }, { status: 429 });
         }
@@ -51,5 +64,6 @@ export async function POST(request: Request) {
         console.error("Kit build failed:", err);
         return Response.json({ error: "Something went wrong building the kit." }, { status: 500 });
       }
+    }
   }
 }

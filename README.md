@@ -83,7 +83,9 @@ npm run dev                  # http://localhost:3000, saved sample kit
 npm run dev:agent            # the live agent (KIT_SOURCE=agent)
 ```
 
-Optional settings: `CLAUDE_MODEL` (default `claude-opus-5-5`) and `CLAUDE_EFFORT` (default `medium`).
+Settings are listed in [`.env.example`](.env.example): `CLAUDE_MODEL` (default `claude-opus-5-5`) and `CLAUDE_EFFORT` (default `medium`). A value already set in your shell wins over `.env.local`.
+
+Live kits are limited to 3 per visitor an hour and 100 a day (`VISITOR_KITS_PER_HOUR`, `DAILY_LIVE_KITS`), counted in Upstash Redis. In production, live kits stay off until Redis is configured; sample kits and the safety stop are never limited. When the Claude spend limit is reached, the app says live kits are paused.
 
 ## Tests
 
@@ -92,6 +94,7 @@ npm test                     # unit, contract and UI tests (no network)
 npm run typecheck
 npm run lint
 node scripts/smoke.mjs http://localhost:3000            # 7 personas end to end against a running app
+npm run smoke -- rosa walt june                         # the same with .env.local loaded: SMOKE_TOKEN skips the limits; prints tokens and cost per kit
 set -a; source .env.local; set +a; LIVE=1 npx vitest run tests/live   # the Qloo tools against the real API
 ```
 
