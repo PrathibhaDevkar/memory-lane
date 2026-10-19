@@ -5,7 +5,7 @@
 
 import { createHash } from "node:crypto";
 import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { redis } from "@/lib/redis";
 
 /** A positive whole number from the environment, or the fallback for blank or invalid values. */
 function count(value: string | undefined, fallback: number): number {
@@ -16,18 +16,18 @@ function count(value: string | undefined, fallback: number): number {
 export const VISITOR_KITS_PER_HOUR = count(process.env.VISITOR_KITS_PER_HOUR, 3);
 export const DAILY_LIVE_KITS = count(process.env.DAILY_LIVE_KITS, 100);
 
-// Vercel's Upstash integration sets the KV_* names; a store made on upstash.com uses UPSTASH_*.
-const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-const redis = url && token ? new Redis({ url, token }) : null;
-
 const perVisitor = redis && new Ratelimit({ redis, prefix: "ml:visitor", limiter: Ratelimit.slidingWindow(VISITOR_KITS_PER_HOUR, "1 h") });
 const perDay = redis && new Ratelimit({ redis, prefix: "ml:day", limiter: Ratelimit.fixedWindow(DAILY_LIVE_KITS, "1 d") });
 
+/** The smoke check's own requests: they skip the limits and always build a fresh kit. */
+export function isSmokeRequest(request: Request): boolean {
+  const smoke = process.env.SMOKE_TOKEN;
+  return Boolean(smoke) && request.headers.get("x-smoke-token") === smoke;
+}
+
 /** Returns null when a live kit may be built, otherwise the message to show the caregiver. */
 export async function liveKitBlocked(request: Request): Promise<string | null> {
-  const smoke = process.env.SMOKE_TOKEN;
-  if (smoke && request.headers.get("x-smoke-token") === smoke) return null;
+  if (isSmokeRequest(request)) return null;
   if (!perVisitor || !perDay) {
     return process.env.VERCEL_ENV === "production" ? "Live kits aren't switched on yet. Try one of the sample kits." : null;
   }

@@ -155,51 +155,65 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     return { client: { beta: { messages: { create } } } as unknown as Anthropic, create, sent };
   };
 
-  it("looks up favorites before the first call, so the usual kit takes two Claude calls", async () => {
+  it("runs the usual lookups in code, so the usual kit takes one Claude call", async () => {
     const { client, create, sent } = fakeClient([
-      msg([
-        { type: "tool_use", id: "b", name: "get_music", input: { seed_ids: ["SINATRA"] } },
-        { type: "tool_use", id: "c", name: "get_places", input: { seed_ids: ["SINATRA"] } },
-      ]),
-      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "SINATRA", why: "x" }] } }]),
+      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "f1", why: "x" }] } }]),
     ]);
     const kit = await buildLiveKit(rosa, { client });
-    // The favorite was searched in code, and Claude's first message already carries its candidates.
-    expect(vi.mocked(qlooGet).mock.calls[0][0]).toBe("/search");
+    expect(create).toHaveBeenCalledTimes(1);
+    // The favorite, then music, films, TV, places and dishes, all before Claude is called.
+    const lookups = kit.trace.filter((s) => s.kind === "tool").map((s) => s.label);
+    expect(lookups[0]).toBe("resolve_favorite");
+    expect(lookups.slice(1).sort()).toEqual(["get_dish", "get_music", "get_places", "get_screen(movie)", "get_screen(tv)"]);
+    expect(kit.trace.findIndex((s) => s.kind === "llm")).toBe(lookups.length);
+    // Claude's one message carries the results under short handles, never Qloo's own IDs.
     const first = JSON.stringify(sent[0].body.messages[0]);
     expect(first).toContain("favorites_resolved");
-    expect(first).toContain("SINATRA");
-    expect(kit.trace[0]).toMatchObject({ kind: "tool", label: "resolve_favorite" });
-    // A turn's tools run in parallel and all their results go back in one message.
+    expect(first).toContain('\\"music_seeds\\":[\\"f1\\"]');
+    expect(first).not.toContain("SINATRA");
+    expect(KitSchema.safeParse(kit).success).toBe(true);
+    // f1 was returned as a favorite and as an artist (by get_music), so it's grounded.
+    expect(kit.music.items[0]).toMatchObject({ title: "Frank Sinatra", qlooId: "SINATRA" });
+  });
+
+  it("lets Claude fix a problem with another lookup, running that turn's tools in parallel", async () => {
+    const { client, create, sent } = fakeClient([
+      msg([
+        { type: "tool_use", id: "b", name: "get_music", input: { seed_ids: ["f1"] } },
+        { type: "tool_use", id: "c", name: "get_places", input: { seed_ids: ["f1"] } },
+      ]),
+      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "f1", why: "x" }] } }]),
+    ]);
+    const kit = await buildLiveKit(rosa, { client });
     expect(create).toHaveBeenCalledTimes(2);
+    // All of a turn's results go back in one message.
     const lastUser = sent[1].body.messages.at(-1)!;
     expect(Array.isArray(lastUser.content) && lastUser.content.map((c) => (c as { tool_use_id: string }).tool_use_id)).toEqual(["b", "c"]);
-    expect(KitSchema.safeParse(kit).success).toBe(true);
-    // "SINATRA" was returned as a favorite and as an artist (by get_music), so it's grounded.
     expect(kit.music.items[0]?.title).toBe("Frank Sinatra");
   });
 
   it("sends the same tools every turn, asks Claude to finish on the last one, and still ends if Claude never submits", async () => {
-    const { client, create, sent } = fakeClient(Array.from({ length: 6 }, () => msg([{ type: "text", text: "thinking out loud" }], "end_turn")));
+    const { client, create, sent } = fakeClient(Array.from({ length: 4 }, () => msg([{ type: "text", text: "thinking out loud" }], "end_turn")));
     const kit = await buildLiveKit(rosa, { client });
-    expect(create).toHaveBeenCalledTimes(6);
+    expect(create).toHaveBeenCalledTimes(4);
     // Changing the tool list mid-conversation would invalidate Claude's earlier thinking blocks.
     for (const { body } of sent) expect(body.tools.map((t) => t.name)).toEqual(sent[0].body.tools.map((t) => t.name));
     expect(sent[0].body.tools.map((t) => t.name)).toContain("submit_kit");
     // The finish request goes into the user turn being sent, not into history already sent.
-    expect(JSON.stringify(sent[5].body.messages.at(-1))).toContain(FINISH_NOW);
-    for (const { body } of sent.slice(0, 5)) expect(JSON.stringify(body.messages)).not.toContain(FINISH_NOW);
+    expect(JSON.stringify(sent[3].body.messages.at(-1))).toContain(FINISH_NOW);
+    for (const { body } of sent.slice(0, 3)) expect(JSON.stringify(body.messages)).not.toContain(FINISH_NOW);
     expect(kit.music).toMatchObject({ status: "gap", gapReason: "The agent didn't finish within its limits." });
   });
 
-  it("refuses lookups once it's the last turn: only the up-front favorite search reaches Qloo", async () => {
+  it("refuses lookups once it's the last turn: only the up-front lookups reach Qloo", async () => {
     const { client, sent } = fakeClient([
       msg([{ type: "tool_use", id: "a", name: "resolve_favorite", input: { name: "Frank Sinatra", kind: "artist" } }]),
       msg([{ type: "tool_use", id: "b", name: "submit_kit", input: empty }]),
     ]);
     // A budget this short makes the first turn the last one.
     const kit = await buildLiveKit(rosa, { client, budgetMs: 30_000 });
-    expect(vi.mocked(qlooGet).mock.calls.map((c) => c[0])).toEqual(["/search"]);
+    // One search for the favorite and the five usual lookups; Claude's extra lookup never runs.
+    expect(vi.mocked(qlooGet).mock.calls.map((c) => c[0]).sort()).toEqual(["/search", ...Array(5).fill("/v2/insights")]);
     const results = sent[1].body.messages.at(-1)!.content as { tool_use_id: string; is_error: boolean; content: string }[];
     expect(results[0]).toMatchObject({ tool_use_id: "a", is_error: true });
     expect(results[0].content).toMatch(/Lookups are closed/);
@@ -218,7 +232,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     expect(KitSchema.safeParse(kit).success).toBe(true);
   });
 
-  it("caches the tools and system prompt, and the history, the same way on every turn", async () => {
+  it("caches the tools and system prompt the same way on every turn, and not the person's message", async () => {
     const { client, sent } = fakeClient([
       msg([{ type: "tool_use", id: "b", name: "get_music", input: { seed_ids: ["SINATRA"] } }]),
       msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }]),
@@ -227,7 +241,8 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     for (const { body } of sent) {
       expect(body.system).toHaveLength(1);
       expect(body.system[0].cache_control).toEqual({ type: "ephemeral" });
-      expect(body.cache_control).toEqual({ type: "ephemeral" });
+      // A one-call kit never reads its message back, so caching it would only add the write premium.
+      expect(body.cache_control).toBeUndefined();
       expect(body.system).toEqual(sent[0].body.system);
     }
   });

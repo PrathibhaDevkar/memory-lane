@@ -39,12 +39,31 @@ describe("Qloo tools", () => {
     calls.length = 0;
   });
 
-  it("resolve_favorite returns candidates and remembers their IDs", async () => {
+  it("resolve_favorite returns candidates under short handles and remembers their Qloo IDs", async () => {
     const ctx = new RunContext(june, { start: 1968, end: 1988 });
     const out = parse(await runTool(ctx, "resolve_favorite", { name: "Frank Sinatra", kind: "artist" }));
-    expect(out.candidates[0].name).toBe("Frank Sinatra");
-    expect(ctx.seen.get(out.candidates[0].id)?.kind).toBe("favorite");
+    expect(out.candidates[0]).toMatchObject({ id: "f1", name: "Frank Sinatra" });
+    expect(ctx.idFor("f1")).toBe(fixture("rosa-search")[0].entity_id);
+    expect(ctx.seen.get(ctx.idFor("f1"))?.kind).toBe("favorite");
     expect(calls[0]).toMatchObject({ path: "/search", types: "urn:entity:artist" });
+  });
+
+  it("shows Claude short handles, never Qloo's 36-character IDs, and accepts them back as seeds", async () => {
+    const ctx = new RunContext(june, { start: 1968, end: 1988 });
+    await runTool(ctx, "resolve_favorite", { name: "The Sound of Music", kind: "movie" });
+    const results = await Promise.all([
+      runTool(ctx, "get_music", { seed_ids: ["f1"] }),
+      runTool(ctx, "get_screen", { seed_ids: ["f1"], kind: "movie" }),
+      runTool(ctx, "get_places", { seed_ids: ["f1"] }),
+      runTool(ctx, "get_dish", { seed_ids: ["f1"] }),
+    ]);
+    for (const r of results) {
+      expect(r.isError).toBe(false);
+      expect(r.content).not.toMatch(/[0-9A-F]{8}-[0-9A-F]{4}-/);
+      expect(r.content).not.toContain("urn:tag:");
+    }
+    // The seed reached Qloo as the real ID.
+    expect(String(calls.at(-1)!["signal.interests.entities"])).toBe(ctx.idFor("f1"));
   });
 
   it("refuses seeds that no earlier tool returned", async () => {
@@ -90,8 +109,8 @@ describe("Qloo tools", () => {
     const out = parse(await runTool(ctx, "get_dish", { seed_ids: ["SEED"] }));
     expect(out.restaurants.length).toBeGreaterThan(0);
     const { place_id, place, dishes } = out.restaurants[0];
-    expect(ctx.seen.get(dishes[0].tag_id)).toMatchObject({ kind: "dish" });
-    expect(ctx.dishPlaces.get(dishes[0].tag_id)?.get(place_id)).toBe(place);
+    expect(ctx.seen.get(ctx.idFor(dishes[0].tag_id))).toMatchObject({ kind: "dish" });
+    expect(ctx.dishPlaces.get(ctx.idFor(dishes[0].tag_id))?.get(ctx.idFor(place_id))).toBe(place);
   });
 
   it("credits a dish to the restaurant Claude chose when several list it (Walt's bbq beans)", async () => {
@@ -100,7 +119,7 @@ describe("Qloo tools", () => {
     ctx.seen.set("SEED", { kind: "favorite", name: "x" });
     const out = parse(await runTool(ctx, "get_dish", { seed_ids: ["SEED"] }));
     const beans = "urn:tag:specialty_dish:place:bbq_beans";
-    const listing = out.restaurants.filter((r: { dishes: { tag_id: string }[] }) => r.dishes.some((d) => d.tag_id === beans));
+    const listing = out.restaurants.filter((r: { dishes: { tag_id: string }[] }) => r.dishes.some((d) => ctx.idFor(d.tag_id) === beans));
     expect(listing.map((r: { place: string }) => r.place)).toEqual(["The Pig On Beale", "Imagine Vegan Cafe"]);
     const pig = listing[0].place_id;
     const kit = buildKit(ctx, {

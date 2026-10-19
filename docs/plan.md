@@ -230,7 +230,7 @@ flowchart TD
     FAILK --> OUT
 ```
 
-**Expected path:** the favorites are looked up in code first (one `/search` each), then 2 Claude turns (five lookups together → submit), 3 with the modern-favorite hop or a traditions seed; 6–9 Qloo calls per kit. The tools and system prompt are cached, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-opus-5-5`) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals. Names and years in the kit always come from Qloo, never from Claude's text.
+**Expected path:** the usual lookups run in code first (one `/search` per favorite, then music, films, TV, places and dishes seeded with the top match), then 1 Claude turn (pick and submit); 2 when Claude fixes something: the modern-favorite hop, a traditions seed, or the wrong match. 6–9 Qloo calls per kit. Claude reads short handles (`a1`, `m2`) instead of Qloo's IDs, the tools and system prompt are cached, the example profile's live kit is reused for a few hours, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-opus-5-5`) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals. Names and years in the kit always come from Qloo, never from Claude's text.
 
 ---
 

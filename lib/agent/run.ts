@@ -1,4 +1,6 @@
-// The agent loop (docs/plan.md §7.2). Claude decides which Qloo lookups to make; the
+// The agent loop (docs/plan.md §7.2). The usual Qloo lookups run in code first; Claude then picks
+// from what came back and writes the questions, usually in a single call. Claude can still call the
+// tools to fix a problem: a modern favorite, a tradition no favorite covers, the wrong match. The
 // tools enforce the rules; buildKit() keeps only grounded picks.
 //
 // Guardrails: at most MAX_TURNS Claude calls and one deadline for the whole build, so the route
@@ -9,10 +11,11 @@
 // blocks are bound to that prefix: changing it, even removing a tool, makes the API reject the next
 // request on accounts created on or after Aug 31, 2026.
 //
-// Cost: the tools and system prompt are cached (a breakpoint on the system prompt, which comes after
-// the tools), and top-level caching covers the history as it grows. The favorites are looked up in
-// code before the first call, which saves Claude a turn. Each call's token use goes into the trace
-// and the server log.
+// Tokens: Claude reads short handles (a1, m2) instead of Qloo's 36-character IDs. The tools and
+// system prompt are cached by one breakpoint on the system prompt, which comes after the tools, so
+// kits started within 5 minutes of each other read them back cheaply. The person's message isn't
+// cached: a kit built in one call would never read it back, so caching it would only add the write
+// premium. Each call's token use goes into the trace and the server log.
 
 import Anthropic from "@anthropic-ai/sdk";
 import { eraWindow } from "@/lib/era";
@@ -21,8 +24,9 @@ import { RunContext, runTool, TOOLS } from "@/lib/qloo/tools";
 import { buildKit } from "./kit";
 import { SUBMIT_KIT, SYSTEM_PROMPT, type Submission } from "./prompts";
 
-const MAX_TURNS = 6;
-// The whole build, Claude and Qloo together. Stays under the route's maxDuration (120 s) with room
+// One call is the usual kit; the rest leave room to fix a problem and still finish.
+const MAX_TURNS = 4;
+// The whole build, Qloo and Claude together. Stays under the route's maxDuration (120 s) with room
 // to check and send the kit.
 export const BUDGET_MS = 100_000;
 // With less than this left, the next turn is the last one.
@@ -51,6 +55,45 @@ function appendText(message: Anthropic.Beta.BetaMessageParam, text: string) {
       : [...message.content, { type: "text", text }];
 }
 
+type ToolResult = Record<string, unknown>;
+type Candidate = { id: string; year?: number };
+type Resolved = { favorite: string; kind: string; candidates?: Candidate[]; error?: string };
+
+/**
+ * The lookups Claude would otherwise ask for in its first turn, run in code: each favorite, then
+ * music, films, TV, places and dishes seeded with the top match for each favorite. Music takes its
+ * era from its seeds, so a film or show from after the formative years doesn't seed it; with no
+ * other seed, music is seeded with the top film from the person's era instead.
+ */
+export async function lookUpFirst(ctx: RunContext) {
+  const look = async (name: string, input: Record<string, unknown>) => JSON.parse((await runTool(ctx, name, input)).content) as ToolResult;
+
+  const favorites: Resolved[] = await Promise.all(
+    ctx.profile.favorites.map(async (f) => ({
+      favorite: f.text,
+      kind: f.kind,
+      ...((await look("resolve_favorite", { name: f.text, kind: f.kind })) as Pick<Resolved, "candidates" | "error">),
+    })),
+  );
+  const top = favorites.flatMap((f) => f.candidates?.slice(0, 1) ?? []);
+  if (!top.length) return { favorites_resolved: favorites };
+
+  const seeds = top.map((c) => c.id);
+  const eraSeeds = top.filter((c) => !(c.year && c.year > ctx.era.end)).map((c) => c.id);
+  const [movies, tv, places, dish, eraMusic] = await Promise.all([
+    look("get_screen", { seed_ids: seeds, kind: "movie" }),
+    look("get_screen", { seed_ids: seeds, kind: "tv" }),
+    look("get_places", { seed_ids: seeds }),
+    look("get_dish", { seed_ids: seeds }),
+    eraSeeds.length ? look("get_music", { seed_ids: eraSeeds }) : null,
+  ]);
+  const film = (movies.titles as Candidate[] | undefined)?.[0]?.id;
+  const musicSeeds = eraMusic ? eraSeeds : film ? [film] : [];
+  const music = eraMusic ?? (film ? await look("get_music", { seed_ids: [film] }) : { error: "No seed for music." });
+
+  return { favorites_resolved: favorites, lookups: { seeds, music_seeds: musicSeeds, music, movies, tv, places, dish } };
+}
+
 export async function buildLiveKit(
   profile: Profile,
   opts: { client?: Anthropic; fetchImpl?: typeof fetch; budgetMs?: number } = {},
@@ -60,14 +103,7 @@ export async function buildLiveKit(
   const deadline = Date.now() + (opts.budgetMs ?? BUDGET_MS);
   const ctx = new RunContext(profile, eraWindow(profile.birthYear), opts.fetchImpl, deadline);
 
-  // One Qloo search per favorite, in parallel, so Claude's first turn can go straight to the lookups.
-  const resolved = await Promise.all(
-    profile.favorites.map(async (f) => ({
-      favorite: f.text,
-      ...JSON.parse((await runTool(ctx, "resolve_favorite", { name: f.text, kind: f.kind })).content),
-    })),
-  );
-
+  const found = await lookUpFirst(ctx);
   const messages: Anthropic.Beta.BetaMessageParam[] = [
     {
       role: "user",
@@ -77,12 +113,11 @@ export async function buildLiveKit(
         born: profile.birthYear,
         grew_up_in: profile.hometown,
         formative_years: `${ctx.era.start}–${ctx.era.end}`,
-        favorites: profile.favorites,
-        favorites_resolved: resolved,
         things_to_avoid: profile.thingsToAvoid,
         former_work: profile.formerWork,
         first_language: profile.firstLanguage,
         traditions: profile.traditions,
+        ...found,
       })}`,
     },
   ];
@@ -110,8 +145,6 @@ export async function buildLiveKit(
           tools: ALL_TOOLS, // the same on every turn (see the note at the top)
           output_config: { effort },
           messages,
-          // Automatic caching of the history, moving forward as it grows.
-          cache_control: { type: "ephemeral" },
           // Server-side fallback: if a safety classifier declines, the API retries on a recommended
           // model inside the same call. Not available for Haiku.
           ...(model.startsWith("claude-haiku") ? {} : { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const }),

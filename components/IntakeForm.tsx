@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { SUDDEN_CHANGE_QUESTION, SUPPORT_LEVELS } from "@/lib/care";
+import { EXAMPLE_PROFILE } from "@/lib/example-profile";
 import {
   BIRTH_YEAR_MAX,
   BIRTH_YEAR_MIN,
@@ -21,16 +22,7 @@ const KIND_LABELS: Record<FavoriteKind, string> = {
   other: "Something else",
 };
 
-// Fictional persona from Phase 0, for demos and quick testing.
-export const EXAMPLE_PROFILE: Profile = {
-  suddenChange: false,
-  displayName: "Rosa",
-  supportLevel: "early",
-  birthYear: 1942,
-  hometown: "Chicago",
-  favorites: [{ text: "Frank Sinatra", kind: "artist" }],
-  thingsToAvoid: ["none"],
-};
+export { EXAMPLE_PROFILE };
 
 type Props = {
   initial?: Profile;

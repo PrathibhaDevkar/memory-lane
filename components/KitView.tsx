@@ -121,7 +121,7 @@ function WatchFor() {
 
 function ProvenanceBanner({ provenance }: { provenance: Provenance }) {
   if (provenance.kind === "live") return null;
-  const title = provenance.kind === "fixture" ? "Demo kit" : `Saved run from ${provenance.generatedAt}`;
+  const title = provenance.kind === "fixture" ? "Demo kit" : `Saved run from ${provenance.generatedAt.slice(0, 10)}`;
   return (
     <div role="note" className="rounded-xl border border-note-line bg-note px-4 py-3">
       <p className="font-semibold">{title}</p>

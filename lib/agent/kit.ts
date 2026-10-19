@@ -37,8 +37,17 @@ const words = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
 const humanize = (slug: string) => slug.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const tidy = (why: string) => why.trim().slice(0, 240);
 
-export function buildKit(ctx: RunContext, sub: Submission | null, failure?: string): Kit {
+export function buildKit(ctx: RunContext, submitted: Submission | null, failure?: string): Kit {
   const started = Date.now();
+  // Claude answers with the short handles it was shown; map them back to Qloo IDs.
+  const id = (handle: string) => ctx.idFor(handle);
+  const sub = submitted && {
+    ...submitted,
+    music: submitted.music.map((p) => ({ ...p, id: id(p.id) })),
+    screen: submitted.screen.map((p) => ({ ...p, id: id(p.id) })),
+    place: submitted.place.map((p) => ({ ...p, id: id(p.id) })),
+    dish: submitted.dish.map((p) => ({ ...p, tag_id: id(p.tag_id), place_id: id(p.place_id) })),
+  };
   const level = ctx.profile.supportLevel;
   const MAX = { ...KIT_LIMITS[level], dish: 1, place: 1 };
   const ungrounded: { title: string; reason: string }[] = [];

@@ -5,6 +5,8 @@
 //   - every result is screened (D3 + avoid list) before Claude sees it, with reasons in the trace
 //   - seeds must be IDs an earlier tool returned, so Claude can't invent one
 //   - every returned item is remembered, so the final kit can be checked against it (grounding)
+//   - Claude reads and writes short handles (a1, m2, d3) instead of Qloo's 36-character IDs,
+//     which saves tokens both ways; the handles map back to Qloo IDs here
 
 import type Anthropic from "@anthropic-ai/sdk";
 import type { EraWindow, Profile, TraceStep } from "@/lib/types";
@@ -37,6 +39,27 @@ export class RunContext {
     return `t${++this.step}`;
   }
 
+  private readonly idsByHandle = new Map<string, string>();
+  private readonly handlesById = new Map<string, string>();
+  private readonly handleCounts = new Map<string, number>();
+
+  /** The short handle Claude sees for a Qloo ID, made on first use (a1, a2, m1…). */
+  handle(id: string, prefix: string): string {
+    const known = this.handlesById.get(id);
+    if (known) return known;
+    const n = (this.handleCounts.get(prefix) ?? 0) + 1;
+    this.handleCounts.set(prefix, n);
+    const handle = `${prefix}${n}`;
+    this.handlesById.set(id, handle);
+    this.idsByHandle.set(handle, id);
+    return handle;
+  }
+
+  /** The Qloo ID behind a handle. Anything else comes back unchanged, so it fails grounding. */
+  idFor(handle: string): string {
+    return this.idsByHandle.get(handle) ?? handle;
+  }
+
   get avoid() {
     return this.profile.thingsToAvoid;
   }
@@ -55,14 +78,14 @@ export class RunContext {
 const seedIds = {
   type: "array",
   items: { type: "string" },
-  description: "Qloo IDs returned by resolve_favorite (or a film ID from get_screen, for the modern-favorite hop).",
+  description: "Ids from earlier results, such as f1 or m2.",
 } as const;
 
 export const TOOLS: Anthropic.Beta.BetaTool[] = [
   {
     name: "resolve_favorite",
     description:
-      "Look up one remembered favorite in Qloo. Returns up to 3 candidates with IDs, type and year so you can pick the right one. Call this for every favorite first, all in the same turn.",
+      "Look up a favorite in Qloo: up to 3 matches with ids and years. The caregiver's favorites are already looked up, so use this only for an extra seed.",
     strict: true,
     input_schema: {
       type: "object",
@@ -77,14 +100,14 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
   {
     name: "get_music",
     description:
-      "Artists that fans of the seeds also love, from Qloo. Seed with era-appropriate favorites. If the only favorite is modern, seed with the top film from get_screen instead.",
+      "Artists that fans of the seeds also love, from Qloo. Their era comes from the seeds: for a modern favorite, seed with the top film from the person's era.",
     strict: true,
     input_schema: { type: "object", properties: { seed_ids: seedIds }, required: ["seed_ids"], additionalProperties: false },
   },
   {
     name: "get_screen",
     description:
-      "Films or TV shows from the person's formative years (the year window is applied automatically) that fans of the seeds also like. Unsafe titles are already removed.",
+      "Films or TV shows from the person's formative years (applied automatically) that fans of the seeds also like. Unsafe titles are already removed.",
     strict: true,
     input_schema: {
       type: "object",
@@ -113,7 +136,7 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
 
 type ToolOutput = { content: string; isError: boolean };
 
-const short = (s: string | undefined, n = 140) => (s && s.length > n ? `${s.slice(0, n - 1)}…` : s);
+const short = (s: string | undefined, n = 100) => (s && s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
 export async function runTool(ctx: RunContext, name: string, input: unknown): Promise<ToolOutput> {
   const started = Date.now();
@@ -135,11 +158,12 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
   };
 
   // Seeds must come from earlier tool results.
-  const seeds = Array.isArray(args.seed_ids) ? (args.seed_ids as unknown[]).map(String) : [];
+  const given = Array.isArray(args.seed_ids) ? (args.seed_ids as unknown[]).map(String) : [];
+  const seeds = given.map((s) => ctx.idFor(s));
   if (name !== "resolve_favorite") {
     if (!seeds.length) return fail("seed_ids is empty");
-    const unknown = seeds.filter((id) => !ctx.seen.has(id));
-    if (unknown.length) return fail(`Unknown seed IDs (use IDs returned by earlier tools): ${unknown.join(", ")}`);
+    const unknown = given.filter((s) => !ctx.seen.has(ctx.idFor(s)));
+    if (unknown.length) return fail(`Unknown seed ids (use ids returned by earlier results): ${unknown.join(", ")}`);
   }
   const signal = { "signal.interests.entities": seeds.join(",") };
 
@@ -152,7 +176,7 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       if (!r.entities.length) return fail(`No Qloo match for "${String(args.name)}"`);
       const candidates = r.entities.map((e) => {
         ctx.seen.set(e.entity_id, { kind: "favorite", name: e.name, year: e.properties.release_year });
-        return { id: e.entity_id, name: e.name, type: e.type, year: e.properties.release_year };
+        return { id: ctx.handle(e.entity_id, "f"), name: e.name, year: e.properties.release_year };
       });
       record(`"${String(args.name)}" → ${candidates.map((c) => c.name).join(", ")}`, [], "ok");
       return { content: JSON.stringify({ candidates }), isError: false };
@@ -163,10 +187,10 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       if (!r.ok) return fail(r.error);
       // Artists carry no rating or themes, so only the caregiver's list applies.
       const { kept, excluded } = screen(r.entities, ctx.avoid, { content: false });
-      const top = kept.slice(0, 10);
+      const top = kept.slice(0, 8);
       for (const e of top) ctx.seen.set(e.entity_id, { kind: "artist", name: e.name });
       record(`${r.entities.length} artists returned, ${top.length} offered`, excluded, top.length ? "ok" : "gap");
-      return { content: JSON.stringify({ artists: top.map((e) => ({ id: e.entity_id, name: e.name })) }), isError: false };
+      return { content: JSON.stringify({ artists: top.map((e) => ({ id: ctx.handle(e.entity_id, "a"), name: e.name })) }), isError: false };
     }
 
     case "get_screen": {
@@ -180,12 +204,17 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       });
       if (!r.ok) return fail(r.error);
       const { kept, excluded } = screen(r.entities, ctx.avoid, { content: true });
-      const top = kept.slice(0, 8);
+      const top = kept.slice(0, 6);
       for (const e of top) ctx.seen.set(e.entity_id, { kind, name: e.name, year: e.properties.release_year });
       record(`${r.entities.length} returned for ${ctx.era.start}–${ctx.era.end}, ${excluded.length} excluded, ${top.length} offered`, excluded, top.length ? "ok" : "gap");
       return {
         content: JSON.stringify({
-          titles: top.map((e) => ({ id: e.entity_id, name: e.name, year: e.properties.release_year, about: short(e.properties.plot_themes_description) })),
+          titles: top.map((e) => ({
+            id: ctx.handle(e.entity_id, kind === "tv" ? "t" : "m"),
+            name: e.name,
+            year: e.properties.release_year,
+            about: short(e.properties.plot_themes_description),
+          })),
         }),
         isError: false,
       };
@@ -195,12 +224,17 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       const r = await ctx.qloo("/v2/insights", { ...signal, "filter.type": "urn:entity:place", "filter.location.query": ctx.profile.hometown, take: 50 });
       if (!r.ok) return fail(r.error);
       const { kept, excluded } = screen(r.entities, ctx.avoid, { content: false });
-      const top = landmarks(kept).slice(0, 8);
+      const top = landmarks(kept).slice(0, 6);
       for (const e of top) ctx.seen.set(e.entity_id, { kind: "place", name: e.name, genre: e.properties.primary_genre });
       record(`${r.entities.length} places returned, ${top.length} landmarks offered`, excluded, top.length ? "ok" : "gap");
       return {
         content: JSON.stringify({
-          places: top.map((e) => ({ id: e.entity_id, name: e.name, kind: genreName(e), about: short(e.properties.short_description ?? e.properties.description) })),
+          places: top.map((e) => ({
+            id: ctx.handle(e.entity_id, "p"),
+            name: e.name,
+            kind: genreName(e),
+            about: short(e.properties.short_description ?? e.properties.description),
+          })),
         }),
         isError: false,
       };
@@ -219,7 +253,7 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       const withDishes = kept
         .map((e) => ({ e, dishes: cleanDishes(e).slice(0, 3) }))
         .filter((x) => x.dishes.length)
-        .slice(0, 8);
+        .slice(0, 6);
       // The same dish tag can be a specialty at several restaurants (bbq_beans in Memphis), so
       // remember every restaurant that listed it; the kit credits the one Claude chose.
       for (const { e, dishes } of withDishes) {
@@ -234,10 +268,10 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       return {
         content: JSON.stringify({
           restaurants: withDishes.map(({ e, dishes }) => ({
-            place_id: e.entity_id,
+            place_id: ctx.handle(e.entity_id, "r"),
             place: e.name,
-            about: short(e.properties.short_description ?? e.properties.description, 100),
-            dishes: dishes.map((d) => ({ tag_id: d.id, dish: d.slug.replace(/_/g, " ") })),
+            about: short(e.properties.short_description ?? e.properties.description, 80),
+            dishes: dishes.map((d) => ({ tag_id: ctx.handle(d.id, "d"), dish: d.slug.replace(/_/g, " ") })),
           })),
         }),
         isError: false,

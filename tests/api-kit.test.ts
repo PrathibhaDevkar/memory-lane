@@ -4,10 +4,21 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const buildLiveKit = vi.fn();
 vi.mock("@/lib/agent/run", () => ({ buildLiveKit: (...args: unknown[]) => buildLiveKit(...args) }));
 const liveKitBlocked = vi.fn(async (): Promise<string | null> => null);
-vi.mock("@/lib/ratelimit", () => ({ liveKitBlocked: (...args: unknown[]) => liveKitBlocked(...(args as [])) }));
+const isSmokeRequest = vi.fn((): boolean => false);
+vi.mock("@/lib/ratelimit", () => ({
+  liveKitBlocked: (...args: unknown[]) => liveKitBlocked(...(args as [])),
+  isSmokeRequest: (...args: unknown[]) => isSmokeRequest(...(args as [])),
+}));
+const reusedExampleKit = vi.fn(async (): Promise<unknown> => null);
+const saveExampleKit = vi.fn(async () => {});
+vi.mock("@/lib/kit-cache", () => ({
+  reusedExampleKit: (...args: unknown[]) => reusedExampleKit(...(args as [])),
+  saveExampleKit: (...args: unknown[]) => saveExampleKit(...(args as [])),
+}));
 
 const { POST } = await import("@/app/api/kit/route");
 const { KitSchema, SafetyStopSchema } = await import("@/lib/types");
+const rosaKit = KitSchema.parse((await import("@/fixtures/kits/rosa.json")).default);
 
 const post = (body: string) =>
   POST(new Request("http://localhost/api/kit", { method: "POST", body, headers: { "content-type": "application/json" } }));
@@ -132,5 +143,40 @@ describe("POST /api/kit (live mode): limits and spend", () => {
     const res = await post(JSON.stringify(walt));
     expect(res.status).toBe(429);
     expect((await res.json()).error).toMatch(/Too many requests to Claude/);
+  });
+});
+
+describe("POST /api/kit (live mode): the example profile's reused kit", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    buildLiveKit.mockReset();
+    liveKitBlocked.mockReset();
+    liveKitBlocked.mockResolvedValue(null);
+    isSmokeRequest.mockReset();
+    isSmokeRequest.mockReturnValue(false);
+    reusedExampleKit.mockReset();
+    reusedExampleKit.mockResolvedValue(null);
+    saveExampleKit.mockClear();
+  });
+
+  it("serves the reused kit without checking limits or calling Claude", async () => {
+    vi.stubEnv("KIT_SOURCE", "agent");
+    reusedExampleKit.mockResolvedValue({ ...rosaKit, provenance: { kind: "cached", generatedAt: "2026-10-19", note: "Reused." } });
+    const res = await post(JSON.stringify(walt));
+    expect(res.status).toBe(200);
+    expect(KitSchema.parse(await res.json()).provenance.kind).toBe("cached");
+    expect(liveKitBlocked).not.toHaveBeenCalled();
+    expect(buildLiveKit).not.toHaveBeenCalled();
+  });
+
+  it("offers a fresh live kit for saving, and the smoke check always builds fresh", async () => {
+    vi.stubEnv("KIT_SOURCE", "agent");
+    isSmokeRequest.mockReturnValue(true);
+    const live = { ...rosaKit, provenance: { kind: "live" as const, generatedAt: "2026-10-19T18:40:12.000Z" } };
+    buildLiveKit.mockResolvedValue(live);
+    const res = await post(JSON.stringify(walt));
+    expect(res.status).toBe(200);
+    expect(reusedExampleKit).not.toHaveBeenCalled();
+    expect(saveExampleKit).toHaveBeenCalledWith(expect.objectContaining({ displayName: "Walt" }), live);
   });
 });

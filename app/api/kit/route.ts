@@ -3,7 +3,8 @@ import { z } from "zod";
 import { buildLiveKit } from "@/lib/agent/run";
 import { SAFETY_STOP_MESSAGE } from "@/lib/care";
 import { fixtureKit, kitSource } from "@/lib/kit-source";
-import { liveKitBlocked } from "@/lib/ratelimit";
+import { reusedExampleKit, saveExampleKit } from "@/lib/kit-cache";
+import { isSmokeRequest, liveKitBlocked } from "@/lib/ratelimit";
 import { KitSchema, ProfileSchema, type SafetyStop } from "@/lib/types";
 
 // Upper bound for one kit build. The agent's own time budget (lib/agent/run.ts) stays below
@@ -41,12 +42,20 @@ export async function POST(request: Request) {
     case "fixture":
       return Response.json(fixtureKit(parsed.data));
     case "agent": {
+      // The example profile's recent live kit, reused: repeat clicks cost no Claude tokens and
+      // count against no limit. The smoke check always builds fresh.
+      if (!isSmokeRequest(request)) {
+        const reused = await reusedExampleKit(parsed.data);
+        if (reused) return Response.json(reused);
+      }
       // Visitor and daily limits on live kits; sample kits and the safety stop never get here.
       const blocked = await liveKitBlocked(request);
       if (blocked) return Response.json({ error: blocked }, { status: 429 });
       try {
         // Validate the agent's kit against the shared contract before sending it.
-        return Response.json(KitSchema.parse(await buildLiveKit(parsed.data)));
+        const kit = KitSchema.parse(await buildLiveKit(parsed.data));
+        await saveExampleKit(parsed.data, kit);
+        return Response.json(kit);
       } catch (err) {
         // Out of budget: a spend limit set in the Claude Console (400), the tier's monthly cap (429), or
         // no credits left. Retrying won't help until it's raised, so say live kits are paused.

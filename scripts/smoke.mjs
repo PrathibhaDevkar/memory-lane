@@ -5,7 +5,8 @@
 // --save writes each live kit to fixtures/kits/<persona>.json, labeled as a saved run, for use
 // as a demo (then add it to lib/demos.ts).
 // Default base URL: http://localhost:3000. Personas: rosa walt june swift margaret okafor elena (default: all).
-// With SMOKE_TOKEN set (npm run smoke reads .env.local), the run skips the live-kit limits.
+// With SMOKE_TOKEN set (npm run smoke reads .env.local), the run skips the live-kit limits and
+// never gets the example profile's reused kit, so every kit is built fresh.
 // Each live kit prints its Claude token use and cost at list prices.
 
 import { writeFile } from "node:fs/promises";
@@ -75,7 +76,9 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
   const tools = kit.trace.filter((s) => s.kind === "tool");
   const excluded = kit.trace.flatMap((s) => s.excluded);
   console.log(`  agent    ${claude.length} Claude turns, ${tools.length} tool calls, ${excluded.length} exclusions`);
-  if (claude.length) {
+  if (kit.provenance.kind !== "live") {
+    console.log("  tokens   none: a saved or reused kit, no Claude call");
+  } else if (claude.length) {
     const used = (k) => claude.reduce((n, s) => n + (s.input.usage?.[k] ?? 0), 0);
     const cost = claude.reduce((n, s) => n + usd(s), 0);
     console.log(`  tokens   in ${used("in")} · cache write ${used("cacheWrite")} · cache read ${used("cacheRead")} · out ${used("out")} · ${Number.isNaN(cost) ? "cost unknown for this model" : `$${cost.toFixed(3)}`}`);
