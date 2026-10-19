@@ -130,7 +130,8 @@ Every step so far, oldest first. Commit IDs are on `feat/phase2-real-data`.
 | Oct 19 | Commits re-authored as Abil | Git identity set to Abil's GitHub no-reply address, signing off, Claude lines removed; the 4 earlier commits rewritten with their original dates and force-pushed with a safety lease; Prathibha's commit kept with her name, date and change | `0e80731` and earlier |
 | Oct 19 | Token cut | The usual lookups run in code, so a typical kit takes 1 Claude call instead of 2; short handles instead of Qloo IDs; slightly shorter lists; only tools and system prompt cached; at most 4 calls; the example profile's kit reused for 6 hours | `00baeb3` |
 | Oct 19 | Haiku default, audits, token alerts | Haiku 5.5 is the default, Sonnet or Opus only with a recorded approval; each live kit is audited and returns usage and alerts in its headers; daily totals and alerts in Redis; `smoke --report`; [docs/token-alerts.md](docs/token-alerts.md) | `21a06e9` |
-| Oct 19 | One shared CLAUDE.md | Both drafts merged: product rules, branch flow and checks from Prathibha's; model rule, token measurement, project map, settings, work log and measurements from Abil's. Settled: no Claude attribution, names and costs may be public | This commit |
+| Oct 19 | One shared CLAUDE.md | Both drafts merged: product rules, branch flow and checks from Prathibha's; model rule, token measurement, project map, settings, work log and measurements from Abil's. Settled: no Claude attribution, names and costs may be public | `84524ca`, PR #4 |
+| Oct 19 | First live audit on Haiku; two fixes | All 6 personas passed live (key scoped to the `memory-lane` workspace; Haiku accepts `effort`). Reading the kits found two problems. (1) The question check missed cards that open with the person's name ("Rosa, what…"): it counted 0 open questions and dropped "Rosa, tell me about…" as not a question; it now reads past the name, which also lets the "you loved…" rule see the real start of the card. (2) Elena's traditions ("Catholic hymns") were never looked up; the code now adds a `to_do` to that kit's message asking Claude to resolve an artist of the tradition from the person's formative years (a search for the tradition's own words finds bands named "Hymns"). Kits without traditions are unchanged | This commit, [audits/2026-10-19-claude-haiku-5-5-medium.md](audits/2026-10-19-claude-haiku-5-5-medium.md) |
 
 ## Measurements
 
@@ -153,11 +154,11 @@ Estimated cost per kit at list prices on Oct 19, 2026 (prices in [docs/token-ale
 | `claude-sonnet-5-5` | about 0.022 | about 1,800 |
 | `claude-opus-5-5` | about 0.045 | about 890 |
 
-Not yet measured live: no session so far has had API keys. The first live step is the smoke check with `--report` on Haiku.
+**Measured live (Oct 19, Haiku 5.5, medium effort, 6 personas):** $0.0013–0.0019 per kit with one Claude call, $0.0025 for a kit with traditions (3 calls), $0.0105 for the whole run; 10–18 seconds per kit. Output (mostly thinking) is 2,100–3,400 tokens, above the ~1,500 estimated offline. Details: [audits/2026-10-19-claude-haiku-5-5-medium.md](audits/2026-10-19-claude-haiku-5-5-medium.md).
 
 ## Open items
 
-- First live smoke check on Haiku with `--report` (Claude API key coming from Abil); commit the report under `audits/`. Check that Haiku accepts the `effort` setting.
+- From the first live audit: a kit with traditions takes 3 Claude calls and trips the per-kit alerts (limit 2 calls, 12,000 input tokens); raise those limits for such kits or accept the alert. A tradition artist Claude resolves can't be picked as music unless `get_music` also returns it (Elena lost Bing Crosby this way). Questions and comments can name an artist who isn't in the kit. `get_music` has no year filter, so a seed in the right era can still bring a later artist (Femi Kuti for Mr. Okafor).
 - Vercel (Prathibha): keys, `KIT_SOURCE=agent`, `SMOKE_TOKEN`, Upstash for Redis, then promote.
 - Visitor limit: revisit `VISITOR_KITS_PER_HOUR` after the live Claude phase, since judges must have access without restriction.
 - Testers for Oct 24–25 (tester script in docs/research.md §5).
