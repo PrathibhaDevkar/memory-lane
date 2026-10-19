@@ -1,20 +1,43 @@
 # Memory Lane: notes for Claude and the team
 
-Memory Lane builds reminiscence session kits for people living with dementia from Qloo's taste data, with Claude choosing the picks and writing the questions. This file is the handover: the rules, how the agent works, every step done so far, and the measurements behind the current design. Read it before changing anything, and add a row to the work log for every change you make.
+Memory Lane is a Qloo Agentic Hackathon entry: an agent that uses Qloo's taste graph to build personal reminiscence session kits for caregivers of people living with dementia, with Claude choosing the picks and writing the questions. This file is the handover for both of us and our Claude sessions: the rules, how the agent works, every step so far, and the measurements behind the design. Read it, and **[docs/plan.md](docs/plan.md)**, before changing behavior; the evidence behind decisions is in **[docs/research.md](docs/research.md)**. Add a row to the work log for every change you make.
+
+**Deadline:** Oct 30, 2026, 11:45 pm ET (target Oct 29). The demo must stay **free and unrestricted for judges until Nov 16**.
 
 @AGENTS.md
 
-## Rules
+## Product rules (never break these)
+
+1. **Supports caregivers' activities. Not therapy, no medical claims, no health or medication advice.** No "therapy", "treatment" or "improves memory" anywhere.
+2. **Nothing invented.** Every song, film, place and dish in a kit must come from a Qloo tool result in the same run; `buildKit` removes anything else. An empty section shows a gap with its reason. Model-written activity ideas are labeled as suggestions.
+3. **Safety check first.** A sudden change (`suddenChange: true`) returns the safety stop with no kit and **no Qloo or Claude call**. The next session always asks the question again.
+4. **Questions invite stories, never test memory:** no "remember/recall", no quizzes, no statements about the person's past, one idea per card, adult language. Enforced in `lib/agent/validate-prompts.ts`.
+5. **Things to avoid is required;** the content filter (ratings, War genre, theme summaries) runs on every Qloo result.
+6. **Privacy:** nothing about a real person is stored or logged. Session notes stay in the browser. Demo personas are fictional; only the fictional example profile's kit is cached.
+7. **Media is linked out** (YouTube/Spotify search URLs only), never embedded; no lyrics.
+8. **Care wording lives in `lib/care.ts`;** change it there, nowhere else.
+
+## Engineering rules
 
 1. **Model: Claude Haiku 5.5 by default.** Every API call uses `claude-haiku-5-5` unless Sonnet 5.5 or Opus 5.5 has been approved by both Abil and Prathibha after a smoke-check audit (steps in [docs/token-alerts.md](docs/token-alerts.md#changing-the-model-audit-then-approve)). The approval is recorded in `CLAUDE_MODEL_APPROVAL` and must name the model; `agentConfig()` in `lib/agent/run.ts` falls back to Haiku and logs `model_not_approved` otherwise. Never change the default, add an automatic fallback to a bigger model, or raise `CLAUDE_EFFORT` on your own.
-2. **Token use stays measured.** Keep the per-call usage logging, the kit audit, the response headers and the alerts. Any change to the agent flow, prompt or tools gets a smoke-check audit (`npm run smoke -- --report`) with its token numbers, compared with the last one.
-3. **The agent loop is append-only.** Within one kit, send the same system prompt and tools on every call and never edit earlier messages; add text only to the user turn about to be sent. Claude's thinking blocks are bound to that history, and the API rejects edited history on accounts created on or after Aug 31, 2026. Don't use forced `tool_choice`; Opus 5.5 and Sonnet 5.5 reject it.
-4. **Grounding.** Every song, film, place and dish in a kit must come from a Qloo tool result in the same run; `buildKit` removes anything else. Claude sees short handles (`a1`, `m2`, `d3`) instead of Qloo's 36-character IDs; `ctx.handle()` makes them and `ctx.idFor()` maps them back.
-5. **Care and privacy.** A sudden change returns the safety stop with no Qloo or Claude call. Questions never test memory (`lib/agent/validate-prompts.ts`). Nothing about a real person is stored or logged; only the fictional example profile's kit is cached.
-6. **Keys.** Never in code, commits, issues, chat or screenshots: `.env.local` locally, Vercel environment variables in deployments.
-7. **Git.** Commit as the person you're working for (their name and GitHub no-reply email), with no Claude co-author or session lines. Don't force-push someone else's branch unless they agree. Branch flow: `fix/phase2-review` → `feat/phase2-real-data` ([PR #2](https://github.com/PrathibhaDevkar/memory-lane/pull/2)) → `feat/memory-lane-build` ([PR #1](https://github.com/PrathibhaDevkar/memory-lane/pull/1)) → `main`.
-8. **Before pushing:** `npm run typecheck`, `npm run lint`, `npm test` and `npm run build`, on Node 24.
-9. **`lib/types.ts` is the shared contract:** changes to it get their own PR.
+2. **Token use stays measured.** Keep the per-call usage logging, the kit audit, the response headers and the alerts. Any change to the agent flow, prompt or tools gets a smoke-check audit (`npm run smoke -- --report`) with its token numbers, compared with the last one. Costs and measurements are public on purpose: they show why decisions were made.
+3. **Rules live in code, not the prompt.** The year window, hometown, content filter, grounding and safety check are applied by the tools and route, whatever Claude asks for.
+4. **The agent loop is append-only.** Within one kit, send the same system prompt and tools on every call and never edit earlier messages; add text only to the user turn about to be sent. Claude's thinking blocks are bound to that history, and the API rejects edited history on accounts created on or after Aug 31, 2026. Finish by asking for `submit_kit` and refusing further lookups. Don't use forced `tool_choice`; Opus 5.5 and Sonnet 5.5 reject it.
+5. **Grounding by handle.** Claude sees short handles (`a1`, `m2`, `d3`) instead of Qloo's 36-character IDs; `ctx.handle()` makes them and `ctx.idFor()` maps them back. An unknown handle fails grounding.
+6. **`lib/types.ts` (zod) is the single contract** for the API, fixtures and the agent's output. Validate against it and don't redefine types; changes to it get their own PR.
+7. **Qloo client (`lib/qloo/client.ts`):** key in the `X-Api-Key` header only; at most 2 calls in flight (Qloo returns 429 on bursts); `/search` returns a list, `/v2/insights` nests results under `results.entities`; never throws (failures become gaps).
+8. **Next.js 16:** read the bundled docs in `node_modules/next/dist/docs/` before using a Next API (`dynamic`/`revalidate` exports are removed with Cache Components).
+9. **Keys** never go in code, commits, issues, chat or screenshots: `.env.local` locally (gitignored), Vercel environment variables in deployments. Never read out or type a key.
+
+## Working together
+
+- **Branch flow:** for every change, branch from `feat/phase2-real-data` (`fix/...`, `feat/...` or `docs/...`), open a small PR into `feat/phase2-real-data`, squash-merge it, and keep the branch. `feat/phase2-real-data` reaches `main` only through [PR #2](https://github.com/PrathibhaDevkar/memory-lane/pull/2), when both of us decide (before submission).
+- **Never push to or merge into `main`** directly.
+- **Don't force-push a shared branch** unless the other person agrees first; if you must, use `--force-with-lease` and say so in the team workspace.
+- **Pull before starting** (`git pull --ff-only`). Commit small, push often.
+- **Ask the person you're working for before** pushing, opening or merging PRs, deploying, or changing Vercel settings.
+- **Commits:** made as the person you're working for (their name and GitHub no-reply email), with **no Claude co-author, session links or "Generated with" footers**. The subject is one short plain-English line saying what changed; for bigger changes, a few short lines of why.
+- **Names and cost figures can appear in the repo;** keys and private links can't. Plans, decisions and links go in the team workspace (linked in docs/plan.md).
 
 ## Project map
 
@@ -24,13 +47,16 @@ Memory Lane builds reminiscence session kits for people living with dementia fro
 | `lib/agent/run.ts` | The agent loop, `lookUpFirst` (the usual lookups, run in code) and the model rule (`agentConfig`) |
 | `lib/agent/prompts.ts` | System prompt and the `submit_kit` tool |
 | `lib/agent/kit.ts` | `buildKit`: maps handles back, keeps grounded picks, checks questions and ideas |
+| `lib/agent/validate-prompts.ts` | The question rules (no memory tests, one idea per card) |
 | `lib/agent/audit.ts` | Per-kit audit, token alerts, response headers, prices |
 | `lib/usage.ts` | Daily token and cost totals in Redis, daily alerts |
 | `lib/qloo/tools.ts`, `lib/qloo/client.ts`, `lib/qloo/filters.ts` | Qloo tools with the rules in code; the HTTP client (2 calls in flight, retries, deadline); content and avoid-list filters |
 | `lib/ratelimit.ts`, `lib/kit-cache.ts`, `lib/redis.ts` | Visitor and daily limits; example-kit reuse; the shared Upstash client |
+| `lib/care.ts`, `lib/types.ts` | Care wording and kit limits per support level; the zod contract |
+| `components/` | Intake form, kit view, safety stop, session mode, care note, trace panel |
 | `scripts/smoke.mjs` | End-to-end check of 7 personas against a running app; prints tokens, cost, audit and alerts; `--report` writes `audits/*.md` |
-| `docs/plan.md`, `docs/token-alerts.md`, `docs/research.md` | The plan and decisions; alerts and the model-approval steps; Qloo research |
-| `tests/` | Vitest: unit, contract and UI tests with no network (`tests/live` needs keys) |
+| `docs/plan.md`, `docs/research.md`, `docs/token-alerts.md`, `docs/submission.md` | The plan and decisions; Qloo research and the tester script; alerts and model approval; the Devpost draft |
+| `tests/` | Vitest: unit, contract and UI tests with no network (`tests/live` needs keys and `LIVE=1`) |
 
 ## How a live kit is built
 
@@ -53,10 +79,38 @@ All are listed in `.env.example`. A value already set in your shell wins over `.
 | `CLAUDE_MODEL` | `claude-haiku-5-5` | Sonnet or Opus only with `CLAUDE_MODEL_APPROVAL` naming the model |
 | `CLAUDE_EFFORT` | `medium` | Thinking depth; lower only after a side-by-side check |
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | none | Upstash Redis, set by Vercel's Upstash integration (or the `UPSTASH_REDIS_REST_*` pair) |
-| `VISITOR_KITS_PER_HOUR`, `DAILY_LIVE_KITS` | 3, 100 | Live-kit limits |
+| `VISITOR_KITS_PER_HOUR`, `DAILY_LIVE_KITS` | 3, 100 | Live-kit limits (to revisit, see Open items) |
 | `EXAMPLE_KIT_HOURS` | 6 | How long the example profile's kit is reused |
 | `SMOKE_TOKEN` | none | Lets `scripts/smoke.mjs` skip the limits and always build fresh |
 | `TOKEN_ALERT_KIT_*`, `TOKEN_ALERT_DAILY_*` | see docs/token-alerts.md | Token alert limits |
+
+## Running and checking
+
+```bash
+npm ci
+npm run dev                                     # sample kits (KIT_SOURCE=fixture)
+npm run typecheck && npm run lint && npm test   # no network
+npm run build                                   # Node 24
+npm run dev:agent                               # live agent, needs keys in .env.local
+npm run smoke -- rosa walt june --report        # in a second terminal; about $0.005 on Haiku
+```
+
+- **Before pushing:** typecheck, lint, tests and build, on Node 24.
+- **Verify before calling something done:** run the tests, and for UI changes check it in the browser (desktop and phone width, light and dark).
+- **Report results exactly as they happened.** Never claim tests, live runs or tester results that didn't happen. Testers are "adults aged 60+" or "people who have looked after an older relative", never "caregivers" or people with dementia.
+
+## Deploying
+
+- **Production** (https://memory-lane-two-umber.vercel.app) is updated by promoting a preview: `npx vercel promote <preview-url> --yes`. Branch pushes only make previews, which need a Vercel login. Check production as an anonymous visitor afterwards.
+- The claude.ai Vercel connector can't reach this project's scope; use the Vercel CLI (`npx vercel`).
+- Live kits need `KIT_SOURCE=agent`, both API keys, Upstash Redis and `SMOKE_TOKEN` set in Vercel. Demo kits and the safety stop are never limited. Kill switch: `KIT_SOURCE=fixture` and redeploy.
+
+## Known gotchas
+
+- **Cloud-synced folders:** don't keep the repo where files can become cloud-only placeholders: iCloud Desktop/Documents on macOS, OneDrive Desktop/Documents ("Files On-Demand") on Windows. Tests then hang at 0% CPU waiting for downloads. Fix: move the repo to a local folder, delete `node_modules` and `.next`, and run `npm ci`. On macOS, `find node_modules -type f -flags +dataless | wc -l` counts cloud-only files.
+- **Shell commands differ by OS.** Commands here are written for bash (macOS, Linux, Claude cloud sessions, Git Bash on Windows). In PowerShell, use the equivalent (e.g. `Remove-Item -Recurse -Force node_modules`). macOS has no `timeout` command.
+- **`npm run typecheck` runs `next typegen` first;** plain `tsc` in a fresh checkout fails on `LayoutProps`.
+- **`next dev` rewrites `AGENTS.md`.** Commit it as-is rather than removing it.
 
 ## Work log
 
@@ -72,9 +126,11 @@ Every step so far, oldest first. Commit IDs are on `feat/phase2-real-data`.
 | Oct 17 | Token plan and go-live guide | Cost-per-kit estimates, budget and guardrails; an 8-step guide to keys, limits, Vercel and rollback (a shared Claude doc; ask Abil for access) | — |
 | Oct 18 | Live APIs connected | Prompt caching; favorites looked up in code; per-call token logging; Upstash limits (3 per visitor an hour, 100 a day); spend limit answers 503 "Live kits are paused"; smoke prints tokens and cost | `b07d2ab` |
 | Oct 18 | Merged into the Phase 2 branch | `fix/phase2-review` fast-forwarded into `feat/phase2-real-data` | PR #2 |
+| Oct 19 | Team workspace linked; PR #1 closed | The workspace link added to the plan via a short branch (PR #3, squash-merged); PR #1 closed because PR #2 holds every Phase 1 commit | `0e80731`, PR #3 |
 | Oct 19 | Commits re-authored as Abil | Git identity set to Abil's GitHub no-reply address, signing off, Claude lines removed; the 4 earlier commits rewritten with their original dates and force-pushed with a safety lease; Prathibha's commit kept with her name, date and change | `0e80731` and earlier |
 | Oct 19 | Token cut | The usual lookups run in code, so a typical kit takes 1 Claude call instead of 2; short handles instead of Qloo IDs; slightly shorter lists; only tools and system prompt cached; at most 4 calls; the example profile's kit reused for 6 hours | `00baeb3` |
-| Oct 19 | Haiku default, audits, token alerts, this file | Haiku 5.5 is the default, Sonnet or Opus only with a recorded approval; each live kit is audited and returns usage and alerts in its headers; daily totals and alerts in Redis; `smoke --report`; [docs/token-alerts.md](docs/token-alerts.md); this CLAUDE.md | This commit |
+| Oct 19 | Haiku default, audits, token alerts | Haiku 5.5 is the default, Sonnet or Opus only with a recorded approval; each live kit is audited and returns usage and alerts in its headers; daily totals and alerts in Redis; `smoke --report`; [docs/token-alerts.md](docs/token-alerts.md) | `21a06e9` |
+| Oct 19 | One shared CLAUDE.md | Both drafts merged: product rules, branch flow and checks from Prathibha's; model rule, token measurement, project map, settings, work log and measurements from Abil's. Settled: no Claude attribution, names and costs may be public | This commit |
 
 ## Measurements
 
@@ -99,18 +155,11 @@ Estimated cost per kit at list prices on Oct 19, 2026 (prices in [docs/token-ale
 
 Not yet measured live: no session so far has had API keys. The first live step is the smoke check with `--report` on Haiku.
 
-## Verify a change
-
-```bash
-npm run typecheck && npm run lint && npm test   # no network
-npm run build                                   # Node 24
-npm run dev:agent                               # live agent, needs keys in .env.local
-npm run smoke -- rosa walt june --report        # in a second terminal; about $0.005 on Haiku
-```
-
 ## Open items
 
-- First live smoke check on Haiku with `--report`; commit the report under `audits/`.
-- Vercel (Prathibha): keys, `KIT_SOURCE=agent`, `SMOKE_TOKEN`, Upstash for Redis, then redeploy.
-- Merge PR #2 into `feat/memory-lane-build`, then PR #1 into `main`.
-- `docs/team-workspace-link` is redundant (the same line is in `0e80731`); delete it once agreed.
+- First live smoke check on Haiku with `--report` (Claude API key coming from Abil); commit the report under `audits/`. Check that Haiku accepts the `effort` setting.
+- Vercel (Prathibha): keys, `KIT_SOURCE=agent`, `SMOKE_TOKEN`, Upstash for Redis, then promote.
+- Visitor limit: revisit `VISITOR_KITS_PER_HOUR` after the live Claude phase, since judges must have access without restriction.
+- Testers for Oct 24–25 (tester script in docs/research.md §5).
+- Before submission: merge PR #2 (`feat/phase2-real-data` → `main`) when both agree.
+- `docs/team-workspace-link` duplicates `0e80731`; delete it or keep it, once both agree.
