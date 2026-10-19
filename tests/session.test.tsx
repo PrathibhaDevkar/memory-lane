@@ -80,6 +80,32 @@ describe("buildCareNote", () => {
   it("handles a session that ended before anything was tried", () => {
     expect(buildCareNote(kit, log([]))).toContain("ended before anything was tried");
   });
+
+  it("ends each line with one full stop, even when an item is a sentence (from a live session)", () => {
+    const note = buildCareNote(
+      kit,
+      log([
+        { cardId: "a", kind: "song", title: "Whitney Houston", reaction: "calm" },
+        { cardId: "b", kind: "idea", title: "A large, soft scarf to hold and run through the hands while the music plays.", reaction: "calm" },
+        { cardId: "c", kind: "idea", title: "A printed photo of the San Antonio River Walk to look at together.", reaction: "calm" },
+        { cardId: "d", kind: "idea", title: "A wooden tambourine to tap gently with the palm.", reaction: "not_today" },
+        { cardId: "e", kind: "film", title: "Hello, Dolly! (1969)", reaction: "not_interested" },
+      ]),
+    );
+    expect(note).toContain(
+      "Calm with: Whitney Houston, A large, soft scarf to hold and run through the hands while the music plays and A printed photo of the San Antonio River Walk to look at together.",
+    );
+    expect(note).toContain(`Said "not today" to A wooden tambourine to tap gently with the palm. That's fine`);
+    expect(note).not.toMatch(/\.\.|\.\s*and |\?\./);
+  });
+
+  it("doesn't add a full stop after a question or an exclamation", () => {
+    const stoppedQuestion = log([{ cardId: "q", kind: "question", title: "What music did people dance to?", reaction: "stopped" }]);
+    expect(buildCareNote(kit, stoppedQuestion)).toMatch(/Stopped at: What music did people dance to\?$/m);
+    const stoppedIdea = log([{ cardId: "i", kind: "idea", title: "Hold a soft scarf.", reaction: "stopped" }]);
+    expect(buildCareNote(kit, stoppedIdea)).toContain("Stopped at: Hold a soft scarf.");
+    expect(buildCareNote(kit, stoppedIdea)).not.toContain("..");
+  });
 });
 
 describe("avoidNextTime", () => {

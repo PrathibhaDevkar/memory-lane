@@ -88,13 +88,17 @@ export function timeOfDay(iso: string): "morning" | "afternoon" | "evening" {
 }
 
 const list = (xs: string[]) => (xs.length <= 1 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);
+// Activity ideas are full sentences ending in a full stop; the note adds its own, so drop theirs.
+const bare = (title: string) => title.trim().replace(/\.+$/, "");
+// Ends a line with a full stop unless it already ends a sentence ("Hello, Dolly!", a question).
+const sentence = (line: string) => (/[.!?]$/.test(line) ? line : `${line}.`);
 
 /** A short, factual care note from the log. Only what was observed, plus gentle next steps. */
 export function buildCareNote(kit: Kit, log: SessionLog): string {
   const name = kit.profile.displayName;
   const when = timeOfDay(log.startedAt);
   const date = new Date(log.startedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  const titles = (r: Reaction) => log.entries.filter((e) => e.reaction === r && e.kind !== "question" && e.kind !== "comment").map((e) => e.title);
+  const titles = (r: Reaction) => log.entries.filter((e) => e.reaction === r && e.kind !== "question" && e.kind !== "comment").map((e) => bare(e.title));
   const talked = (r: Reaction) => log.entries.filter((e) => e.reaction === r && (e.kind === "question" || e.kind === "comment")).length;
 
   const lines = [`Reminiscence session with ${name}, ${date}, ${when}. Support today: ${SUPPORT_LEVELS[kit.profile.supportLevel].label.toLowerCase()}.`];
@@ -108,16 +112,16 @@ export function buildCareNote(kit: Kit, log: SessionLog): string {
   const notToday = titles("not_today");
   const stopped = log.entries.find((e) => e.reaction === "stopped");
 
-  if (litUp.length) lines.push(`Lit up with: ${list(litUp)}.`);
-  if (calm.length) lines.push(`Calm with: ${list(calm)}.`);
+  if (litUp.length) lines.push(sentence(`Lit up with: ${list(litUp)}`));
+  if (calm.length) lines.push(sentence(`Calm with: ${list(calm)}`));
   if (talked("lit_up") + talked("calm")) lines.push(`Engaged with ${talked("lit_up") + talked("calm")} of the questions.`);
-  if (notInterested.length) lines.push(`Not interested in: ${list(notInterested)}.`);
-  if (notToday.length || talked("not_today")) lines.push(`Said "not today" to ${notToday.length ? list(notToday) : "some questions"}. That's fine; it tells us what suits today.`);
-  if (stopped) lines.push(`Stopped at: ${stopped.title}.`);
+  if (notInterested.length) lines.push(sentence(`Not interested in: ${list(notInterested)}`));
+  if (notToday.length || talked("not_today")) lines.push(`${sentence(`Said "not today" to ${notToday.length ? list(notToday) : "some questions"}`)} That's fine; it tells us what suits today.`);
+  if (stopped) lines.push(sentence(`Stopped at: ${bare(stopped.title)}`));
 
   const next: string[] = [];
   if (litUp.length) next.push(`more like ${litUp[0]}`);
-  if (stopped && canLeaveOut(stopped.kind)) next.push(`leave out ${stopped.title}`);
+  if (stopped && canLeaveOut(stopped.kind)) next.push(`leave out ${bare(stopped.title)}`);
   if (stopped && when === "evening") next.push("an earlier time of day may suit better");
   if (next.length) lines.push(`Next time: ${list(next)}.`);
   return lines.join("\n");
