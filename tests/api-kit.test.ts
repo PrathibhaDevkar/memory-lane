@@ -169,6 +169,26 @@ describe("POST /api/kit (live mode): the example profile's reused kit", () => {
     expect(buildLiveKit).not.toHaveBeenCalled();
   });
 
+  it("returns the kit's audit, its token use and any alerts in the response headers", async () => {
+    vi.stubEnv("KIT_SOURCE", "agent");
+    vi.stubEnv("TOKEN_ALERT_KIT_OUTPUT", "1000");
+    const quiet = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+    const llm = { id: "c1", kind: "llm" as const, label: "Claude, turn 1", input: { model: "claude-haiku-5-5", effort: "medium", usage: { in: 2000, cacheWrite: 3000, cacheRead: 0, out: 1500 } }, outputSummary: "Asked for: submit_kit", excluded: [], ms: 900, status: "ok" as const };
+    buildLiveKit.mockResolvedValue({ ...rosaKit, trace: [...rosaKit.trace, llm], provenance: { kind: "live", generatedAt: "2026-10-19T18:40:12.000Z" } });
+    const res = await post(JSON.stringify(walt));
+    expect(res.status).toBe(200);
+    expect(res.headers.get("X-Claude-Model")).toBe("claude-haiku-5-5");
+    expect(res.headers.get("X-Claude-Tokens")).toBe("in=2000; cache_write=3000; cache_read=0; out=1500");
+    expect(res.headers.get("X-Kit-Audit")).toBe("pass");
+    expect(res.headers.get("X-Token-Alert")).toMatch(/1500 output tokens, over the limit of 1000/);
+    // The audit is logged without profile details.
+    const line = log.mock.calls.map((c) => String(c[0])).find((l) => l.includes("kit_audit"))!;
+    expect(line).not.toMatch(/Walt|Memphis|Elvis/);
+    quiet.mockRestore();
+    log.mockRestore();
+  });
+
   it("offers a fresh live kit for saving, and the smoke check always builds fresh", async () => {
     vi.stubEnv("KIT_SOURCE", "agent");
     isSmokeRequest.mockReturnValue(true);

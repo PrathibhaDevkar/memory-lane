@@ -41,8 +41,18 @@ const OUT_OF_TIME = "The agent ran out of time before finishing.";
 
 type Effort = "low" | "medium" | "high" | "xhigh" | "max";
 
+// Team rule (CLAUDE.md): Claude Haiku 5.5 by default. Sonnet or Opus only after the team approves a
+// switch backed by a smoke-check audit, recorded in CLAUDE_MODEL_APPROVAL, which must name the model
+// (for example "claude-sonnet-5-5 approved 2026-10-21 by Abil and Prathibha, audits/....md").
+// Without that, the request falls back to Haiku and the server log says so.
+export const DEFAULT_MODEL = "claude-haiku-5-5";
+
 export function agentConfig() {
-  const model = process.env.CLAUDE_MODEL || "claude-opus-5-5";
+  const requested = process.env.CLAUDE_MODEL?.trim() || DEFAULT_MODEL;
+  const approval = process.env.CLAUDE_MODEL_APPROVAL?.trim() ?? "";
+  const approved = requested.startsWith("claude-haiku") || approval.includes(requested);
+  if (!approved) console.warn(JSON.stringify({ event: "model_not_approved", requested, using: DEFAULT_MODEL }));
+  const model = approved ? requested : DEFAULT_MODEL;
   const effort = (process.env.CLAUDE_EFFORT || "medium") as Effort;
   return { model, effort };
 }

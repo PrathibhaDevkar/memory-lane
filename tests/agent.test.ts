@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildKit, checkIdeas } from "@/lib/agent/kit";
 import { KitSchema } from "@/lib/types";
 
@@ -15,7 +15,7 @@ vi.mock("@/lib/qloo/client", () => ({
 }));
 
 const { RunContext } = await import("@/lib/qloo/tools");
-const { buildLiveKit, FINISH_NOW } = await import("@/lib/agent/run");
+const { agentConfig, buildLiveKit, DEFAULT_MODEL, FINISH_NOW } = await import("@/lib/agent/run");
 const { qlooGet } = await import("@/lib/qloo/client");
 
 const rosa = {
@@ -127,6 +127,36 @@ describe("support levels and activity ideas", () => {
     const kit = buildKit(ctxAt("middle"), { ...empty, activity_ideas: ["An old record sleeve to look at"] });
     expect(kit.activityIdeas).toEqual([{ text: "An old record sleeve to look at", source: "llm" }]);
     expect(KitSchema.safeParse(kit).success).toBe(true);
+  });
+});
+
+describe("model rule: Haiku by default, Sonnet or Opus only with a recorded approval", () => {
+  afterEach(() => vi.unstubAllEnvs());
+  const quiet = () => vi.spyOn(console, "warn").mockImplementation(() => {});
+
+  it("uses Claude Haiku 5.5 when nothing is set", () => {
+    vi.stubEnv("CLAUDE_MODEL", "");
+    expect(DEFAULT_MODEL).toBe("claude-haiku-5-5");
+    expect(agentConfig().model).toBe("claude-haiku-5-5");
+  });
+
+  it("falls back to Haiku, and says so in the log, when Sonnet or Opus is set without approval", () => {
+    const warn = quiet();
+    vi.stubEnv("CLAUDE_MODEL", "claude-opus-5-5");
+    vi.stubEnv("CLAUDE_MODEL_APPROVAL", "");
+    expect(agentConfig().model).toBe("claude-haiku-5-5");
+    expect(String(warn.mock.calls[0][0])).toContain("model_not_approved");
+    warn.mockRestore();
+  });
+
+  it("uses the requested model when the approval names it, and only that model", () => {
+    const warn = quiet();
+    vi.stubEnv("CLAUDE_MODEL", "claude-sonnet-5-5");
+    vi.stubEnv("CLAUDE_MODEL_APPROVAL", "claude-sonnet-5-5 approved 2026-10-21 by Abil and Prathibha, audits/2026-10-21-claude-sonnet-5-5-medium.md");
+    expect(agentConfig().model).toBe("claude-sonnet-5-5");
+    vi.stubEnv("CLAUDE_MODEL", "claude-opus-5-5");
+    expect(agentConfig().model).toBe("claude-haiku-5-5");
+    warn.mockRestore();
   });
 });
 

@@ -1,11 +1,13 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { auditHeaders, auditKit } from "@/lib/agent/audit";
 import { buildLiveKit } from "@/lib/agent/run";
 import { SAFETY_STOP_MESSAGE } from "@/lib/care";
 import { fixtureKit, kitSource } from "@/lib/kit-source";
 import { reusedExampleKit, saveExampleKit } from "@/lib/kit-cache";
 import { isSmokeRequest, liveKitBlocked } from "@/lib/ratelimit";
 import { KitSchema, ProfileSchema, type SafetyStop } from "@/lib/types";
+import { addDailyUsage } from "@/lib/usage";
 
 // Upper bound for one kit build. The agent's own time budget (lib/agent/run.ts) stays below
 // this; confirm it fits the Vercel plan's function limit when deploying.
@@ -55,7 +57,14 @@ export async function POST(request: Request) {
         // Validate the agent's kit against the shared contract before sending it.
         const kit = KitSchema.parse(await buildLiveKit(parsed.data));
         await saveExampleKit(parsed.data, kit);
-        return Response.json(kit);
+        // Audit the kit and its token use, add it to today's totals, and return both, with any
+        // token alerts, in the response headers (docs/token-alerts.md). No profile details are logged.
+        const audit = auditKit(kit);
+        const today = await addDailyUsage(audit);
+        const alerts = [...audit.alerts, ...(today?.alerts ?? [])];
+        console.log(JSON.stringify({ event: "kit_audit", ...audit, todayTokens: today?.tokens, todayUsd: today?.usd }));
+        if (alerts.length) console.warn(JSON.stringify({ event: "token_alert", model: audit.model, alerts }));
+        return Response.json(kit, { headers: auditHeaders(audit, alerts) });
       } catch (err) {
         // Out of budget: a spend limit set in the Claude Console (400), the tier's monthly cap (429), or
         // no credits left. Retrying won't help until it's raised, so say live kits are paused.

@@ -1,19 +1,23 @@
 // End-to-end check: builds a kit for each persona through the running app and prints what came back.
 //
 // Run:  npm run dev:agent            (in another terminal; KIT_SOURCE=agent)
-//       node scripts/smoke.mjs [base-url] [persona...] [--save]
+//       node scripts/smoke.mjs [base-url] [persona...] [--save] [--report]
 // --save writes each live kit to fixtures/kits/<persona>.json, labeled as a saved run, for use
 // as a demo (then add it to lib/demos.ts).
 // Default base URL: http://localhost:3000. Personas: rosa walt june swift margaret okafor elena (default: all).
 // With SMOKE_TOKEN set (npm run smoke reads .env.local), the run skips the live-kit limits and
 // never gets the example profile's reused kit, so every kit is built fresh.
-// Each live kit prints its Claude token use and cost at list prices.
+// Each live kit prints its Claude token use and cost at list prices, and the audit and token
+// alerts the API returns in its headers. --report also writes audits/<date>-<model>-<effort>.md,
+// the record the team reviews before approving a model change (CLAUDE.md, docs/token-alerts.md).
 
-import { writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 
 const args = process.argv.slice(2);
 const BASE = args.find((a) => a.startsWith("http")) ?? "http://localhost:3000";
 const SAVE = args.includes("--save");
+const REPORT = args.includes("--report");
+const rows = [];
 const only = args.filter((a) => !a.startsWith("http") && !a.startsWith("--"));
 
 const base = { suddenChange: false, supportLevel: "early", thingsToAvoid: ["none"] };
@@ -52,8 +56,10 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
   const secs = ((Date.now() - t0) / 1000).toFixed(1);
   const kit = await res.json().catch(() => null);
   console.log(`\n=== ${profile.displayName}: born ${profile.birthYear}, ${profile.hometown}, favorite ${profile.favorites[0].text} (${secs}s, HTTP ${res.status})`);
+  const header = (name) => res.headers.get(name);
   if (profile.suddenChange) {
     const ok = res.ok && kit?.mode === "safety_stop";
+    rows.push({ key, passed: ok, note: "safety stop, no Claude call", secs });
     console.log(ok ? "  safety stop, no kit (as expected)" : `  FAILED: expected a safety stop, got ${JSON.stringify(kit).slice(0, 200)}`);
     if (!ok) failures++;
     continue;
@@ -61,6 +67,7 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
   if (!res.ok || !kit?.music) {
     failures++;
     console.log("  FAILED:", JSON.stringify(kit).slice(0, 300));
+    rows.push({ key, passed: false, note: `HTTP ${res.status}`, secs });
     continue;
   }
   const show = (label, section, fmt) =>
@@ -89,6 +96,15 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
   const minPrompts = { early: 3, middle: 1, late: 0 }[kit.profile.supportLevel];
   const passed = sections >= 2 && kit.prompts.length >= minPrompts;
   if (!passed) failures++;
+  if (header("x-kit-audit")) {
+    console.log(`  audit    ${header("x-kit-audit")} · ${header("x-claude-model")} · ${header("x-claude-calls")} Claude calls · ${header("x-claude-tokens")} · $${header("x-claude-cost-usd")}`);
+  }
+  if (header("x-token-alert")) console.log(`  ALERT    ${header("x-token-alert")}`);
+  rows.push({
+    key, passed, secs, sections, questions: kit.prompts.length, source: kit.provenance.kind,
+    model: header("x-claude-model") ?? "none", effort: claude.at(-1)?.input.effort ?? "none", calls: header("x-claude-calls") ?? String(claude.length),
+    tokens: header("x-claude-tokens") ?? "", cost: header("x-claude-cost-usd") ?? "", alert: header("x-token-alert") ?? "",
+  });
   if (SAVE && passed && kit.provenance.kind === "live") {
     const date = kit.provenance.generatedAt;
     const saved = { ...kit, provenance: { kind: "cached", generatedAt: date, note: `A saved live run from ${date}, shown as a demo.` } };
@@ -99,4 +115,31 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
   }
 }
 console.log(failures ? `\n${failures} persona(s) failed.` : "\nAll personas produced a kit.");
+
+if (REPORT) {
+  const live = rows.filter((r) => r.model && r.model !== "none");
+  const model = live[0]?.model ?? "no-model";
+  const effort = live[0]?.effort ?? "none";
+  const date = new Date().toISOString().slice(0, 10);
+  const total = live.reduce((n, r) => n + (Number(r.cost) || 0), 0);
+  const cell = (s) => String(s ?? "").replace(/\|/g, "/");
+  const lines = [
+    `# Smoke-check audit: ${model} at ${effort} effort, ${date}`,
+    "",
+    `Base URL: ${BASE}. ${rows.filter((r) => r.passed).length} of ${rows.length} personas passed. Claude cost for the run: $${total.toFixed(4)} at list prices.`,
+    "",
+    "| Persona | Passed | Source | Sections | Questions | Claude calls | Tokens | Cost (US$) | Seconds | Alerts |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+    ...rows.map((r) => `| ${r.key} | ${r.passed ? "yes" : "no"} | ${cell(r.source ?? r.note)} | ${cell(r.sections)} | ${cell(r.questions)} | ${cell(r.calls)} | ${cell(r.tokens)} | ${cell(r.cost)} | ${r.secs} | ${cell(r.alert)} |`),
+    "",
+    "Read the kits themselves too: questions that invite stories, picks from the right era, nothing on an avoid list.",
+    "Approval: _names and date_ (see CLAUDE.md, Model rule).",
+    "",
+  ];
+  const dir = new URL("../audits/", import.meta.url);
+  await mkdir(dir, { recursive: true });
+  const file = new URL(`${date}-${model}-${effort}.md`, dir);
+  await writeFile(file, lines.join("\n"));
+  console.log(`Audit report: audits/${date}-${model}-${effort}.md`);
+}
 process.exit(failures ? 1 : 0);

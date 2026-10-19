@@ -230,7 +230,7 @@ flowchart TD
     FAILK --> OUT
 ```
 
-**Expected path:** the usual lookups run in code first (one `/search` per favorite, then music, films, TV, places and dishes seeded with the top match), then 1 Claude turn (pick and submit); 2 when Claude fixes something: the modern-favorite hop, a traditions seed, or the wrong match. 6–9 Qloo calls per kit. Claude reads short handles (`a1`, `m2`) instead of Qloo's IDs, the tools and system prompt are cached, the example profile's live kit is reused for a few hours, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-opus-5-5`) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals. Names and years in the kit always come from Qloo, never from Claude's text.
+**Expected path:** the usual lookups run in code first (one `/search` per favorite, then music, films, TV, places and dishes seeded with the top match), then 1 Claude turn (pick and submit); 2 when Claude fixes something: the modern-favorite hop, a traditions seed, or the wrong match. 6–9 Qloo calls per kit. Claude reads short handles (`a1`, `m2`) instead of Qloo's IDs, the tools and system prompt are cached, the example profile's live kit is reused for a few hours, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-haiku-5-5`; Sonnet or Opus only with an approval recorded in `CLAUDE_MODEL_APPROVAL`, see CLAUDE.md) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals for Sonnet and Opus (Haiku has none). Every live kit is audited and returns its token use and alerts in response headers ([token-alerts.md](token-alerts.md)). Names and years in the kit always come from Qloo, never from Claude's text.
 
 ---
 
@@ -565,7 +565,7 @@ Saved resident profiles (consent and a privacy setup first) · care-home roster 
 | Question | Decide by | Status |
 |---|---|---|
 | Support-level labels and the sudden-change wording | Oct 16 | With the team for review |
-| Default Claude model (speed, quality, cost) | Oct 20 | `claude-opus-5-5` until timing on two models |
+| Default Claude model (speed, quality, cost) | Oct 19 | `claude-haiku-5-5` (team rule). Sonnet or Opus only after an approved smoke-check audit |
 | Stream the trace live, or show it after? | Oct 20 | Show after, unless kits take longer than ~15 s |
 | Place era check on Wikidata | Oct 19 | Only if Phase 2 lands on time |
 
