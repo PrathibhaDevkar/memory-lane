@@ -11,9 +11,14 @@ const TESTS_MEMORY = /\bremember(ed)?\b|\brecall\b/i;
 const QUIZ = /\b(what|which) year\b|\bwhat was (the|his|her|their) name\b|\bwhat'?s (the|his|her|their) name\b|\bwho (sang|starred|played|wrote)\b|\bhow old were you\b|\bwhat date\b/i;
 const CHILDLIKE = /\b(yummy|doggy|kitty|choo[- ]choo|nap ?time|sweetie|good (boy|girl|job)|well done|potty|silly billy)\b/i;
 const OPEN_START = /^(what|how|who|where|which|why|tell me)\b/i;
+// A name the card opens with ("Rosa, …", "Mr. Okafor, …"): up to three capitalized words and a comma.
+const ADDRESS = /^[A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){0,2},\s+/;
+
+/** The card without the name it opens with, so "Rosa, what…" is checked as "what…". */
+const body = (p: string) => p.trim().replace(ADDRESS, "");
 
 export function promptProblem(p: string, level: SupportLevel = "early"): string | null {
-  const t = p.trim();
+  const t = body(p);
   if (t.length < 8) return "Too short.";
   if (t.length > 220) return "Too long for one card.";
   if (PRESUMES.test(t)) return "States something about the person's past instead of asking.";
@@ -38,6 +43,6 @@ export function validatePrompts(prompts: string[], level: SupportLevel = "early"
     else if (kept.length < limits.prompts) kept.push(p.trim());
     else dropped.push({ title: p, reason: `More than ${limits.prompts} for this support level.` });
   }
-  const open = kept.filter((p) => OPEN_START.test(p)).length;
+  const open = kept.filter((p) => OPEN_START.test(body(p))).length;
   return { kept, dropped, open, meetsLevel: open >= limits.minOpenPrompts };
 }
