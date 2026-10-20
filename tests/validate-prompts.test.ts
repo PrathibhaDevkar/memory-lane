@@ -27,6 +27,15 @@ describe("promptProblem (D10: care-practice question rules)", () => {
     expect(promptProblem(p)).toMatch(reason);
   });
 
+  it("reads past the name a card opens with (cards from the first live run)", () => {
+    expect(promptProblem("Rosa, tell me about a place in Chicago that felt like home to you.")).toBeNull();
+    expect(promptProblem("Mr. Okafor, would you like to hear Tony Allen or Manu Dibango next?")).toBeNull();
+    // The rules still apply after the name.
+    expect(promptProblem("Rosa, you loved Sinatra, didn't you?")).toMatch(/states something/i);
+    expect(promptProblem("Walt, remember when Sun Studio opened?")).toMatch(/states something/i);
+    expect(promptProblem("Rosa, Sinatra was very popular.")).toMatch(/not a question/i);
+  });
+
   it("allows a short comment about the music only at the late level", () => {
     const comment = "This one was on the radio everywhere in the 1950s.";
     expect(promptProblem(comment, "late")).toBeNull();
@@ -57,6 +66,19 @@ describe("validatePrompts (per support level)", () => {
     const late = validatePrompts(five, "late");
     expect(late.kept).toHaveLength(2);
     expect(late.dropped.at(-1)!.reason).toMatch(/more than 2/i);
+  });
+
+  it("counts a question that opens with the person's name as open", () => {
+    const named = [
+      "Rosa, what was it like going out for an evening in Chicago?",
+      "Mr. Okafor, what did you enjoy most about teaching maths?",
+      "What makes a burger taste just right to you, June?",
+      "Rosa, is there a film that has stayed with you?",
+    ];
+    const r = validatePrompts(named, "early");
+    expect(r.kept).toHaveLength(4);
+    expect(r.open).toBe(3);
+    expect(r.meetsLevel).toBe(true);
   });
 
   it("flags an early kit with too few open questions", () => {

@@ -15,7 +15,7 @@ vi.mock("@/lib/qloo/client", () => ({
 }));
 
 const { RunContext } = await import("@/lib/qloo/tools");
-const { agentConfig, buildLiveKit, DEFAULT_MODEL, FINISH_NOW } = await import("@/lib/agent/run");
+const { agentConfig, buildLiveKit, DEFAULT_MODEL, FINISH_NOW, traditionsToDo } = await import("@/lib/agent/run");
 const { qlooGet } = await import("@/lib/qloo/client");
 
 const rosa = {
@@ -204,6 +204,22 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     expect(KitSchema.safeParse(kit).success).toBe(true);
     // f1 was returned as a favorite and as an artist (by get_music), so it's grounded.
     expect(kit.music.items[0]).toMatchObject({ title: "Frank Sinatra", qlooId: "SINATRA" });
+  });
+
+  it("asks Claude to seed music from the caregiver's traditions, and only when there are some", async () => {
+    expect(traditionsToDo(undefined)).toBeUndefined();
+    expect(traditionsToDo("  ")).toBeUndefined();
+    expect(traditionsToDo("Catholic hymns")).toMatch(/"Catholic hymns".*resolve_favorite.*artist's name.*get_music/);
+
+    const submit = () => msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }]);
+    const withTraditions = fakeClient([submit()]);
+    await buildLiveKit({ ...rosa, traditions: "Catholic hymns" }, { client: withTraditions.client });
+    expect(JSON.stringify(withTraditions.sent[0].body.messages[0])).toContain("to_do");
+
+    // Without traditions the message is unchanged: no to_do field at all.
+    const without = fakeClient([submit()]);
+    await buildLiveKit(rosa, { client: without.client });
+    expect(JSON.stringify(without.sent[0].body.messages[0])).not.toContain("to_do");
   });
 
   it("lets Claude fix a problem with another lookup, running that turn's tools in parallel", async () => {

@@ -65,6 +65,16 @@ function appendText(message: Anthropic.Beta.BetaMessageParam, text: string) {
       : [...message.content, { type: "text", text }];
 }
 
+/**
+ * The step the up-front lookups can't do for traditions: Qloo's search matches names, so "Catholic
+ * hymns" finds bands called "Hymns". Claude picks an artist known for the tradition; the code makes
+ * sure it's asked, since the first live run on Haiku skipped it.
+ */
+export function traditionsToDo(traditions: string | undefined): string | undefined {
+  if (!traditions?.trim()) return undefined;
+  return `Before submit_kit: the caregiver named traditions (${JSON.stringify(traditions.trim())}). Unless a favorite is mainly known for them, call resolve_favorite with one well-known artist of that tradition who was popular during the person's formative years (an artist's name, not the tradition's words: Qloo's search matches names; music takes its era from this seed), then get_music seeded with it, and include fitting artists from that result in music.`;
+}
+
 type ToolResult = Record<string, unknown>;
 type Candidate = { id: string; year?: number };
 type Resolved = { favorite: string; kind: string; candidates?: Candidate[]; error?: string };
@@ -128,6 +138,7 @@ export async function buildLiveKit(
         first_language: profile.firstLanguage,
         traditions: profile.traditions,
         ...found,
+        to_do: traditionsToDo(profile.traditions),
       })}`,
     },
   ];
