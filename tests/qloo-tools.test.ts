@@ -20,7 +20,7 @@ vi.mock("@/lib/qloo/client", () => ({
   }),
 }));
 
-const { RunContext, runTool, MAX_QLOO_CALLS } = await import("@/lib/qloo/tools");
+const { RunContext, runTool, lookUpTradition, MAX_QLOO_CALLS } = await import("@/lib/qloo/tools");
 const { buildKit } = await import("@/lib/agent/kit");
 
 const june = {
@@ -93,6 +93,44 @@ describe("Qloo tools", () => {
     ctx.seen.set("SEED", { kind: "favorite", name: "x" });
     const out = parse(await runTool(ctx, "get_screen", { seed_ids: ["SEED"], kind: "movie" }));
     expect(out.titles.map((t: { name: string }) => t.name)).not.toContain("Annie");
+  });
+
+  it("sends theme summaries only when there's something to avoid (they help catch loose matches)", async () => {
+    const titles = async (thingsToAvoid: string[]) => {
+      const ctx = new RunContext({ ...june, thingsToAvoid }, { start: 1968, end: 1988 });
+      ctx.seen.set("SEED", { kind: "favorite", name: "x" });
+      return parse(await runTool(ctx, "get_screen", { seed_ids: ["SEED"], kind: "movie" })).titles as { about?: string }[];
+    };
+    for (const nothing of [["none"], ["Nothing to avoid"], ["n/a"]]) expect((await titles(nothing)).every((t) => t.about === undefined)).toBe(true);
+    expect((await titles(["hospitals"])).every((t) => typeof t.about === "string")).toBe(true);
+  });
+
+  it("resolve_favorite never makes an artist a lookup offered unpickable", async () => {
+    const ctx = new RunContext(june, { start: 1968, end: 1988 });
+    const sinatra = fixture("rosa-search")[0].entity_id;
+    ctx.seen.set(sinatra, { kind: "artist", name: "Frank Sinatra" });
+    await runTool(ctx, "resolve_favorite", { name: "Frank Sinatra", kind: "artist" });
+    expect(ctx.seen.get(sinatra)?.kind).toBe("artist");
+  });
+
+  it("lookUpTradition finds the artist Claude named and music like it, and the artist can be picked", async () => {
+    const ctx = new RunContext(june, { start: 1968, end: 1988 });
+    const found = (await lookUpTradition(ctx, "Frank Sinatra"))!;
+    expect(found.artist).toEqual({ id: "f1", name: "Frank Sinatra" });
+    expect(found.artists.map((a) => a.name)).toContain("Ella Fitzgerald");
+    expect(calls.map((c) => c.path)).toEqual(["/search", "/v2/insights"]);
+    const kit = buildKit(ctx, {
+      music: [{ id: "f1", why: "x" }, { id: found.artists[0].id, why: "x" }],
+      screen: [], dish: [], place: [], prompts: [], activity_ideas: [], gaps: [],
+    });
+    expect(kit.music.items.map((i) => i.title)).toEqual(["Frank Sinatra", found.artists[0].name]);
+  });
+
+  it("lookUpTradition leaves out an artist on the avoid list", async () => {
+    const ctx = new RunContext({ ...june, thingsToAvoid: ["Frank Sinatra"] }, { start: 1968, end: 1988 });
+    expect(await lookUpTradition(ctx, "Frank Sinatra")).toBeNull();
+    expect(calls.map((c) => c.path)).toEqual(["/search"]);
+    expect(ctx.trace.at(-1)).toMatchObject({ kind: "filter", status: "gap" });
   });
 
   it("get_places offers landmarks in the profile's hometown, historic first", async () => {

@@ -82,6 +82,9 @@ export function avoidPhrases(line: string): string[] {
   return [...phrases];
 }
 
+/** True when the caregiver's list only says there's nothing to avoid ("none", "n/a"…). */
+export const nothingToAvoid = (thingsToAvoid: string[]) => thingsToAvoid.every((line) => avoidPhrases(line).length === 0);
+
 /** A phrase and its singular: "horses" ~ "horse", "churches" ~ "church", "war films" ~ "war film". */
 function forms(phrase: string): string[] {
   const out = [phrase];

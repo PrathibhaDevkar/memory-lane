@@ -11,10 +11,12 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import type { EraWindow, Profile, TraceStep } from "@/lib/types";
 import { qlooGet, type QlooResult } from "./client";
-import { cleanDishes, landmarks, screen } from "./filters";
+import { cleanDishes, landmarks, nothingToAvoid, screen } from "./filters";
 import type { Excluded, QlooEntity } from "./types";
 
-export const MAX_QLOO_CALLS = 12;
+// The lookups run in code take up to 3 favorites + 6 + 2 for traditions; the rest is room for
+// Claude to fix a wrong match.
+export const MAX_QLOO_CALLS = 14;
 
 export type SeenKind = "favorite" | "artist" | "movie" | "tv" | "place" | "dish";
 export type Seen = { kind: SeenKind; name: string; year?: number; genre?: string };
@@ -75,22 +77,19 @@ export class RunContext {
 
 // ---------- Tool definitions (what Claude sees) ----------
 
-const seedIds = {
-  type: "array",
-  items: { type: "string" },
-  description: "Ids from earlier results, such as f1 or m2.",
-} as const;
+// Short on purpose: the tools and system prompt are re-read on every call, and the lookups usually
+// run in code before Claude is called (lookUpFirst in lib/agent/run.ts).
+const seedIds = { type: "array", items: { type: "string" } } as const;
 
 export const TOOLS: Anthropic.Beta.BetaTool[] = [
   {
     name: "resolve_favorite",
-    description:
-      "Look up a favorite in Qloo: up to 3 matches with ids and years. The caregiver's favorites are already looked up, so use this only for an extra seed.",
+    description: "Find a favorite in Qloo: up to 3 matches with ids and years.",
     strict: true,
     input_schema: {
       type: "object",
       properties: {
-        name: { type: "string", description: "The favorite as the caregiver wrote it." },
+        name: { type: "string" },
         kind: { type: "string", enum: ["artist", "movie", "tv", "other"] },
       },
       required: ["name", "kind"],
@@ -99,15 +98,13 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
   },
   {
     name: "get_music",
-    description:
-      "Artists that fans of the seeds also love, from Qloo. Their era comes from the seeds: for a modern favorite, seed with the top film from the person's era.",
+    description: "Artists that fans of the seeds also love. Their era comes from the seeds.",
     strict: true,
     input_schema: { type: "object", properties: { seed_ids: seedIds }, required: ["seed_ids"], additionalProperties: false },
   },
   {
     name: "get_screen",
-    description:
-      "Films or TV shows from the person's formative years (applied automatically) that fans of the seeds also like. Unsafe titles are already removed.",
+    description: "Films or TV shows from the person's formative years that fans of the seeds also like; unsafe titles removed.",
     strict: true,
     input_schema: {
       type: "object",
@@ -118,15 +115,13 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
   },
   {
     name: "get_places",
-    description:
-      "Landmarks in the person's hometown (applied automatically), historic places first. Some are modern attractions: pick one that existed when the person was young.",
+    description: "Landmarks in the person's hometown, historic places first.",
     strict: true,
     input_schema: { type: "object", properties: { seed_ids: seedIds }, required: ["seed_ids"], additionalProperties: false },
   },
   {
     name: "get_dish",
-    description:
-      "Hometown restaurants with their specialty dishes. Pick a dish from a place that fits the person's era; some places are modern or themed.",
+    description: "Hometown restaurants with their specialty dishes.",
     strict: true,
     input_schema: { type: "object", properties: { seed_ids: seedIds }, required: ["seed_ids"], additionalProperties: false },
   },
@@ -175,7 +170,8 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       if (!r.ok) return fail(r.error);
       if (!r.entities.length) return fail(`No Qloo match for "${String(args.name)}"`);
       const candidates = r.entities.map((e) => {
-        ctx.seen.set(e.entity_id, { kind: "favorite", name: e.name, year: e.properties.release_year });
+        // Never downgrade something a lookup already offered (an artist from get_music stays pickable).
+        if (!ctx.seen.has(e.entity_id)) ctx.seen.set(e.entity_id, { kind: "favorite", name: e.name, year: e.properties.release_year });
         return { id: ctx.handle(e.entity_id, "f"), name: e.name, year: e.properties.release_year };
       });
       record(`"${String(args.name)}" → ${candidates.map((c) => c.name).join(", ")}`, [], "ok");
@@ -207,13 +203,17 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       const top = kept.slice(0, 6);
       for (const e of top) ctx.seen.set(e.entity_id, { kind, name: e.name, year: e.properties.release_year });
       record(`${r.entities.length} returned for ${ctx.era.start}–${ctx.era.end}, ${excluded.length} excluded, ${top.length} offered`, excluded, top.length ? "ok" : "gap");
+      // Theme summaries help Claude catch loose matches with the avoid list. With nothing to avoid,
+      // the name and year are enough (the content filter has already run), and leaving them out
+      // makes the first message about a quarter shorter (tests/token-budget.test.ts).
+      const about = !nothingToAvoid(ctx.avoid);
       return {
         content: JSON.stringify({
           titles: top.map((e) => ({
             id: ctx.handle(e.entity_id, kind === "tv" ? "t" : "m"),
             name: e.name,
             year: e.properties.release_year,
-            about: short(e.properties.plot_themes_description),
+            ...(about ? { about: short(e.properties.plot_themes_description) } : {}),
           })),
         }),
         isError: false,
@@ -281,6 +281,29 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
     default:
       return fail(`Unknown tool: ${name}`);
   }
+}
+
+export type TraditionMusic = { artist: { id: string; name: string }; artists: { id: string; name: string }[] };
+
+/**
+ * Music for the caregiver's traditions, from an artist Claude named for them (Qloo's search
+ * matches names, so "Catholic hymns" alone finds bands called "Hymns"). The artist is found in
+ * Qloo, checked against the avoid list, and seeds an artist lookup. The artist itself can be
+ * picked as music too: it's a Qloo result from this run. Null when nothing usable came back.
+ */
+export async function lookUpTradition(ctx: RunContext, artistName: string): Promise<TraditionMusic | null> {
+  const found = JSON.parse((await runTool(ctx, "resolve_favorite", { name: artistName, kind: "artist" })).content);
+  const top = (found.candidates as { id: string; name: string }[] | undefined)?.[0];
+  if (!top) return null;
+  const entity: QlooEntity = { entity_id: ctx.idFor(top.id), name: top.name, properties: {}, genres: [], keywords: [] };
+  const { excluded } = screen([entity], ctx.avoid, { content: false });
+  if (excluded.length) {
+    ctx.trace.push({ id: ctx.nextId(), kind: "filter", label: "traditions artist", input: {}, outputSummary: "Left out: on the avoid list.", excluded, ms: 0, status: "gap" });
+    return null;
+  }
+  ctx.seen.set(entity.entity_id, { kind: "artist", name: top.name });
+  const music = JSON.parse((await runTool(ctx, "get_music", { seed_ids: [top.id] })).content);
+  return { artist: { id: top.id, name: top.name }, artists: music.artists ?? [] };
 }
 
 function genreName(e: QlooEntity) {
