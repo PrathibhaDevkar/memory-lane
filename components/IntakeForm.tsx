@@ -108,25 +108,24 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
 
   const err = (field: keyof Profile) =>
     errors[field]?.length ? (
-      <p id={`${id}-${field}-error`} className="mt-1 text-sm font-medium text-error">
+      <p id={`${id}-${field}-error`} className="mt-2 font-semibold text-error">
         {errors[field]!.join(" ")}
       </p>
     ) : null;
   const describedBy = (field: keyof Profile, hint?: string) =>
     [hint, errors[field]?.length ? `${id}-${field}-error` : null].filter(Boolean).join(" ") || undefined;
 
+  // Large boxes with a clear edge: easier to see and to tap.
   const inputClass =
-    "mt-1 block w-full rounded-lg border border-line bg-card px-3 py-2.5 text-ink placeholder:text-muted/70 aria-[invalid=true]:border-2 aria-[invalid=true]:border-error";
+    "mt-1 block min-h-12 w-full rounded-lg border-2 border-control bg-card px-3 py-2.5 text-ink placeholder:text-muted aria-[invalid=true]:border-error";
+  const choiceClass =
+    "flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border-2 border-control bg-card px-4 py-2.5 has-[:checked]:border-accent has-[:checked]:bg-accent-soft";
 
   return (
-    <form ref={formRef} onSubmit={submit} className="space-y-7">
+    <form ref={formRef} onSubmit={submit} className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-muted">A few details are enough. We don’t save these details.</p>
-        <button
-          type="button"
-          onClick={() => fill(EXAMPLE_PROFILE)}
-          className="rounded-full border border-line px-4 py-2 text-sm font-medium hover:bg-accent-soft"
-        >
+        <button type="button" onClick={() => fill(EXAMPLE_PROFILE)} className="btn btn-secondary">
           Fill in an example (Rosa)
         </button>
       </div>
@@ -139,14 +138,11 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
             { value: false, label: "No" },
             { value: true, label: "Yes" },
           ].map((o) => (
-            <label
-              key={o.label}
-              className="flex min-w-24 cursor-pointer items-center gap-2 rounded-lg border border-line bg-card px-4 py-2.5 has-[:checked]:border-accent has-[:checked]:bg-accent-soft"
-            >
+            <label key={o.label} className={`${choiceClass} min-w-28`}>
               <input
                 type="radio"
                 name={`${id}-sudden`}
-                className="size-5 accent-accent"
+                className="size-6 accent-accent"
                 checked={suddenChange === o.value}
                 onChange={() => setSuddenChange(o.value)}
                 required
@@ -179,25 +175,22 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
 
       <fieldset aria-describedby={describedBy("supportLevel")}>
         <legend className="font-semibold">How much support do they need today?</legend>
-        <p className="mt-1 text-sm text-muted">This shapes the kit. It can change from day to day.</p>
-        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+        <p className="mt-1 text-muted">This shapes the kit. It can change from day to day.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
           {(Object.keys(SUPPORT_LEVELS) as SupportLevel[]).map((level) => (
-            <label
-              key={level}
-              className="flex cursor-pointer gap-3 rounded-lg border border-line bg-card p-3 has-[:checked]:border-accent has-[:checked]:bg-accent-soft"
-            >
+            <label key={level} className={`${choiceClass} items-start p-4`}>
               <input
                 type="radio"
                 name={`${id}-support`}
-                className="mt-1 size-5 shrink-0 accent-accent"
+                className="mt-1 size-6 shrink-0 accent-accent"
                 checked={supportLevel === level}
                 onChange={() => setSupportLevel(level)}
                 required
                 data-invalid={errors.supportLevel?.length ? true : undefined}
               />
               <span>
-                <span className="block font-medium">{SUPPORT_LEVELS[level].label}</span>
-                <span className="block text-sm text-muted">{SUPPORT_LEVELS[level].description}</span>
+                <span className="block font-semibold">{SUPPORT_LEVELS[level].label}</span>
+                <span className="block text-muted">{SUPPORT_LEVELS[level].description}</span>
               </span>
             </label>
           ))}
@@ -223,7 +216,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
             aria-invalid={Boolean(errors.birthYear?.length)}
             aria-describedby={describedBy("birthYear", `${id}-year-hint`)}
           />
-          <p id={`${id}-year-hint`} className="mt-1 text-sm text-muted">
+          <p id={`${id}-year-hint`} className="mt-1 text-muted">
             We look at the years they were about 10 to 30.
           </p>
           {err("birthYear")}
@@ -249,7 +242,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
 
       <fieldset>
         <legend className="font-semibold">Favorites they still remember</legend>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-muted">
           1 to {MAX_FAVORITES}. Something from when they were young works best.
         </p>
         <div className="mt-3 space-y-3">
@@ -274,7 +267,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
               </label>
               <select
                 id={`${id}-kind-${i}`}
-                className="flex-1 rounded-lg border border-line bg-card px-3 py-2.5 sm:flex-none"
+                className="min-h-12 flex-1 rounded-lg border-2 border-control bg-card px-3 py-2.5 sm:flex-none"
                 value={f.kind}
                 onChange={(e) => updateFavorite(i, { kind: e.target.value as FavoriteKind })}
               >
@@ -288,7 +281,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
                 <button
                   type="button"
                   onClick={() => setFavorites((fs) => fs.filter((_, j) => j !== i))}
-                  className="rounded-lg border border-line px-3 py-2.5 text-sm hover:bg-accent-soft"
+                  className="btn btn-secondary"
                   aria-label={`Remove favorite ${i + 1}`}
                 >
                   Remove
@@ -301,7 +294,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
           <button
             type="button"
             onClick={() => setFavorites((fs) => [...fs, { text: "", kind: "artist" }])}
-            className="mt-3 text-sm font-semibold text-accent underline underline-offset-4"
+            className="btn btn-link mt-3"
           >
             + Add another favorite
           </button>
@@ -313,13 +306,13 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
         <label htmlFor={`${id}-avoid`} className="font-semibold">
           Things to avoid
         </label>
-        <p id={`${id}-avoid-hint`} className="mt-1 text-sm text-muted">
+        <p id={`${id}-avoid-hint`} className="mt-1 text-muted">
           Topics, songs or places that could upset them. One per line. We also try to screen out titles
           about illness, dementia, death, war or mature content.
         </p>
         <textarea
           id={`${id}-avoid`}
-          className={`${inputClass} min-h-24 disabled:opacity-50`}
+          className={`${inputClass.replace("min-h-12", "min-h-28")} disabled:opacity-50`}
           value={avoidText}
           onChange={(e) => setAvoidText(e.target.value)}
           disabled={nothingToAvoid}
@@ -328,10 +321,10 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
           aria-invalid={Boolean(errors.thingsToAvoid?.length)}
           aria-describedby={describedBy("thingsToAvoid", `${id}-avoid-hint`)}
         />
-        <label className="mt-2 flex items-center gap-2">
+        <label className={`${choiceClass} mt-3 w-fit`}>
           <input
             type="checkbox"
-            className="size-5 accent-accent"
+            className="size-6 accent-accent"
             checked={nothingToAvoid}
             onChange={(e) => setNothingToAvoid(e.target.checked)}
           />
@@ -340,9 +333,9 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
         {err("thingsToAvoid")}
       </div>
 
-      <details className="rounded-lg border border-line bg-card p-4" open={moreOpen} onToggle={(e) => setMoreOpen(e.currentTarget.open)}>
-        <summary className="cursor-pointer font-semibold">More about them (optional)</summary>
-        <p className="mt-2 text-sm text-muted">Helps make the questions personal. Used for this kit only, not saved.</p>
+      <details className="rounded-lg border-2 border-control bg-card p-4" open={moreOpen} onToggle={(e) => setMoreOpen(e.currentTarget.open)}>
+        <summary className="min-h-12 cursor-pointer py-2 font-semibold">More about them (optional)</summary>
+        <p className="mt-2 text-muted">Helps make the questions personal. Used for this kit only, not saved.</p>
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
           <div>
             <label htmlFor={`${id}-work`} className="font-medium">
@@ -392,7 +385,7 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
       <button
         type="submit"
         aria-disabled={busy || undefined}
-        className="w-full rounded-xl bg-accent px-6 py-3.5 text-lg font-semibold text-accent-ink aria-disabled:opacity-60 sm:w-auto"
+        className="btn btn-primary min-h-14 w-full px-8 text-lg aria-disabled:opacity-60 sm:w-auto"
       >
         {busy ? "Putting the kit together…" : "Build the session kit"}
       </button>

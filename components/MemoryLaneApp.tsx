@@ -25,7 +25,14 @@ type State =
 export function MemoryLaneApp() {
   const [state, setState] = useState<State>({ view: "form", busy: false });
   const [lastProfile, setLastProfile] = useState<Profile | undefined>();
+  // The kit last shown, so going back to the form never loses it: one tap returns to it.
+  const [lastKit, setLastKit] = useState<Kit | undefined>();
   const kitRef = useRef<HTMLDivElement>(null);
+
+  function showKit(kit: Kit) {
+    setLastKit(kit);
+    setState({ view: "kit", kit });
+  }
 
   // Move focus to the kit when it appears, so screen-reader and keyboard users land on it. A view
   // that places focus itself (session mode focuses its first card, and runs its effect first) keeps it.
@@ -67,7 +74,8 @@ export function MemoryLaneApp() {
         setState({ view: "form", busy: false, message: "The kit came back in an unexpected shape. Please try again." });
         return;
       }
-      setState(parsed.data.mode === "safety_stop" ? { view: "stop", stop: parsed.data } : { view: "kit", kit: parsed.data });
+      if (parsed.data.mode === "safety_stop") setState({ view: "stop", stop: parsed.data });
+      else showKit(parsed.data);
     } catch {
       setState({ view: "form", busy: false, message: "Couldn't reach Memory Lane. Check the connection and try again." });
     }
@@ -77,11 +85,7 @@ export function MemoryLaneApp() {
     return (
       <div ref={kitRef} tabIndex={-1} className="outline-none">
         <div className="no-print mb-6">
-          <button
-            type="button"
-            onClick={() => setState({ view: "form", busy: false })}
-            className="rounded-full border border-line px-4 py-2 font-medium hover:bg-accent-soft"
-          >
+          <button type="button" onClick={() => setState({ view: "form", busy: false })} className="btn btn-secondary">
             ← Back
           </button>
         </div>
@@ -142,33 +146,16 @@ export function MemoryLaneApp() {
     return (
       <div ref={kitRef} tabIndex={-1} className="outline-none">
         <div className="no-print mb-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => setState({ view: "session", kit })}
-            className="rounded-full bg-accent px-5 py-2 font-semibold text-accent-ink"
-          >
+          <button type="button" onClick={() => setState({ view: "session", kit })} className="btn btn-primary px-6 text-lg">
             Start session
           </button>
-          <a
-            href={whatsappUrl(kitAsText(kit))}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-line px-4 py-2 font-medium hover:bg-accent-soft"
-          >
+          <a href={whatsappUrl(kitAsText(kit))} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
             Send to WhatsApp ↗<span className="sr-only"> (opens WhatsApp in a new tab)</span>
           </a>
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="rounded-full border border-line px-4 py-2 font-medium hover:bg-accent-soft"
-          >
+          <button type="button" onClick={() => window.print()} className="btn btn-secondary">
             Print kit
           </button>
-          <button
-            type="button"
-            onClick={() => setState({ view: "form", busy: false })}
-            className="rounded-full border border-line px-4 py-2 font-medium hover:bg-accent-soft"
-          >
+          <button type="button" onClick={() => setState({ view: "form", busy: false })} className="btn btn-secondary">
             ← Change details
           </button>
         </div>
@@ -179,23 +166,29 @@ export function MemoryLaneApp() {
 
   return (
     <div>
+      {lastKit && (
+        <div className="no-print mb-6">
+          <button type="button" onClick={() => showKit(lastKit)} className="btn btn-link">
+            ← Back to {lastKit.profile.displayName}&apos;s kit
+          </button>
+        </div>
+      )}
+
       <section aria-labelledby="demo-title" className="no-print mb-8 rounded-2xl border border-line bg-card p-5">
         <h2 id="demo-title" className="font-semibold">
           Try a demo
         </h2>
-        <p className="mt-1 text-sm text-muted">Fictional people with saved kits. Opens instantly; nothing is sent.</p>
+        <p className="mt-1 text-muted">Fictional people with saved kits. Opens instantly; nothing is sent.</p>
         <div className="mt-3 flex flex-wrap gap-3">
           {DEMOS.map((d) => (
             <button
               key={d.id}
               type="button"
-              onClick={() =>
-                setState(d.response.mode === "safety_stop" ? { view: "stop", stop: d.response } : { view: "kit", kit: d.response })
-              }
-              className="rounded-xl border border-line px-4 py-2.5 text-left hover:bg-accent-soft"
+              onClick={() => (d.response.mode === "safety_stop" ? setState({ view: "stop", stop: d.response }) : showKit(d.response))}
+              className="min-h-12 rounded-xl border-2 border-control bg-card px-4 py-2.5 text-left hover:bg-accent-soft"
             >
-              <span className="block font-medium">{d.name}</span>
-              <span className="block text-sm text-muted">{d.description}</span>
+              <span className="block font-semibold">{d.name}</span>
+              <span className="block text-muted">{d.description}</span>
             </button>
           ))}
         </div>
@@ -203,7 +196,7 @@ export function MemoryLaneApp() {
 
       <div aria-live="polite" className="min-h-0">
         {state.message && (
-          <p role="alert" className="mb-6 rounded-xl border border-error/40 px-4 py-3 font-medium text-error">
+          <p role="alert" className="mb-6 rounded-xl border-2 border-error px-4 py-3 font-medium text-error">
             {state.message}
           </p>
         )}

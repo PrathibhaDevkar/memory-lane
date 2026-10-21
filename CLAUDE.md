@@ -29,6 +29,16 @@ Memory Lane is a Qloo Agentic Hackathon entry: an agent that uses Qloo's taste g
 8. **Next.js 16:** read the bundled docs in `node_modules/next/dist/docs/` before using a Next API (`dynamic`/`revalidate` exports are removed with Cache Components).
 9. **Keys** never go in code, commits, issues, chat or screenshots: `.env.local` locally (gitignored), Vercel environment variables in deployments. Never read out or type a key.
 
+## UI for older adults
+
+Many caregivers are older themselves, and session mode may be held up for the person to see. Keep these when changing the UI:
+
+- **Text:** body text, hints and errors at least 18px (`text-base`); `text-sm` only for technical detail such as the trace steps. Text at least 7:1 against its background (WCAG AAA).
+- **Targets:** buttons and button-like links use `.btn` with `.btn-primary`, `.btn-secondary` or `.btn-link` (`app/globals.css`), at least 48px tall. Inputs and choices are at least 48px too, with a `border-control` edge (at least 3:1); `border-line` is only for decorative dividers.
+- **Text size:** the header's Standard, Large and Largest (18, 21 and 24px) scale the whole page because every size is in rem, so never size anything in px. The choice is kept in this browser only (`lib/text-size.ts`).
+- **Forgiving:** leaving a kit never loses it ("Back to …'s kit"); confirmations stay up for 4 seconds and are announced to screen readers.
+- **Check** at phone and desktop width, light and dark, at Standard and at Largest.
+
 ## Working together
 
 - **Branch flow:** for every change, branch from `feat/phase2-real-data` (`fix/...`, `feat/...` or `docs/...`), open a small PR into `feat/phase2-real-data`, squash-merge it, and keep the branch. `feat/phase2-real-data` reaches `main` only through [PR #2](https://github.com/PrathibhaDevkar/memory-lane/pull/2), when both of us decide (before submission).
@@ -53,7 +63,8 @@ Memory Lane is a Qloo Agentic Hackathon entry: an agent that uses Qloo's taste g
 | `lib/qloo/tools.ts`, `lib/qloo/client.ts`, `lib/qloo/filters.ts` | Qloo tools with the rules in code; the HTTP client (2 calls in flight, retries, deadline); content and avoid-list filters |
 | `lib/ratelimit.ts`, `lib/kit-cache.ts`, `lib/redis.ts` | Visitor and daily limits; example-kit reuse; the shared Upstash client |
 | `lib/care.ts`, `lib/types.ts` | Care wording and kit limits per support level; the zod contract |
-| `components/` | Intake form, kit view, safety stop, session mode, care note, trace panel |
+| `components/` | Intake form, kit view, safety stop, session mode, care note, trace panel, text size control |
+| `lib/text-size.ts`, `app/globals.css` | The reader's text size (kept in this browser only); the palette, text sizes and `.btn` styles for older adults |
 | `scripts/smoke.mjs` | End-to-end check of 7 personas against a running app; prints tokens, cost, audit and alerts; `--report` writes `audits/*.md` |
 | `docs/plan.md`, `docs/research.md`, `docs/token-alerts.md`, `docs/submission.md` | The plan and decisions; Qloo research and the tester script; alerts and model approval; the Devpost draft |
 | `tests/` | Vitest: unit, contract and UI tests with no network (`tests/live` needs keys and `LIVE=1`) |
@@ -133,6 +144,7 @@ Every step so far, oldest first. Commit IDs are on `feat/phase2-real-data`.
 | Oct 19 | One shared CLAUDE.md | Both drafts merged: product rules, branch flow and checks from Prathibha's; model rule, token measurement, project map, settings, work log and measurements from Abil's. Settled: no Claude attribution, names and costs may be public | `84524ca`, PR #4 |
 | Oct 19 | First live audit on Haiku; two fixes | All 6 personas passed live (key scoped to the `memory-lane` workspace; Haiku accepts `effort`). Reading the kits found two problems. (1) The question check missed cards that open with the person's name ("Rosa, what…"): it counted 0 open questions and dropped "Rosa, tell me about…" as not a question; it now reads past the name, which also lets the "you loved…" rule see the real start of the card. (2) Elena's traditions ("Catholic hymns") were never looked up; the code now adds a `to_do` to that kit's message asking Claude to resolve an artist of the tradition from the person's formative years (a search for the tradition's own words finds bands named "Hymns"). Kits without traditions are unchanged | This commit, [audits/2026-10-19-claude-haiku-5-5-medium.md](audits/2026-10-19-claude-haiku-5-5-medium.md) |
 | Oct 19 | Care note punctuation | Activity ideas are full sentences, so the care note printed ".." and a full stop in the middle of a list ("…the music plays.. and …"), seen in a live session. Items now lose their own full stop, and a line gets one only if it doesn't already end in ".", "!" or "?" | This commit |
+| Oct 21 | Easier for older adults (Phase 3, Abil with Claude) | Hints, errors, the "why" lines, Watch for and the dish caveat at full size (18px, were 15.75px); grey text darkened to 8.6:1 (was 6.7:1) and the edges of inputs and buttons to 3.6:1 or more (were 1.3:1); every button and choice at least 48px tall; Spotify and YouTube links as buttons; a Text size control (Standard, Large, Largest, kept in this browser only); "Change details" no longer loses the kit; "Copied" stays for 4 seconds and is announced. Checked in the browser at phone and desktop width, light and dark, Standard and Largest | This commit |
 
 ## Measurements
 

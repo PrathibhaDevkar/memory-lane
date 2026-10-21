@@ -24,7 +24,8 @@ export function SessionNote({ kit, log, onBuildNext, onBackToKit }: Props) {
     try {
       await navigator.clipboard.writeText(note);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      // Long enough to notice; also announced to screen readers (role="status" below).
+      setTimeout(() => setCopied(false), 4000);
     } catch {
       setCopied(false);
     }
@@ -50,40 +51,43 @@ export function SessionNote({ kit, log, onBuildNext, onBackToKit }: Props) {
           value={note}
           onChange={(e) => setNote(e.target.value)}
           rows={8}
-          className="mt-2 block min-h-48 w-full rounded-xl border border-line bg-card p-4 text-lg leading-relaxed [field-sizing:content]"
+          className="mt-2 block min-h-48 w-full rounded-xl border-2 border-control bg-card p-4 text-lg leading-relaxed [field-sizing:content]"
         />
       </div>
 
       <div className="no-print flex flex-wrap gap-3">
-        <button type="button" onClick={copy} className="rounded-full bg-accent px-5 py-2.5 font-semibold text-accent-ink">
-          {copied ? "Copied" : "Copy note"}
+        <button type="button" onClick={copy} className="btn btn-primary">
+          {copied ? "Copied ✓" : "Copy note"}
         </button>
+        <span role="status" className="sr-only">
+          {copied ? "The note is copied." : ""}
+        </span>
         <a
           href={whatsappUrl(note)}
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-full border border-line px-5 py-2.5 font-medium hover:bg-accent-soft"
+          className="btn btn-secondary"
         >
           Send to WhatsApp ↗<span className="sr-only"> (opens WhatsApp in a new tab)</span>
         </a>
-        <button type="button" onClick={() => window.print()} className="rounded-full border border-line px-5 py-2.5 font-medium hover:bg-accent-soft">
+        <button type="button" onClick={() => window.print()} className="btn btn-secondary">
           Print
         </button>
       </div>
-      <p className="no-print text-sm text-muted">Sending to WhatsApp shares this text through WhatsApp. Only share it with the care team or family.</p>
+      <p className="no-print text-muted">Sending to WhatsApp shares this text through WhatsApp. Only share it with the care team or family.</p>
 
       <div className="no-print rounded-2xl border border-line bg-card p-5">
         <p className="font-semibold">Next session</p>
         {avoid.length > 0 && (
-          <p className="mt-1 text-sm">
+          <p className="mt-1">
             The next kit will leave out: <strong>{avoid.join(", ")}</strong>.
           </p>
         )}
         <div className="mt-3 flex flex-wrap gap-3">
-          <button type="button" onClick={() => onBuildNext(avoid)} className="rounded-full border border-line px-5 py-2.5 font-medium hover:bg-accent-soft">
+          <button type="button" onClick={() => onBuildNext(avoid)} className="btn btn-secondary">
             Build the next kit
           </button>
-          <button type="button" onClick={onBackToKit} className="rounded-full border border-line px-5 py-2.5 font-medium hover:bg-accent-soft">
+          <button type="button" onClick={onBackToKit} className="btn btn-secondary">
             Back to this kit
           </button>
         </div>
