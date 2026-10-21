@@ -2,9 +2,11 @@
 
 // One page: form → kit (or safety stop) → session → note. The profile and session log live only in
 // memory: never in the URL (it would land in history and shared links), never in browser storage,
-// and the log is never sent to the server (D11).
+// and the log is never sent to the server (D11). Analytics (lib/analytics/events.ts) say which
+// screens and buttons are used, never what is in them; a safety stop sends no event.
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/analytics/client";
 import { DEMOS } from "@/lib/demos";
 import type { SessionLog } from "@/lib/session";
 import { kitAsText, whatsappUrl } from "@/lib/share";
@@ -46,6 +48,7 @@ export function MemoryLaneApp() {
   async function build(profile: Profile) {
     setLastProfile(profile);
     setState({ view: "form", busy: true });
+    const started = performance.now();
     try {
       const res = await fetch("/api/kit", {
         method: "POST",
@@ -54,6 +57,7 @@ export function MemoryLaneApp() {
       });
       const body = await res.json().catch(() => null);
       if (res.status === 400) {
+        track("kit_failed", { reason: "check_fields" });
         setState({ view: "form", busy: false, errors: body?.issues, message: "Please check the highlighted fields." });
         return;
       }
@@ -65,18 +69,25 @@ export function MemoryLaneApp() {
           (res.status === 429
             ? "Too many kits in a short time. Please try again in a little while."
             : "Something went wrong on our side. Please try again.");
+        track("kit_failed", { reason: res.status === 429 ? "limit" : res.status === 503 ? "paused" : "server" });
         setState({ view: "form", busy: false, message });
         return;
       }
       // Validate the response against the shared contract before showing it.
       const parsed = KitResponseSchema.safeParse(body);
       if (!parsed.success) {
+        track("kit_failed", { reason: "shape" });
         setState({ view: "form", busy: false, message: "The kit came back in an unexpected shape. Please try again." });
         return;
       }
-      if (parsed.data.mode === "safety_stop") setState({ view: "stop", stop: parsed.data });
-      else showKit(parsed.data);
+      if (parsed.data.mode === "safety_stop") {
+        setState({ view: "stop", stop: parsed.data });
+        return;
+      }
+      track("kit_shown", { source: parsed.data.provenance.kind, seconds: Math.round((performance.now() - started) / 100) / 10 });
+      showKit(parsed.data);
     } catch {
+      track("kit_failed", { reason: "network" });
       setState({ view: "form", busy: false, message: "Couldn't reach Memory Lane. Check the connection and try again." });
     }
   }
@@ -98,7 +109,14 @@ export function MemoryLaneApp() {
     const kit = state.kit;
     return (
       <div ref={kitRef} tabIndex={-1} className="outline-none">
-        <SessionMode kit={kit} onEnd={(log) => setState({ view: "note", kit, log })} onBack={() => setState({ view: "kit", kit })} />
+        <SessionMode
+          kit={kit}
+          onEnd={(log) => {
+            track("session_ended", {});
+            setState({ view: "note", kit, log });
+          }}
+          onBack={() => setState({ view: "kit", kit })}
+        />
       </div>
     );
   }
@@ -146,20 +164,52 @@ export function MemoryLaneApp() {
     return (
       <div ref={kitRef} tabIndex={-1} className="outline-none">
         <div className="no-print mb-6 flex flex-wrap gap-3">
-          <button type="button" onClick={() => setState({ view: "session", kit })} className="btn btn-primary px-6 text-lg">
+          <button
+            type="button"
+            onClick={() => {
+              track("kit_action", { action: "start_session" });
+              track("session_started", {});
+              setState({ view: "session", kit });
+            }}
+            className="btn btn-primary px-6 text-lg"
+          >
             Start session
           </button>
-          <a href={whatsappUrl(kitAsText(kit))} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
+          <a
+            href={whatsappUrl(kitAsText(kit))}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("kit_action", { action: "whatsapp" })}
+            className="btn btn-secondary"
+          >
             Send to WhatsApp ↗<span className="sr-only"> (opens WhatsApp in a new tab)</span>
           </a>
-          <button type="button" onClick={() => window.print()} className="btn btn-secondary">
+          <button
+            type="button"
+            onClick={() => {
+              track("kit_action", { action: "print" });
+              window.print();
+            }}
+            className="btn btn-secondary"
+          >
             Print kit
           </button>
-          <button type="button" onClick={() => setState({ view: "form", busy: false })} className="btn btn-secondary">
+          <button
+            type="button"
+            onClick={() => {
+              track("kit_action", { action: "change_details" });
+              setState({ view: "form", busy: false });
+            }}
+            className="btn btn-secondary"
+          >
             ← Change details
           </button>
         </div>
-        <KitView kit={kit} />
+        <KitView
+          kit={kit}
+          onMediaOpen={(service) => track("media_opened", { where: "kit", service })}
+          onTraceOpen={() => track("how_made_opened", {})}
+        />
       </div>
     );
   }
@@ -168,7 +218,14 @@ export function MemoryLaneApp() {
     <div>
       {lastKit && (
         <div className="no-print mb-6">
-          <button type="button" onClick={() => showKit(lastKit)} className="btn btn-link">
+          <button
+            type="button"
+            onClick={() => {
+              track("kit_action", { action: "back_to_kit" });
+              showKit(lastKit);
+            }}
+            className="btn btn-link"
+          >
             ← Back to {lastKit.profile.displayName}&apos;s kit
           </button>
         </div>
@@ -184,7 +241,11 @@ export function MemoryLaneApp() {
             <button
               key={d.id}
               type="button"
-              onClick={() => (d.response.mode === "safety_stop" ? setState({ view: "stop", stop: d.response }) : showKit(d.response))}
+              onClick={() => {
+                track("demo_opened", { demo: d.id });
+                if (d.response.mode === "safety_stop") setState({ view: "stop", stop: d.response });
+                else showKit(d.response);
+              }}
               className="min-h-12 rounded-xl border-2 border-control bg-card px-4 py-2.5 text-left hover:bg-accent-soft"
             >
               <span className="block font-semibold">{d.name}</span>

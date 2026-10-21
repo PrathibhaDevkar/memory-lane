@@ -8,7 +8,15 @@ import { TracePanel } from "./TracePanel";
 
 type Section<T> = { status: "ok" | "gap"; items: T[]; gapReason?: string };
 
-export function KitView({ kit }: { kit: Kit }) {
+type Props = {
+  kit: Kit;
+  /** Called when a Spotify or YouTube search is opened (for analytics; no title is passed). */
+  onMediaOpen?: (service: "spotify" | "youtube") => void;
+  /** Called when "How this kit was made" is opened. */
+  onTraceOpen?: () => void;
+};
+
+export function KitView({ kit, onMediaOpen, onTraceOpen }: Props) {
   const { profile, era } = kit;
   return (
     <article className="space-y-6" aria-labelledby="kit-title">
@@ -36,7 +44,7 @@ export function KitView({ kit }: { kit: Kit }) {
         {(items) => (
           <ul className="divide-y divide-line">
             {items.map((m) => (
-              <MediaRow key={m.qlooId ?? m.title} item={m} />
+              <MediaRow key={m.qlooId ?? m.title} item={m} onOpen={onMediaOpen} />
             ))}
           </ul>
         )}
@@ -46,7 +54,7 @@ export function KitView({ kit }: { kit: Kit }) {
         {(items) => (
           <ul className="divide-y divide-line">
             {items.map((m) => (
-              <MediaRow key={m.qlooId ?? m.title} item={m} />
+              <MediaRow key={m.qlooId ?? m.title} item={m} onOpen={onMediaOpen} />
             ))}
           </ul>
         )}
@@ -97,7 +105,7 @@ export function KitView({ kit }: { kit: Kit }) {
         </section>
       )}
 
-      <TracePanel trace={kit.trace} />
+      <TracePanel trace={kit.trace} onOpen={onTraceOpen} />
     </article>
   );
 }
@@ -172,8 +180,9 @@ function SourceBadge({ source }: { source: Source }) {
   );
 }
 
-function MediaRow({ item }: { item: MediaItem }) {
-  const where = isSpotifySearch(item.searchUrl) ? "Spotify" : "YouTube";
+function MediaRow({ item, onOpen }: { item: MediaItem; onOpen?: (service: "spotify" | "youtube") => void }) {
+  const spotify = isSpotifySearch(item.searchUrl);
+  const where = spotify ? "Spotify" : "YouTube";
   return (
     <li className="flex flex-col gap-2 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
       <div>
@@ -188,6 +197,7 @@ function MediaRow({ item }: { item: MediaItem }) {
         href={item.searchUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => onOpen?.(spotify ? "spotify" : "youtube")}
         className="no-print btn btn-link shrink-0 self-start sm:self-auto"
       >
         Search on {where} ↗<span className="sr-only"> (opens a new tab)</span>

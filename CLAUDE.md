@@ -13,14 +13,14 @@ Memory Lane is a Qloo Agentic Hackathon entry: an agent that uses Qloo's taste g
 3. **Safety check first.** A sudden change (`suddenChange: true`) returns the safety stop with no kit and **no Qloo or Claude call**. The next session always asks the question again.
 4. **Questions invite stories, never test memory:** no "remember/recall", no quizzes, no statements about the person's past, one idea per card, adult language. Enforced in `lib/agent/validate-prompts.ts`.
 5. **Things to avoid is required;** the content filter (ratings, War genre, theme summaries) runs on every Qloo result.
-6. **Privacy:** nothing about a real person is stored or logged. Session notes stay in the browser. Demo personas are fictional; only the fictional example profile's kit is cached.
+6. **Privacy:** nothing about a real person is stored or logged. Session notes stay in the browser. Demo personas are fictional; only the fictional example profile's kit is cached. Analytics (PostHog) send only the events and properties in `lib/analytics/events.ts`: never profile details or the support level, kit contents, session reactions or the safety check, and nothing is stored on the device ([docs/analytics.md](docs/analytics.md)).
 7. **Media is linked out** (YouTube/Spotify search URLs only), never embedded; no lyrics.
 8. **Care wording lives in `lib/care.ts`;** change it there, nowhere else.
 
 ## Engineering rules
 
 1. **Model: Claude Haiku 5.5 by default.** Every API call uses `claude-haiku-5-5` unless Sonnet 5.5 or Opus 5.5 has been approved by both Abil and Prathibha after a smoke-check audit (steps in [docs/token-alerts.md](docs/token-alerts.md#changing-the-model-audit-then-approve)). The approval is recorded in `CLAUDE_MODEL_APPROVAL` and must name the model; `agentConfig()` in `lib/agent/run.ts` falls back to Haiku and logs `model_not_approved` otherwise. Never change the default, add an automatic fallback to a bigger model, or raise `CLAUDE_EFFORT` on your own.
-2. **Token use stays measured.** Keep the per-call usage logging, the kit audit, the response headers and the alerts. Any change to the agent flow, prompt or tools gets a smoke-check audit (`npm run smoke -- --report`) with its token numbers, compared with the last one. Costs and measurements are public on purpose: they show why decisions were made.
+2. **Token use stays measured.** Keep the per-call usage logging, the kit audit, the response headers, the alerts and the `kit_built` analytics event. Any change to the agent flow, prompt or tools gets a smoke-check audit (`npm run smoke -- --report`) with its token numbers, compared with the last one. Costs and measurements are public on purpose: they show why decisions were made.
 3. **Rules live in code, not the prompt.** The year window, hometown, content filter, grounding and safety check are applied by the tools and route, whatever Claude asks for.
 4. **The agent loop is append-only.** Within one kit, send the same system prompt and tools on every call and never edit earlier messages; add text only to the user turn about to be sent. Claude's thinking blocks are bound to that history, and the API rejects edited history on accounts created on or after Aug 31, 2026. Finish by asking for `submit_kit` and refusing further lookups. Don't use forced `tool_choice`; Opus 5.5 and Sonnet 5.5 reject it.
 5. **Grounding by handle.** Claude sees short handles (`a1`, `m2`, `d3`) instead of Qloo's 36-character IDs; `ctx.handle()` makes them and `ctx.idFor()` maps them back. An unknown handle fails grounding.
@@ -60,13 +60,14 @@ Many caregivers are older themselves, and session mode may be held up for the pe
 | `lib/agent/validate-prompts.ts` | The question rules (no memory tests, one idea per card) |
 | `lib/agent/audit.ts` | Per-kit audit, token alerts, response headers, prices |
 | `lib/usage.ts` | Daily token and cost totals in Redis, daily alerts |
+| `lib/analytics/`, `instrumentation-client.ts` | PostHog: the allowed events (`events.ts`), settings (`config.ts`), `track()` in the browser, token use from the server (`server.ts`); started in the browser by `instrumentation-client.ts` |
 | `lib/qloo/tools.ts`, `lib/qloo/client.ts`, `lib/qloo/filters.ts` | Qloo tools with the rules in code; the HTTP client (2 calls in flight, retries, deadline); content and avoid-list filters |
 | `lib/ratelimit.ts`, `lib/kit-cache.ts`, `lib/redis.ts` | Visitor and daily limits; example-kit reuse; the shared Upstash client |
 | `lib/care.ts`, `lib/types.ts` | Care wording and kit limits per support level; the zod contract |
 | `components/` | Intake form, kit view, safety stop, session mode, care note, trace panel, text size control |
 | `lib/text-size.ts`, `app/globals.css` | The reader's text size (kept in this browser only); the palette, text sizes and `.btn` styles for older adults |
 | `scripts/smoke.mjs` | End-to-end check of 7 personas against a running app; prints tokens, cost, audit and alerts; `--report` writes `audits/*.md` |
-| `docs/plan.md`, `docs/research.md`, `docs/token-alerts.md`, `docs/submission.md` | The plan and decisions; Qloo research and the tester script; alerts and model approval; the Devpost draft |
+| `docs/plan.md`, `docs/research.md`, `docs/token-alerts.md`, `docs/analytics.md`, `docs/submission.md` | The plan and decisions; Qloo research and the tester script; alerts and model approval; what analytics send and the PostHog setup; the Devpost draft |
 | `tests/` | Vitest: unit, contract and UI tests with no network (`tests/live` needs keys and `LIVE=1`) |
 
 ## How a live kit is built
@@ -77,7 +78,7 @@ Many caregivers are older themselves, and session mode may be held up for the pe
 4. Visitor and daily limits (Upstash). Production refuses live kits while Redis isn't configured.
 5. `lookUpFirst` runs one Qloo `/search` per favorite, then music, films, TV, places and dishes in parallel, seeded with the top match. A film or show from after the person's formative years doesn't seed music; with no other seed, music is seeded with the top film.
 6. Usually one Claude call: Claude picks items by short handle and writes the questions in `submit_kit`. It may call a tool to fix a modern favorite, a missing tradition or the wrong match: at most 4 calls and 100 seconds per kit.
-7. `buildKit` keeps only grounded picks and rule-abiding questions. The kit is audited; usage and alerts go to the log, today's totals and the response headers.
+7. `buildKit` keeps only grounded picks and rule-abiding questions. The kit is audited; usage and alerts go to the log, today's totals and the response headers, and a `kit_built` event goes to PostHog after the response.
 
 ## Settings
 
@@ -94,6 +95,8 @@ All are listed in `.env.example`. A value already set in your shell wins over `.
 | `EXAMPLE_KIT_HOURS` | 6 | How long the example profile's kit is reused |
 | `SMOKE_TOKEN` | none | Lets `scripts/smoke.mjs` skip the limits and always build fresh |
 | `TOKEN_ALERT_KIT_*`, `TOKEN_ALERT_DAILY_*` | see docs/token-alerts.md | Token alert limits |
+| `NEXT_PUBLIC_POSTHOG_KEY` | none | PostHog project API key (`phc_…`); analytics are off without it. Built into the page: changing it needs a rebuild |
+| `NEXT_PUBLIC_POSTHOG_REGION` | `us` | PostHog Cloud region, `us` or `eu` |
 
 ## Running and checking
 
@@ -145,6 +148,7 @@ Every step so far, oldest first. Commit IDs are on `feat/phase2-real-data`.
 | Oct 19 | First live audit on Haiku; two fixes | All 6 personas passed live (key scoped to the `memory-lane` workspace; Haiku accepts `effort`). Reading the kits found two problems. (1) The question check missed cards that open with the person's name ("Rosa, what…"): it counted 0 open questions and dropped "Rosa, tell me about…" as not a question; it now reads past the name, which also lets the "you loved…" rule see the real start of the card. (2) Elena's traditions ("Catholic hymns") were never looked up; the code now adds a `to_do` to that kit's message asking Claude to resolve an artist of the tradition from the person's formative years (a search for the tradition's own words finds bands named "Hymns"). Kits without traditions are unchanged | This commit, [audits/2026-10-19-claude-haiku-5-5-medium.md](audits/2026-10-19-claude-haiku-5-5-medium.md) |
 | Oct 19 | Care note punctuation | Activity ideas are full sentences, so the care note printed ".." and a full stop in the middle of a list ("…the music plays.. and …"), seen in a live session. Items now lose their own full stop, and a line gets one only if it doesn't already end in ".", "!" or "?" | This commit |
 | Oct 21 | Easier for older adults (Phase 3, Abil with Claude) | Hints, errors, the "why" lines, Watch for and the dish caveat at full size (18px, were 15.75px); grey text darkened to 8.6:1 (was 6.7:1) and the edges of inputs and buttons to 3.6:1 or more (were 1.3:1); every button and choice at least 48px tall; Spotify and YouTube links as buttons; a Text size control (Standard, Large, Largest, kept in this browser only); "Change details" no longer loses the kit; "Copied" stays for 4 seconds and is announced. Checked in the browser at phone and desktop width, light and dark, Standard and Largest | This commit |
+| Oct 21 | PostHog analytics (Phase 3, Abil with Claude) | How the app is used, when, which screens and buttons, and each live kit's token use and cost, without anything about a real person. Only the events in `lib/analytics/events.ts` can be sent (12 browser events; `kit_built` and `kit_refused` from the server, after the response); no profile details, support level, kit contents, reactions or safety check, and a safety stop sends nothing. Cookieless (nothing stored on the device), no person profiles, no autocapture, recording, heatmaps or error capture; Do Not Track and Global Privacy Control turn it off; events go through `/ingest` on our own site. Off without `NEXT_PUBLIC_POSTHOG_KEY`. posthog-js 1.438.2 and posthog-node 5.55.0, with PostHog's own sub-packages held to releases at least two weeks old. Checked with a dummy key in the browser: every request bound for PostHog decoded, 13 events and no personal text; with PostHog unreachable a kit still returns at once | This commit, [docs/analytics.md](docs/analytics.md) |
 
 ## Measurements
 
@@ -173,6 +177,7 @@ Estimated cost per kit at list prices on Oct 19, 2026 (prices in [docs/token-ale
 
 - From the first live audit: a kit with traditions takes 3 Claude calls and trips the per-kit alerts (limit 2 calls, 12,000 input tokens); raise those limits for such kits or accept the alert. A tradition artist Claude resolves can't be picked as music unless `get_music` also returns it (Elena lost Bing Crosby this way). Questions and comments can name an artist who isn't in the kit. `get_music` has no year filter, so a seed in the right era can still bring a later artist (Femi Kuti for Mr. Okafor).
 - Vercel (Prathibha): keys, `KIT_SOURCE=agent`, `SMOKE_TOKEN`, Upstash for Redis, then promote.
+- PostHog (Phase 3): create the project, turn on "Cookieless server hash mode" and "Discard client IP data", set `NEXT_PUBLIC_POSTHOG_KEY` (and `NEXT_PUBLIC_POSTHOG_REGION` for EU) in Vercel, redeploy, then check live events and that unique visitors look right through the `/ingest` proxy ([docs/analytics.md](docs/analytics.md#setting-it-up)). Not tested against PostHog itself yet: this session couldn't reach it.
 - Visitor limit: revisit `VISITOR_KITS_PER_HOUR` after the live Claude phase, since judges must have access without restriction.
 - Testers for Oct 24–25 (tester script in docs/research.md §5).
 - Before submission: merge PR #2 (`feat/phase2-real-data` → `main`) when both agree.

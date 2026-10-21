@@ -3,6 +3,7 @@
 // Lets the reader make all the text bigger. Three plain choices, each shown at its own size.
 
 import { useSyncExternalStore } from "react";
+import { track } from "@/lib/analytics/client";
 import { applyTextSize, currentTextSize, onTextSizeChange, TEXT_SIZES } from "@/lib/text-size";
 
 const SAMPLE_SIZE = { standard: "text-base", large: "text-lg", largest: "text-xl" } as const;
@@ -21,7 +22,10 @@ export function TextSizeControl() {
             key={s.value}
             type="button"
             aria-pressed={size === s.value}
-            onClick={() => applyTextSize(s.value)}
+            onClick={() => {
+              applyTextSize(s.value);
+              track("text_size_changed", { size: s.value });
+            }}
             className={`btn btn-secondary px-4 aria-pressed:border-accent aria-pressed:bg-accent-soft ${SAMPLE_SIZE[s.value]}`}
           >
             {s.label}

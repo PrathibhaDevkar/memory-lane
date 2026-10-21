@@ -4,6 +4,7 @@
 // as a short care note to copy, share or print. Built and kept in the browser only (D11).
 
 import { useState } from "react";
+import { track } from "@/lib/analytics/client";
 import { avoidNextTime, buildCareNote, type SessionLog } from "@/lib/session";
 import { whatsappUrl } from "@/lib/share";
 import type { Kit } from "@/lib/types";
@@ -21,6 +22,7 @@ export function SessionNote({ kit, log, onBuildNext, onBackToKit }: Props) {
   const avoid = avoidNextTime(log);
 
   async function copy() {
+    track("note_action", { action: "copy" });
     try {
       await navigator.clipboard.writeText(note);
       setCopied(true);
@@ -66,11 +68,19 @@ export function SessionNote({ kit, log, onBuildNext, onBackToKit }: Props) {
           href={whatsappUrl(note)}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => track("note_action", { action: "whatsapp" })}
           className="btn btn-secondary"
         >
           Send to WhatsApp ↗<span className="sr-only"> (opens WhatsApp in a new tab)</span>
         </a>
-        <button type="button" onClick={() => window.print()} className="btn btn-secondary">
+        <button
+          type="button"
+          onClick={() => {
+            track("note_action", { action: "print" });
+            window.print();
+          }}
+          className="btn btn-secondary"
+        >
           Print
         </button>
       </div>
@@ -84,10 +94,24 @@ export function SessionNote({ kit, log, onBuildNext, onBackToKit }: Props) {
           </p>
         )}
         <div className="mt-3 flex flex-wrap gap-3">
-          <button type="button" onClick={() => onBuildNext(avoid)} className="btn btn-secondary">
+          <button
+            type="button"
+            onClick={() => {
+              track("note_action", { action: "build_next" });
+              onBuildNext(avoid);
+            }}
+            className="btn btn-secondary"
+          >
             Build the next kit
           </button>
-          <button type="button" onClick={onBackToKit} className="btn btn-secondary">
+          <button
+            type="button"
+            onClick={() => {
+              track("note_action", { action: "back_to_kit" });
+              onBackToKit();
+            }}
+            className="btn btn-secondary"
+          >
             Back to this kit
           </button>
         </div>

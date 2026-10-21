@@ -4,6 +4,8 @@
 // during the session. Each reaction is logged and moves on; "Stop" ends with reassurance (P5).
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/analytics/client";
+import { isSpotifySearch } from "@/lib/links";
 import { buildCards, CARD_LABEL, REACTIONS, type LogEntry, type Reaction, type SessionLog } from "@/lib/session";
 import type { Kit } from "@/lib/types";
 
@@ -88,6 +90,7 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
             href={card.link.href}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track("media_opened", { where: "session", service: isSpotifySearch(card.link!.href) ? "spotify" : "youtube" })}
             className="btn btn-link mt-6 min-h-14 self-start px-6 text-lg"
           >
             {card.link.label} ↗<span className="sr-only"> (opens a new tab)</span>

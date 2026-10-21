@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { track } from "@/lib/analytics/client";
 import { SUDDEN_CHANGE_QUESTION, SUPPORT_LEVELS } from "@/lib/care";
 import { EXAMPLE_PROFILE } from "@/lib/example-profile";
 import {
@@ -125,7 +126,14 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
     <form ref={formRef} onSubmit={submit} className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-muted">A few details are enough. We don’t save these details.</p>
-        <button type="button" onClick={() => fill(EXAMPLE_PROFILE)} className="btn btn-secondary">
+        <button
+          type="button"
+          onClick={() => {
+            fill(EXAMPLE_PROFILE);
+            track("example_filled", {});
+          }}
+          className="btn btn-secondary"
+        >
           Fill in an example (Rosa)
         </button>
       </div>
@@ -280,7 +288,10 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
               {favorites.length > 1 && (
                 <button
                   type="button"
-                  onClick={() => setFavorites((fs) => fs.filter((_, j) => j !== i))}
+                  onClick={() => {
+                    setFavorites((fs) => fs.filter((_, j) => j !== i));
+                    track("form_action", { action: "remove_favorite" });
+                  }}
                   className="btn btn-secondary"
                   aria-label={`Remove favorite ${i + 1}`}
                 >
@@ -293,7 +304,10 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
         {favorites.length < MAX_FAVORITES && (
           <button
             type="button"
-            onClick={() => setFavorites((fs) => [...fs, { text: "", kind: "artist" }])}
+            onClick={() => {
+              setFavorites((fs) => [...fs, { text: "", kind: "artist" }]);
+              track("form_action", { action: "add_favorite" });
+            }}
             className="btn btn-link mt-3"
           >
             + Add another favorite
@@ -333,7 +347,13 @@ export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy,
         {err("thingsToAvoid")}
       </div>
 
-      <details className="rounded-lg border-2 border-control bg-card p-4" open={moreOpen} onToggle={(e) => setMoreOpen(e.currentTarget.open)}>
+      <details className="rounded-lg border-2 border-control bg-card p-4" open={moreOpen}
+        onToggle={(e) => {
+          const open = e.currentTarget.open;
+          if (open && !moreOpen) track("form_action", { action: "more_about_opened" });
+          setMoreOpen(open);
+        }}
+      >
         <summary className="min-h-12 cursor-pointer py-2 font-semibold">More about them (optional)</summary>
         <p className="mt-2 text-muted">Helps make the questions personal. Used for this kit only, not saved.</p>
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
