@@ -56,10 +56,13 @@ Only the events and properties listed in [`lib/analytics/events.ts`](../lib/anal
 2. In the project settings:
    - Turn on **Cookieless server hash mode** (Web analytics). This is required: without it PostHog ignores cookieless events.
    - Turn on **Discard client IP data**, so no IP address is stored. This also covers the server events.
+   - In PostHog's setup wizard, choose only Product analytics and Web analytics, and turn off autocapture, heatmaps, web vitals and session replay, so the project settings match the code.
 3. Set these in Vercel (and in `.env.local` to try it locally), then redeploy. `NEXT_PUBLIC_` values are built into the page, so a change needs a new build.
-   - `NEXT_PUBLIC_POSTHOG_KEY`: the project API key (`phc_…`). It is a public, write-only key, but keep it in environment variables like the others.
+   - `NEXT_PUBLIC_POSTHOG_KEY`: the project API key (`phc_…`). It is a public, write-only key, but keep it in environment variables like the others. In Vercel it has to be the **Config** type: Vercel won't save a `NEXT_PUBLIC_` variable as Secret.
    - `NEXT_PUBLIC_POSTHOG_REGION`: `us` (default) or `eu`.
-4. After deploying, open the app as a visitor and check PostHog's live events. Also check that unique visitors look right: the cookieless hash needs the visitor's IP, and we haven't confirmed that Vercel's forwarding through `/ingest` passes it on. If every visit shows as the same visitor, set the region's host directly in `posthogInitOptions()` instead of `/ingest`, and accept that some ad blockers will drop events.
+4. After deploying, open the app as a visitor and check PostHog's live events. Events can take up to about 10 minutes to show in Activity.
+
+**Checked on Oct 21** (US Cloud project, both privacy settings on): locally, on a Vercel preview and on production. No cookies and no PostHog storage on the device; events arrive through `/ingest` with only their listed properties and no IP address; session reactions send nothing; `kit_built` arrives from the server. Unique visitors work through `/ingest`: the same iPhone in the same browser got one visitor ID on mobile data and a different one on Wi-Fi, so PostHog receives the visitor's real IP. (Two Wi-Fi taps also got two IDs, probably because the phone's IPv6 address changed, so daily visitor counts may run slightly high.) If every visit ever shows as the same visitor, set the region's host directly in `posthogInitOptions()` instead of `/ingest`, and accept that some ad blockers will drop events.
 
 ## Token use in PostHog
 
