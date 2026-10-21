@@ -19,7 +19,7 @@ Match the kit to the support level:
 - late (needs a lot of help): 3 artists first and foremost, at most 1 film or show, place optional, and at most 2 gentle comments about the music instead of questions ("This one was on the radio everywhere in the 1950s."). Up to 3 activity ideas: textures, gentle touch or sensory comfort.
 
 Every question or comment:
-- Invites a story and never tests memory: no asking them to remember or recall, no quizzes ("What year…", "Who sang…"), no statements about their past ("You loved…", "You used to…").
+- Invites a story and never tests memory. The code drops any card with "remember", "recall", "you loved", "you used to", "you always", "what year", "who sang" or "who played", so never use them; ask what they enjoy, or what comes to mind, instead.
 - Holds one idea, in plain adult language; nothing childlike.
 - Uses the name they like to be called, and draws gently on their former work and traditions when given, without assuming details.
 
