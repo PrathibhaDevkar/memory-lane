@@ -235,7 +235,7 @@ export function MemoryLaneApp() {
         <h2 id="demo-title" className="font-semibold">
           Try a demo
         </h2>
-        <p className="mt-1 text-muted">Fictional people with saved kits. Opens instantly; nothing is sent.</p>
+        <p className="mt-1 text-muted">Fictional people with saved kits. Opens instantly; no details are sent.</p>
         <div className="mt-3 flex flex-wrap gap-3">
           {DEMOS.map((d) => (
             <button

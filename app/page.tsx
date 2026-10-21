@@ -1,3 +1,4 @@
+import { AnalyticsNote } from "@/components/AnalyticsNote";
 import { MemoryLaneApp } from "@/components/MemoryLaneApp";
 import { TextSizeControl } from "@/components/TextSizeControl";
 
@@ -19,10 +20,13 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-line">
-        <p className="mx-auto max-w-3xl px-4 py-5 text-muted sm:px-6">
-          Memory Lane supports caregivers&apos; activities. It is not therapy and makes no medical claims. Picks
-          come from Qloo&apos;s taste graph; media links open a search, nothing is embedded.
-        </p>
+        <div className="mx-auto max-w-3xl space-y-3 px-4 py-5 text-muted sm:px-6">
+          <p>
+            Memory Lane supports caregivers&apos; activities. It is not therapy and makes no medical claims. Picks
+            come from Qloo&apos;s taste graph; media links open a search, nothing is embedded.
+          </p>
+          <AnalyticsNote />
+        </div>
       </footer>
     </div>
   );

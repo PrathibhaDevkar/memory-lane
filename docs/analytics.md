@@ -48,6 +48,7 @@ Only the events and properties listed in [`lib/analytics/events.ts`](../lib/anal
 - **Do Not Track and Global Privacy Control are honoured:** PostHog isn't loaded at all for those visitors.
 - **Through our own site:** browser events go to `/ingest` on Memory Lane, which forwards them to PostHog (`next.config.ts`), so ad blockers don't drop them.
 - **Bots are dropped by PostHog**, including automated browsers (`navigator.webdriver`).
+- **Said on screen:** when analytics are on, the footer says "We count which screens and buttons are used, without cookies and without anything you type," with a link to this page (`components/AnalyticsNote.tsx`). The demo text says "no details are sent" rather than "nothing is sent", because opening a demo is counted.
 
 ## Setting it up
 
