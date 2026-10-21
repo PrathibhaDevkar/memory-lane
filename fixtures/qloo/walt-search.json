@@ -1,0 +1,40 @@
+{
+  "url": "/search?query=Elvis+Presley&types=urn%3Aentity%3Aartist&take=3",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "95593E4D-2CBE-44E5-BF82-F1E542B63A96",
+      "name": "Elvis Presley",
+      "properties": {
+        "short_description": "American singer and actor, known as the King of Rock and Roll."
+      },
+      "genres": [
+        "Oldies",
+        "Rock",
+        "Classic Rock",
+        "Rock And Roll",
+        "Rockabilly",
+        "Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F2C70FB7-9BEE-412A-A57D-695A69E34218",
+      "name": "Elvis Presley with the Royal Philharmonic Orchestra",
+      "properties": {
+        "short_description": "A collaborative project blending Elvis Presley's vocals with orchestral arrangements by the Royal Philharmonic Orchestra."
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "E8BF3B49-CB9B-49D9-B262-C4F7588EA5D0",
+      "name": "Elvis Presley with Russian Red",
+      "properties": {
+        "short_description": "A collaborative music project featuring Elvis Presley and Spanish indie pop artist Russian Red."
+      },
+      "genres": [],
+      "keywords": []
+    }
+  ]
+}

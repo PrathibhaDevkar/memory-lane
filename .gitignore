@@ -2,9 +2,24 @@
 .env*
 !.env.example
 
-node_modules/
-.next/
-out/
-scripts/out/
+# dependencies
+/node_modules
+
+# next.js / vercel
+/.next/
+/out/
+/build
 .vercel/
+next-env.d.ts
+*.tsbuildinfo
+
+# testing
+/coverage
+
+# Phase 0 script output (raw Qloo responses; copy what tests need into fixtures/)
+scripts/out/
+
+# misc
 .DS_Store
+*.pem
+npm-debug.log*

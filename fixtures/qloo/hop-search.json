@@ -1,0 +1,39 @@
+{
+  "url": "/search?query=Taylor+Swift&types=urn%3Aentity%3Aartist&take=3",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "4BBEF799-A0C4-4110-AB01-39216993C312",
+      "name": "Taylor Swift",
+      "properties": {
+        "short_description": "An American singer-songwriter known for narrative songwriting and genre versatility."
+      },
+      "genres": [
+        "Country",
+        "Singer & Songwriter",
+        "Acoustic",
+        "Pop",
+        "Country Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "42F29D24-DE96-4311-A069-273DCB1C1285",
+      "name": "Taylor Swift, Bon Iver",
+      "properties": {
+        "short_description": "American singer-songwriter known for narrative songwriting and genre versatility."
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "30B19C02-7F75-4665-82A2-8125B51D371F",
+      "name": "Taylor Swift & Seeb",
+      "properties": {
+        "short_description": "A collaboration between American singer-songwriter Taylor Swift and Norwegian electronic duo Seeb."
+      },
+      "genres": [],
+      "keywords": []
+    }
+  ]
+}

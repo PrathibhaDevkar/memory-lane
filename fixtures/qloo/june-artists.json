@@ -1,0 +1,452 @@
+{
+  "url": "/v2/insights?signal.interests.entities=5D54CE58-DC3E-4294-A359-581A9C072952&filter.type=urn%3Aentity%3Aartist&take=25",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "E53A6C99-DB5E-4E60-AFC6-6EA33E25F596",
+      "name": "Bette Midler",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Bette Midler is an American singer, actress, and comedian whose career spans several decades. She is known for her distinctive voice, theatrical stage presence, and versatility across music, film, and theater. Midler has released numerous albums blending pop, adult contemporary, and traditional pop styles, and has also performed in Broadway productions and films. She is celebrated for her dynamic performances and ability to blend humor with emotional depth in her music and acting."
+      },
+      "genres": [
+        "Pop",
+        "Adult Contemporary",
+        "Singer & Songwriter",
+        "Traditional Pop",
+        "Rock",
+        "80s"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F3F1B0FA-C365-4CDB-AB57-EE0F0426776C",
+      "name": "Peter, Paul & Mary",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Peter, Paul & Mary were an American folk music trio formed in New York City in 1961, consisting of Peter Yarrow, Paul Stookey, and Mary Travers. They became one of the most successful folk groups of the 1960s, known for their clear harmonies, socially conscious lyrics, and popularizing folk music to a broad audience. Their music often included traditional folk songs as well as contemporary compositions, and they played a significant role in the American folk music revival and civil rights movement."
+      },
+      "genres": [
+        "Folk",
+        "Folk Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "D09FEFAC-9A10-44C6-B47F-CC8509A188A8",
+      "name": "Josh Groban",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Josh Groban is an American singer, songwriter, and actor who rose to fame in the early 2000s with his blend of classical and pop music. Known for his rich baritone voice, Groban has released multiple successful albums featuring a mix of operatic pop, adult contemporary, and classical crossover styles. He has also performed on Broadway and in television and film, showcasing his versatility as an artist."
+      },
+      "genres": [
+        "Opera",
+        "Classical",
+        "Adult Contemporary",
+        "Classical Crossover",
+        "Pop",
+        "Vocal",
+        "Easy Listening"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "8BD89B89-9966-40B8-9E53-4A2E09C59994",
+      "name": "Barbra Streisand",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Barbra Streisand is an American singer, actress, and filmmaker whose career spans over six decades. She is renowned for her distinctive mezzo-soprano voice, emotive singing style, and her success in both music and film. Streisand has won multiple Grammy Awards, Academy Awards, and other honors, and is considered one of the best-selling musical artists of all time. Her work includes pop standards, Broadway tunes, and original compositions, and she has also been influential in the adult contemporary and traditional pop genres."
+      },
+      "genres": [
+        "Adult Contemporary",
+        "Vocal",
+        "80s",
+        "Pop",
+        "Traditional Pop",
+        "70s"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "CB48B032-4F0E-4E2D-A9DC-95D093687635",
+      "name": "Carole King",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Carole King (born 1942) is an American singer-songwriter and pianist. She began her career as a Brill Building songwriter in the late 1950s and 1960s, penning a long string of hits for other artists with lyricist Gerry Goffin. In 1971 she achieved superstar status as a solo artist with the album Tapestry, a best-selling, critically acclaimed record that produced multiple hit singles and became a touchstone of the 1970s singer-songwriter movement. King is known for intimate, piano-based arrangements, warm conversational vocals, and durable pop craftsmanship; her songs have been recorded by countless artists across genres. Over a career spanning six decades she has won multiple Grammy Awards and has been widely honored for her songwriting and influence."
+      },
+      "genres": [
+        "Singer & Songwriter",
+        "Pop",
+        "Singer Songwriter",
+        "Classic Rock",
+        "Soft Rock",
+        "Singer-Songwriter",
+        "Folk",
+        "Adult Contemporary"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "4395AE84-43E1-45BC-9606-344226C6ADEC",
+      "name": "Elton John",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Elton John (born Reginald Kenneth Dwight) is an English singer, pianist and composer whose career has spanned six decades. Celebrated for his melodic, piano-driven songs, theatrical stage costumes and partnership with lyricist Bernie Taupin, he has produced numerous international hits and sold hundreds of millions of records. His work spans pop, rock, glam and orchestral ballads; he has written for film and theatre, won multiple awards including an Academy Award and Grammys, and founded the Elton John AIDS Foundation."
+      },
+      "genres": [
+        "Singer & Songwriter",
+        "Rock",
+        "Pop",
+        "Glam Rock",
+        "Soft Rock",
+        "Piano",
+        "Classic Rock",
+        "Singer-Songwriter",
+        "Pop Rock",
+        "Piano Rock",
+        "Adult Contemporary"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "4F1516AA-C3FC-4016-9C27-E69C32EBB334",
+      "name": "Carly Simon",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Carly Simon is an American singer-songwriter celebrated for her warm, slightly husky mezzo-soprano voice and intimate, autobiographical songwriting. Rising to prominence in the early 1970s, she delivered iconic singles and album work blending folk, pop and soft rock, and wrote notable film songs. Her work is associated with the confessional singer-songwriter movement and she has won major awards for songwriting and film contributions."
+      },
+      "genres": [
+        "Pop",
+        "Rock",
+        "70s",
+        "Adult Contemporary",
+        "Singer & Songwriter",
+        "Soft Rock",
+        "Singer-Songwriter",
+        "Classic Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "3FF91263-F4A7-4E3F-9BDC-070CC4DA65D5",
+      "name": "Johnny Mathis",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Johnny Mathis (born 1935) is an American singer celebrated for his warm, velvety tenor and romantic ballads. Rising to prominence in the mid-1950s after signing with Columbia Records, he became a defining voice of traditional pop and adult contemporary music with a long career of hit singles, best-selling albums, duets, and seasonal releases."
+      },
+      "genres": [
+        "Pop",
+        "Vocal",
+        "Lounge",
+        "Traditional Pop",
+        "Oldies",
+        "60s",
+        "Easy Listening",
+        "Adult Contemporary",
+        "Vocal Jazz"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "4565D816-B995-4D2F-87F3-F6203A341851",
+      "name": "Carpenters",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Carpenters were an American vocal and instrumental duo consisting of siblings Karen and Richard Carpenter. They gained fame in the early 1970s with their distinctive soft rock and pop sound characterized by Karen's warm contralto voice and Richard's arrangements and piano playing. Their music featured lush harmonies, melodic hooks, and a smooth production style that appealed to a wide audience. They produced numerous hits such as \"Close to You,\" \"We've Only Just Begun,\" and \"Top of the World.\" The Carpenters are remembered for their clean, polished sound and Karen's emotive vocal delivery."
+      },
+      "genres": [
+        "Pop",
+        "Adult Contemporary",
+        "Oldies",
+        "Soft Rock",
+        "70s",
+        "Easy Listening"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "572685C9-DF5D-43C9-96FF-3C89B80420DA",
+      "name": "John Denver",
+      "type": "urn:entity",
+      "properties": {
+        "description": "John Denver (born Henry John Deutschendorf Jr.) was an American singer-songwriter whose warm tenor and pastoral songs brought folk, country and soft-rock into the mainstream. He scored worldwide hits in the 1970s such as \"Take Me Home, Country Roads,\" \"Annie's Song,\" and \"Rocky Mountain High,\" built a reputation as an environmental and humanitarian activist, and remained a visible cultural figure until his death in 1997."
+      },
+      "genres": [
+        "Country",
+        "Acoustic",
+        "Singer & Songwriter",
+        "Classic Rock",
+        "Folk",
+        "Pop",
+        "Singer-Songwriter"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0DC6AE64-E9C1-486D-B239-5E77458C0B2E",
+      "name": "Billy Joel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Billy Joel is an American singer-songwriter and pianist whose career, beginning in the 1960s, produced numerous pop and rock hits built around his piano-driven melodies and narrative lyrics. He achieved major commercial success in the 1970s and 1980s with albums such as The Stranger and 52nd Street and singles including \"Piano Man,\" \"Just the Way You Are,\" and \"Uptown Girl.\" Known for energetic live performances—especially his long-standing annual concerts at Madison Square Garden—Joel's catalog spans storytelling ballads, rockers, and adult-contemporary standards."
+      },
+      "genres": [
+        "Rock",
+        "Singer & Songwriter",
+        "Pop Rock",
+        "Piano",
+        "Pop",
+        "Classic Rock",
+        "Soft Rock",
+        "Singer-Songwriter",
+        "Piano Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "61B17DF2-0DE6-4E2A-AF25-FE175ECB8B92",
+      "name": "Andy Williams",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Andy Williams was an American singer whose career spanned several decades, known for his smooth vocal style and renditions of traditional pop and easy listening standards. He gained fame with hits like \"Moon River\" and was a prominent figure in television variety shows. Williams' music often featured lush orchestral arrangements and showcased his warm baritone voice."
+      },
+      "genres": [
+        "Vocal",
+        "Traditional Pop",
+        "60s",
+        "Oldies",
+        "Easy Listening",
+        "Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "8BAB09FA-26C0-4CB7-965A-3F5A716604FA",
+      "name": "Barry Manilow",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Barry Manilow is an American singer-songwriter, arranger, musician, and producer, famous for his melodic pop songs and ballads. He rose to fame in the 1970s with a string of hit singles and albums, becoming one of the most successful adult contemporary artists. His music is characterized by catchy melodies, emotional lyrics, and lush arrangements."
+      },
+      "genres": [
+        "Oldies",
+        "Pop",
+        "80s",
+        "Easy Listening",
+        "Soft Rock",
+        "Adult Contemporary"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "51584316-495F-49C4-B281-908C920B32A9",
+      "name": "Neil Diamond",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Neil Diamond (born 1941) is an American singer-songwriter whose warm, slightly raspy baritone and knack for melodic, emotional songwriting made him a major pop-rock star from the 1960s onward. He wrote hits for himself and others, scored enduring singles like \"Sweet Caroline,\" \"Song Sung Blue,\" and \"Cracklin' Rosie,\" and became a staple of adult-contemporary radio and arena singalongs. Diamond sold tens of millions of records worldwide and has been honored by the Songwriters Hall of Fame and Rock and Roll Hall of Fame. He retired from touring after announcing a Parkinson's diagnosis in 2018 but remains one of the most recognizable voices in popular music of the baby-boomer era."
+      },
+      "genres": [
+        "Soft Rock",
+        "Rock",
+        "Pop",
+        "Classic Rock",
+        "Singer & Songwriter",
+        "Singer-Songwriter",
+        "Adult Contemporary"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "A8E0EC74-BFF0-4E2C-8892-F016DD33D0A7",
+      "name": "Burl Ives",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Burl Ives was an American folk singer, actor, and author, renowned for his distinctive warm voice and storytelling style. He popularized many traditional folk songs and was also known for his work in country and traditional pop music. Ives was a prominent figure in the American folk music revival and also appeared in numerous films and television shows. He is especially remembered for his recordings of Christmas music and children's songs."
+      },
+      "genres": [
+        "Oldies",
+        "Country",
+        "Folk",
+        "Christmas",
+        "Traditional Pop",
+        "Golden Oldies"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "38C826CA-D452-4C05-A624-6E414F7BDB5A",
+      "name": "Don McLean",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Don McLean is an American singer-songwriter famous for his poetic and narrative songwriting style, particularly his iconic 1971 hit 'American Pie'. His music blends folk, rock, and country influences, and he is known for his storytelling ability and emotional vocal delivery."
+      },
+      "genres": [
+        "Classic Rock",
+        "Singer Songwriter",
+        "Singer & Songwriter",
+        "Folk Rock",
+        "Folk",
+        "Rock",
+        "70s",
+        "Singer-Songwriter"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "A1AF7AD2-E565-4D29-A4FD-48BB3FA67A5D",
+      "name": "Michael Crawford",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Michael Crawford is an English actor and singer renowned for his performances in musical theatre, particularly for originating the role of the Phantom in Andrew Lloyd Webber's 'The Phantom of the Opera.' He has also released classical crossover albums and has a background in opera and pop music. His career spans stage, television, and music recordings, showcasing his versatile vocal and acting talents."
+      },
+      "genres": [
+        "Musical Theatre",
+        "British",
+        "Musical",
+        "Broadway",
+        "Classical Crossover"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "DA47A814-6D62-4D16-8FCD-A4BBC915122D",
+      "name": "Harry Connick, Jr.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Harry Connick, Jr. is an American singer, pianist, composer, actor, and television host. He is renowned for his work in jazz and big band music, blending traditional jazz with pop and blues influences. Connick has released numerous albums, many of which have achieved commercial success and critical acclaim. He is also known for his acting roles in film and television, as well as his work as a television host."
+      },
+      "genres": [
+        "Swing",
+        "New Orleans",
+        "Jazz",
+        "Pop",
+        "Vocal Jazz",
+        "Big Band"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "FC0D0839-6BA9-4A99-982A-BA885BB890C5",
+      "name": "Christmas",
+      "type": "urn:entity",
+      "properties": {
+        "description": ""
+      },
+      "genres": [
+        "Christmas",
+        "Rock",
+        "Progressive Rock",
+        "Psychedelic Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "DFAA896C-235D-4454-A7D3-5C5DA9867CFF",
+      "name": "Vienna Boys Choir",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Vienna Boys Choir is one of the oldest and most famous boys' choirs in the world, originating in Vienna, Austria. Founded in 1498, the choir consists of boy sopranos and altos who perform a wide repertoire ranging from classical sacred music to folk songs and contemporary pieces. They are known for their pure vocal tone, precise harmonies, and extensive touring worldwide, representing Austrian musical tradition."
+      },
+      "genres": [
+        "Sacred Music",
+        "Choral",
+        "Classical"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "51C848D8-9C9E-4A8A-A719-1B278770676A",
+      "name": "Gene Autry",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Gene Autry (1907–1998), nicknamed \"The Singing Cowboy,\" was an American singer, songwriter, actor and entrepreneur who popularized country and Western music through radio, recordings, films and early television. He recorded enduring Christmas standards, starred in long-running Western film series, and built a broad entertainment and business career that included radio shows, merchandise and later ownership stakes in sports and cultural institutions."
+      },
+      "genres": [
+        "Western",
+        "Country",
+        "Christmas",
+        "Classic Country",
+        "Oldies"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "AED2E06A-DEB6-4586-BD9B-B0F6A4C3C17E",
+      "name": "James Taylor",
+      "type": "urn:entity",
+      "properties": {
+        "description": "James Taylor (born 1948) is an American singer-songwriter whose warm, mellow tenor and intimate acoustic arrangements helped define the early-1970s singer-songwriter era. He rose to prominence with albums such as Sweet Baby James and songs like \"Fire and Rain\" and \"Carolina in My Mind,\" becoming a staple of soft rock and acoustic pop while maintaining a long-lasting career of recordings and concerts."
+      },
+      "genres": [
+        "Acoustic",
+        "Soft Rock",
+        "Singer & Songwriter",
+        "Singer Songwriter",
+        "Rock",
+        "Classic Rock",
+        "Folk Rock",
+        "Singer-Songwriter",
+        "Folk"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "9161987B-020E-405E-B0B8-7CCA05AA4CB3",
+      "name": "Elaine Paige",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Elaine Paige is a renowned British singer and actress, often referred to as the 'First Lady of British Musical Theatre.' She has had a distinguished career primarily in musical theatre, with notable roles in productions such as 'Evita,' 'Cats,' and 'Chess.' Paige is celebrated for her powerful voice and emotive performances, and she has also released several solo albums featuring a mix of musical theatre songs and pop music. Her contributions to the arts have earned her an MBE (Member of the Order of the British Empire)."
+      },
+      "genres": [
+        "Pop",
+        "Broadway",
+        "Musical",
+        "Musical Theater",
+        "Musicals",
+        "Musical Theatre"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "BE9644BD-E4E5-4303-A24C-3B2A600F9BF2",
+      "name": "Randy Newman",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Randy Newman is an American singer-songwriter, pianist, arranger and film composer whose career spans pop records of literate, character-driven songs and award-winning film scores. He is noted for a distinctive nasal vocal delivery, mordant satire, lush orchestral arrangements and memorable themes for animated and live-action films."
+      },
+      "genres": [
+        "Piano",
+        "Rock",
+        "Singer Songwriter",
+        "Pop Rock",
+        "Soft Rock",
+        "Pop",
+        "Singer & Songwriter",
+        "Soundtrack",
+        "Film Score",
+        "Singer-Songwriter",
+        "Piano Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "FFEFBBEE-B788-40F1-BCEE-23C9A8A82487",
+      "name": "Jim Croce",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Jim Croce was an American singer-songwriter whose succinct, story-driven songs and warm baritone made him a defining voice of early 1970s folk-rock. He scored major hits including \"You Don't Mess Around With Jim,\" \"Bad, Bad Leroy Brown,\" and the posthumous chart-topper \"Time in a Bottle.\" Croce's arrangements favored acoustic guitar and sparse production, and his work is celebrated for clear narratives, memorable characters, and emotional clarity. His career was cut short by a plane crash in 1973."
+      },
+      "genres": [
+        "Folk Rock",
+        "Acoustic",
+        "Rock",
+        "Classic Rock",
+        "70s",
+        "Singer Songwriter",
+        "Singer & Songwriter",
+        "Singer-Songwriter",
+        "Acoustic Folk",
+        "Soft Rock"
+      ],
+      "keywords": []
+    }
+  ]
+}

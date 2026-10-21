@@ -1,0 +1,884 @@
+{
+  "url": "/v2/insights?signal.interests.entities=FC0F8D26-BA80-4D83-8BBF-FC011DC8D241&filter.type=urn%3Aentity%3Aplace&filter.location.query=Chicago&take=50",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "15E0CBD1-38A1-4FF6-A282-4A0991678F77",
+      "name": "Cloud Gate",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large mirrored sculpture in a city park, known for its reflective surface and unusual bean-like form.",
+        "short_description": "Large mirrored sculpture in a city park, known for its reflective surface and unusual bean-like form.",
+        "primary_genre": "urn:tag:genre:place:sculpture"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Sculpture",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0BA93C88-866C-4D4D-933B-59AE7C962E4F",
+      "name": "Skydeck Chicago",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Panoramic observation deck on the 103rd floor featuring glass ledges with sweeping views across Chicago and up to four states.",
+        "short_description": "Panoramic observation deck on the 103rd floor featuring glass ledges with sweeping views across Chicago and up to four states.",
+        "primary_genre": "urn:tag:genre:place:observation_deck"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Event ticket seller",
+        "Place",
+        "Observation deck"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7FC70BA7-0384-42FF-A230-88907A19D2E2",
+      "name": "Chicago O'Hare International Airport",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Major international hub serving the U.S. Midwest on over 7,000 acres with direct rail connection to central Chicago.",
+        "short_description": "Major international hub serving the U.S. Midwest on over 7,000 acres with direct rail connection to central Chicago.",
+        "primary_genre": "urn:tag:genre:place:international_airport"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "A50A5BA2-3D04-4349-AB9D-6A9559D3491E",
+      "name": "Chicago Cubs Box Office",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Official ticket office at historic Wrigley Field offering single-game, group, suite and tour tickets in Chicago’s Wrigleyville neighborhood.",
+        "short_description": "Official ticket office at historic Wrigley Field offering single-game, group, suite and tour tickets in Chicago’s Wrigleyville neighborhood.",
+        "primary_genre": "urn:tag:genre:place:ticket_office"
+      },
+      "genres": [
+        "Place",
+        "Event ticket seller",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "A3D864DD-B88D-4DBC-B351-196868803C5D",
+      "name": "Chicago Midway International Airport",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Compact international airport serving the Midwest with convenient direct CTA Orange Line service to downtown Chicago.",
+        "short_description": "Compact international airport serving the Midwest with convenient direct CTA Orange Line service to downtown Chicago.",
+        "primary_genre": "urn:tag:genre:place:international_airport"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "8A4DDDEF-19BA-4979-927C-46F71C81E6CC",
+      "name": "Gallagher House",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Residential building on Chicago's West Side at 2119 S Homan Avenue in the 60623 ZIP code.",
+        "short_description": "Residential building on Chicago's West Side at 2119 S Homan Avenue in the 60623 ZIP code.",
+        "primary_genre": "urn:tag:genre:place:building"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "264EE9C5-C8AE-460B-AEE2-155DCA8AC344",
+      "name": "Gino's East",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Longstanding pizzeria serving Chicago-style deep-dish and thin-crust pizzas, plus Italian sandwiches, salads, vegan and gluten-free options.",
+        "short_description": "Longstanding pizzeria serving Chicago-style deep-dish and thin-crust pizzas, plus Italian sandwiches, salads, vegan and gluten-free options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:pizza",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:meaty_legend_deep_dish_pizza",
+            "name": "Meaty Legend Deep Dish Pizza"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:gino_s_house_salad",
+            "name": "Gino S House Salad"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:gino_s_supreme_pizza",
+            "name": "Gino S Supreme Pizza"
+          }
+        ]
+      },
+      "genres": [
+        "Pizza delivery",
+        "Lunch restaurant",
+        "Bar",
+        "Restaurant",
+        "Pizza takeout",
+        "Pizza",
+        "Delivery restaurant",
+        "Italian",
+        "Place",
+        "Caterer"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1A1EDFB7-2AEE-458B-8090-7949BEF31B93",
+      "name": "Chicago Line Cruises",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Narrated river cruises offering guided architecture and history tours along the Chicago River and downtown waterfront.",
+        "short_description": "Narrated river cruises offering guided architecture and history tours along the Chicago River and downtown waterfront.",
+        "primary_genre": "urn:tag:genre:place:cruise_line_company"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Boat tour agency",
+        "Place",
+        "Cruise line company",
+        "Sightseeing tour agency"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "07D0F451-401A-44DA-8FD8-CB5DA39F0974",
+      "name": "Millennium Park",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Urban green space featuring iconic public art, skyline views, and a major outdoor performance venue.",
+        "short_description": "Urban green space featuring iconic public art, skyline views, and a major outdoor performance venue.",
+        "primary_genre": "urn:tag:genre:place:park"
+      },
+      "genres": [
+        "Place",
+        "Park",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "4D859EC0-8E45-4E16-8290-CB4D62690852",
+      "name": "Field Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Lakefront natural history museum showcasing Sue, the most complete Tyrannosaurus rex, with expansive global natural science and cultural collections.",
+        "short_description": "Lakefront natural history museum showcasing Sue, the most complete Tyrannosaurus rex, with expansive global natural science and cultural collections.",
+        "primary_genre": "urn:tag:genre:place:natural_history_museum"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction",
+        "Science museum",
+        "Natural history museum",
+        "Museum"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "EA4DB65A-02F4-4E9E-A5ED-F5C3F2615060",
+      "name": "CloudBar at 360 CHICAGO",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Fashionable 94th-floor bar serving craft cocktails, local beers and snacks with panoramic Chicago skyline views and a lively nighttime atmosphere.",
+        "short_description": "Fashionable 94th-floor bar serving craft cocktails, local beers and snacks with panoramic Chicago skyline views and a lively nighttime atmosphere.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Bar",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "73F023E6-471E-40FF-9568-43E65CDEF6A4",
+      "name": "Cubs Bar & Grill",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Airport bar and grill in O'Hare Terminal 3 offering comfort food and cocktails, known for chicken wings and diverse drink selection.",
+        "short_description": "Airport bar and grill in O'Hare Terminal 3 offering comfort food and cocktails, known for chicken wings and diverse drink selection.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_wings",
+            "name": "Chicken And Wings"
+          }
+        ]
+      },
+      "genres": [
+        "Bar + grill",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "95A77FEE-5E93-4298-9EBA-D68DE06ED113",
+      "name": "BP Pedestrian Bridge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Curving 925-foot stainless-steel pedestrian bridge in Millennium Park, designed by Frank Gehry, linking park spaces and offering skyline and lakefront views.",
+        "short_description": "Curving 925-foot stainless-steel pedestrian bridge in Millennium Park, designed by Frank Gehry, linking park spaces and offering skyline and lakefront views.",
+        "primary_genre": "urn:tag:genre:place:bridge"
+      },
+      "genres": [
+        "Place",
+        "Bridge",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "EAF3EB95-9C7B-4B75-8D24-056F678C3B39",
+      "name": "Willis Tower",
+      "type": "urn:entity",
+      "properties": {
+        "description": "110-story skyscraper featuring a 103rd-floor Skydeck with glass Ledge and panoramic views of Chicago.",
+        "short_description": "110-story skyscraper featuring a 103rd-floor Skydeck with glass Ledge and panoramic views of Chicago.",
+        "primary_genre": "urn:tag:genre:place:tourist_attraction"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction",
+        "Observation deck"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "E880A059-E130-4EC9-B62D-5F28A7B559FD",
+      "name": "Chicago River Boat Architecture Tours",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Scenic 90-minute guided riverboat tour highlighting Chicago’s architectural landmarks, led by architect and historian guides.",
+        "short_description": "Scenic 90-minute guided riverboat tour highlighting Chicago’s architectural landmarks, led by architect and historian guides.",
+        "primary_genre": "urn:tag:genre:place:boat_tour_agency"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction",
+        "Boat tour agency"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "EDB244FF-3D0D-4B34-81E3-09C762C70945",
+      "name": "Rate Field",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Major League Baseball stadium on Chicago's South Side, home to the White Sox, offering fan decks, a kids' zone, extensive concessions, and team stores.",
+        "short_description": "Major League Baseball stadium on Chicago's South Side, home to the White Sox, offering fan decks, a kids' zone, extensive concessions, and team stores.",
+        "primary_genre": "urn:tag:genre:place:stadium"
+      },
+      "genres": [
+        "Place",
+        "Baseball field",
+        "Stadium",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "C43A8299-A2B4-442F-83D2-E66AE81CF30D",
+      "name": "United Polaris Lounge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Premium international business-class airport lounge offering full-service dining, a full bar, private restrooms, showers, nap rooms, and extensive seating in Terminal 1 Concourse C.",
+        "short_description": "Premium international business-class airport lounge offering full-service dining, a full bar, private restrooms, showers, nap rooms, and extensive seating in Terminal 1 Concourse C.",
+        "primary_genre": "urn:tag:genre:place:travel_lounge"
+      },
+      "genres": [
+        "Place",
+        "Travel lounge",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "3A3D9314-F135-4468-872C-DC08684154BF",
+      "name": "My Second Home",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual neighborhood restaurant and bar offering drinks and relaxed dining on Chicago’s Southwest Side.",
+        "short_description": "Casual neighborhood restaurant and bar offering drinks and relaxed dining on Chicago’s Southwest Side.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Bar"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "BC9E3AC0-4F98-4B4F-B7E1-CDA52004E5B0",
+      "name": "Seadog Cruises (Speedboat & Architecture Tours)",
+      "type": "urn:entity",
+      "properties": {
+        "description": "High-speed Lake Michigan and river sightseeing boat tours from Navy Pier, featuring skyline views, seasonal events, and special charter cruises.",
+        "short_description": "High-speed Lake Michigan and river sightseeing boat tours from Navy Pier, featuring skyline views, seasonal events, and special charter cruises.",
+        "primary_genre": "urn:tag:genre:place:boat_tour_agency"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction",
+        "Tour operator",
+        "Sightseeing tour agency",
+        "Boat tour agency"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "2A360698-8853-41B6-A097-B44C5B872B6B",
+      "name": "Chicago Sports Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Interactive museum at Water Tower Place showcasing Chicago sports history with game-used memorabilia, hi‑tech simulations, skill challenges, and family-friendly exhibits.",
+        "short_description": "Interactive museum at Water Tower Place showcasing Chicago sports history with game-used memorabilia, hi‑tech simulations, skill challenges, and family-friendly exhibits.",
+        "primary_genre": "urn:tag:genre:place:museum"
+      },
+      "genres": [
+        "Wedding venue",
+        "Tourist attraction",
+        "Place",
+        "Event venue",
+        "Museum"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "D018740C-4FAB-4518-8D2E-0C86AF9C101E",
+      "name": "Shedd Aquarium",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large indoor aquarium on Lake Michigan’s shore featuring diverse global habitats, marine life exhibits, interactive learning programs, and panoramic city and lake views.",
+        "short_description": "Large indoor aquarium on Lake Michigan’s shore featuring diverse global habitats, marine life exhibits, interactive learning programs, and panoramic city and lake views.",
+        "primary_genre": "urn:tag:genre:place:aquarium"
+      },
+      "genres": [
+        "Historical landmark",
+        "Tourist attraction",
+        "Place",
+        "Aquarium"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "C20F5732-F463-4671-8675-54F3897DF77F",
+      "name": "Chicago Blackhawks",
+      "type": "urn:entity",
+      "properties": {
+        "description": "NHL professional hockey franchise based in Chicago, playing at the United Center and known for historic Stanley Cup-winning tradition and passionate fanbase.",
+        "short_description": "NHL professional hockey franchise based in Chicago, playing at the United Center and known for historic Stanley Cup-winning tradition and passionate fanbase.",
+        "primary_genre": "urn:tag:genre:place:hockey_club"
+      },
+      "genres": [
+        "Hockey club",
+        "Sports club",
+        "Place",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0D911230-0444-46B7-96B3-5F50C5F63F37",
+      "name": "California",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rehabilitated Chicago Blue Line station with small, well-lit platforms, heavy surveillance, no elevator, and nearby shops and restaurants.",
+        "short_description": "Rehabilitated Chicago Blue Line station with small, well-lit platforms, heavy surveillance, no elevator, and nearby shops and restaurants.",
+        "primary_genre": "urn:tag:genre:place:subway_station"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "AA793D14-8C56-472B-B550-8127F89E001E",
+      "name": "Soldier Field",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic 1924 lakefront stadium with a 2003 renovation, hosting NFL, concerts, soccer, tours, and premium hospitality spaces.",
+        "short_description": "Historic 1924 lakefront stadium with a 2003 renovation, hosting NFL, concerts, soccer, tours, and premium hospitality spaces.",
+        "primary_genre": "urn:tag:genre:place:stadium"
+      },
+      "genres": [
+        "Concert hall",
+        "Soccer field",
+        "Stadium",
+        "Tourist attraction",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "0721CD9A-5199-483B-B1AD-46C8CD0DED77",
+      "name": "The Ballpark at Rosemont",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Year-round indoor sports complex with a domed facility and 2,000-seat stadium hosting softball, lacrosse, volleyball, and community events near Rosemont's entertainment district.",
+        "short_description": "Year-round indoor sports complex with a domed facility and 2,000-seat stadium hosting softball, lacrosse, volleyball, and community events near Rosemont's entertainment district.",
+        "primary_genre": "urn:tag:genre:place:softball_field"
+      },
+      "genres": [
+        "Softball field",
+        "Place",
+        "Sports complex",
+        "Stadium",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "843BDADF-2588-4F9C-B6A3-73F1098AFAD4",
+      "name": "Bubbles",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sleek champagne and wine bar near O'Hare serving Mediterranean small plates, breakfast, cocktails, and arcade games.",
+        "short_description": "Sleek champagne and wine bar near O'Hare serving Mediterranean small plates, breakfast, cocktails, and arcade games.",
+        "primary_genre": "urn:tag:genre:place:restaurant:wine_bar"
+      },
+      "genres": [
+        "Wine bar",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "0CC9102D-94D6-417F-B12E-DC6C2B493028",
+      "name": "Chicago Children's Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Family-focused hands-on museum on Navy Pier offering interactive exhibits and play areas for young children, including a popular dinosaur dig.",
+        "short_description": "Family-focused hands-on museum on Navy Pier offering interactive exhibits and play areas for young children, including a popular dinosaur dig.",
+        "primary_genre": "urn:tag:genre:place:children's_museum"
+      },
+      "genres": [
+        "Childrens museum",
+        "Tourist attraction",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "78BA694F-E6D7-4A1C-A64E-904CE7DBD29B",
+      "name": "Credit Union 1 Arena",
+      "type": "urn:entity",
+      "properties": {
+        "description": "A 9,500-seat venue hosting college sports, concerts, festivals, and cultural events near downtown Chicago.",
+        "short_description": "A 9,500-seat venue hosting college sports, concerts, festivals, and cultural events near downtown Chicago.",
+        "primary_genre": "urn:tag:genre:place:arena"
+      },
+      "genres": [
+        "Arena",
+        "Place",
+        "Event venue",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "8B928852-AE05-4834-ADB6-BB95756CA417",
+      "name": "Plaza Garibaldi",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Open-air community plaza and event space hosting cultural festivals and public gatherings in Chicago.",
+        "short_description": "Open-air community plaza and event space hosting cultural festivals and public gatherings in Chicago.",
+        "primary_genre": "urn:tag:genre:place:event_venue"
+      },
+      "genres": [
+        "Place",
+        "Event venue",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "66A8A674-C0F3-4F3A-9ACC-32EBA2E9EF31",
+      "name": "Joe's Live",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large Rosemont live-music venue and restaurant offering concerts, VIP suites, bottle service, and private-event catering near O'Hare.",
+        "short_description": "Large Rosemont live-music venue and restaurant offering concerts, VIP suites, bottle service, and private-event catering near O'Hare.",
+        "primary_genre": "urn:tag:genre:place:live_music_venue"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction",
+        "Live music venue"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "D91D9588-4C4B-42A7-9BA0-011E3F60428D",
+      "name": "The Wade",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Modern, stylish hotel overlooking Lake Michigan with chic rooms, a hip restaurant, indoor pool, and close to Navy Pier and Magnificent Mile.",
+        "short_description": "Modern, stylish hotel overlooking Lake Michigan with chic rooms, a hip restaurant, indoor pool, and close to Navy Pier and Magnificent Mile.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Place",
+        "Hotel"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "A0D684DC-2A48-4047-8900-87F470C1E806",
+      "name": "NBC 5 Chicago",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Television station providing Chicago-focused news, weather, sports and breaking coverage across broadcast and digital platforms.",
+        "short_description": "Television station providing Chicago-focused news, weather, sports and breaking coverage across broadcast and digital platforms.",
+        "primary_genre": "urn:tag:genre:place:television_station"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "F39F11BC-E848-4072-9B27-AE7BF357082C",
+      "name": "United Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The United States' largest indoor arena hosting 200+ annual events, home to NBA Bulls, NHL Blackhawks, and major concert tours.",
+        "short_description": "The United States' largest indoor arena hosting 200+ annual events, home to NBA Bulls, NHL Blackhawks, and major concert tours.",
+        "primary_genre": "urn:tag:genre:place:arena"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Stadium",
+        "Hockey rink",
+        "Ice hockey rink",
+        "Place",
+        "Arena",
+        "Live music venue",
+        "Attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8ED9FB1D-1BE0-4EAD-945A-B9B04D80D006",
+      "name": "Holy Resurrection Serbian Orthodox Cathedral",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Serbian Orthodox cathedral on Chicago's North Side serving as an active parish and cultural center with traditional Byzantine-style architecture.",
+        "short_description": "Historic Serbian Orthodox cathedral on Chicago's North Side serving as an active parish and cultural center with traditional Byzantine-style architecture.",
+        "primary_genre": "urn:tag:genre:place:cathedral"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction",
+        "Cathedral"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "CBCC1565-488B-49C9-A24B-07C42ED60D0E",
+      "name": "European Chalet Banquets",
+      "type": "urn:entity",
+      "properties": {
+        "description": "European-inspired full-service banquet hall and caterer in Chicago offering wedding, quinceañera, and corporate event packages with customizable decor, menus, and onsite parking.",
+        "short_description": "European-inspired full-service banquet hall and caterer in Chicago offering wedding, quinceañera, and corporate event packages with customizable decor, menus, and onsite parking.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Event venue",
+        "Wedding venue",
+        "Restaurant",
+        "Tourist attraction",
+        "Place",
+        "Banquet hall"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "BCCA7BF2-7377-435E-9D34-C5CBC1CD6987",
+      "name": "Illinois Institute of Technology",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Private, tech-focused research university in Bronzeville, Chicago, known for its modernist Mies-designed campus and strong engineering, architecture, and STEM programs.",
+        "short_description": "Private, tech-focused research university in Bronzeville, Chicago, known for its modernist Mies-designed campus and strong engineering, architecture, and STEM programs.",
+        "primary_genre": "urn:tag:genre:place:private_university"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "B6987BC5-7004-42DF-B3A5-E019478C34F4",
+      "name": "Christkindlmarket Chicago",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Traditional German-style outdoor holiday market in downtown Chicago offering seasonal food, drinks, crafts, and family-friendly events.",
+        "short_description": "Traditional German-style outdoor holiday market in downtown Chicago offering seasonal food, drinks, crafts, and family-friendly events.",
+        "primary_genre": "urn:tag:genre:place:christmas_market"
+      },
+      "genres": [
+        "Christmas market",
+        "Tourist attraction",
+        "Place",
+        "Shopping",
+        "Market"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "23C4209C-6B80-4739-9BDB-125DE8E2C507",
+      "name": "John C. Kluczynski Federal Building",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Prominent modernist glass-and-steel federal office tower anchoring the Chicago Federal Center in the Loop, housing federal agencies and court offices.",
+        "short_description": "Prominent modernist glass-and-steel federal office tower anchoring the Chicago Federal Center in the Loop, housing federal agencies and court offices.",
+        "primary_genre": "urn:tag:genre:place:federal_government_office"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E8DF6E05-D14E-4DCC-AC0F-311EEE117B26",
+      "name": "John Hancock Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Iconic X-braced skyscraper on the Magnificent Mile with an observation deck, dining, and panoramic lake and city views.",
+        "short_description": "Iconic X-braced skyscraper on the Magnificent Mile with an observation deck, dining, and panoramic lake and city views.",
+        "primary_genre": "urn:tag:genre:place:tower"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "FD28B863-60D4-4006-9986-E3B197A7CD42",
+      "name": "Gaslight Club",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Old-school airport bar and restaurant serving surf‑and‑turf, cocktails, and late-night fare in a vintage cabaret atmosphere with servers in classic cabaret attire.",
+        "short_description": "Old-school airport bar and restaurant serving surf‑and‑turf, cocktails, and late-night fare in a vintage cabaret atmosphere with servers in classic cabaret attire.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F5802D29-B2F5-4CAA-ABD0-8C55B42072DE",
+      "name": "UIC Natatorium",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Olympic-sized 50-meter pool with one- and three-meter diving boards inside a university physical education building, host to collegiate championships.",
+        "short_description": "Olympic-sized 50-meter pool with one- and three-meter diving boards inside a university physical education building, host to collegiate championships.",
+        "primary_genre": "urn:tag:genre:place:educational_institution"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "CE996B82-F2CF-4D93-BBBC-7FADAF208586",
+      "name": "Trinity High School",
+      "type": "urn:entity",
+      "properties": {
+        "description": "All-girls private college-preparatory high school offering the International Baccalaureate program and college-credit opportunities in River Forest, Illinois.",
+        "short_description": "All-girls private college-preparatory high school offering the International Baccalaureate program and college-credit opportunities in River Forest, Illinois.",
+        "primary_genre": "urn:tag:genre:place:high_school"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "851764B9-6EAE-434E-9D9F-22AA0037D301",
+      "name": "Argo Community High School",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Public high school in Summit, Illinois offering comprehensive academics, career-technical programs, athletics, and student support within District 217.",
+        "short_description": "Public high school in Summit, Illinois offering comprehensive academics, career-technical programs, athletics, and student support within District 217.",
+        "primary_genre": "urn:tag:genre:place:public_educational_institution"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "F83D8163-AC5A-4799-8615-3DA12CD7CD78",
+      "name": "SeatGeek Stadium",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Suburban Chicago soccer-specific stadium seating about 20,000, hosting professional soccer, concerts, and large community events in Bridgeview, Illinois.",
+        "short_description": "Suburban Chicago soccer-specific stadium seating about 20,000, hosting professional soccer, concerts, and large community events in Bridgeview, Illinois.",
+        "primary_genre": "urn:tag:genre:place:stadium"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Sports complex",
+        "Place",
+        "Stadium",
+        "Event venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "D3E92F38-AAE5-4A19-A2CF-A8E89A47DF23",
+      "name": "The Chicago Theatre",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic French Baroque–style 3,600-seat theater on State Street hosting national music, comedy, and live events since 1921.",
+        "short_description": "Historic French Baroque–style 3,600-seat theater on State Street hosting national music, comedy, and live events since 1921.",
+        "primary_genre": "urn:tag:genre:place:concert_hall"
+      },
+      "genres": [
+        "Historical landmark",
+        "Concert hall",
+        "Live music venue",
+        "Event venue",
+        "Performing arts theater",
+        "Place",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "AD993BD8-7AD9-42B6-91B8-736425DE2E01",
+      "name": "Fountain Blue Banquets & Conference Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Elegant renovated banquet and conference center offering award-winning cuisine, dedicated event planning, full-venue buyouts, and complimentary parking for weddings and corporate events.",
+        "short_description": "Elegant renovated banquet and conference center offering award-winning cuisine, dedicated event planning, full-venue buyouts, and complimentary parking for weddings and corporate events.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Wedding venue",
+        "Banquet hall",
+        "Tourist attraction",
+        "Event venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "13531A57-57E3-473F-B01C-0268FFCBC4D4",
+      "name": "Tiffany & Co.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Upscale American jeweler on Chicago's Magnificent Mile offering fine jewelry, watches, china, silver, and wedding registry services.",
+        "short_description": "Upscale American jeweler on Chicago's Magnificent Mile offering fine jewelry, watches, china, silver, and wedding registry services.",
+        "primary_genre": "urn:tag:genre:place:jewelry_store"
+      },
+      "genres": [
+        "Gift shop",
+        "Jewelry designer",
+        "Shopping",
+        "Watch store",
+        "Jewelry store",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "F79E4522-365E-42EF-94EC-A8DB9BC92CC1",
+      "name": "New Life Covenant Church",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Multi-campus Assemblies of God church in Chicago offering worship, community outreach, and multilingual ministries across several city campuses.",
+        "short_description": "Multi-campus Assemblies of God church in Chicago offering worship, community outreach, and multilingual ministries across several city campuses.",
+        "primary_genre": "urn:tag:genre:place:assemblies_of_god_church"
+      },
+      "genres": [
+        "Christian church",
+        "Place",
+        "Assemblies of god church",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "2D269D2F-69A2-4A31-AE1E-CE1855A0C4F9",
+      "name": "Moody Bible Institute",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Evangelical Christian seminary and college offering undergraduate and graduate biblical, theological, and ministry training in an urban Chicago campus.",
+        "short_description": "Evangelical Christian seminary and college offering undergraduate and graduate biblical, theological, and ministry training in an urban Chicago campus.",
+        "primary_genre": "urn:tag:genre:place:college"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "F73063A5-3A12-45C9-9C49-1730662344E9",
+      "name": "Museum of Illusions Chicago",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Immersive rooms of optical illusions, holograms, and photo-focused installations that deceive perception.",
+        "short_description": "Immersive rooms of optical illusions, holograms, and photo-focused installations that deceive perception.",
+        "primary_genre": "urn:tag:genre:place:museum"
+      },
+      "genres": [
+        "Art gallery",
+        "Museum",
+        "Tourist attraction",
+        "Place",
+        "Science museum",
+        "Amusement center",
+        "Modern art museum",
+        "Art museum"
+      ],
+      "keywords": []
+    }
+  ]
+}

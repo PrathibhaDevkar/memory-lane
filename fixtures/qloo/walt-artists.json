@@ -1,0 +1,464 @@
+{
+  "url": "/v2/insights?signal.interests.entities=95593E4D-2CBE-44E5-BF82-F1E542B63A96&filter.type=urn%3Aentity%3Aartist&take=25",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "C6FE1177-7C35-4A06-8383-DB3FFE988D5D",
+      "name": "Roy Orbison",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Roy Orbison (1936–1988) was an American singer-songwriter whose high, emotive tenor and distinctive falsetto anchored dramatic, orchestral pop and rock ballads. Emerging from Texas in the 1950s with rockabilly roots, Orbison blended country, pop and operatic phrasing into a signature sound characterized by sweeping arrangements, sudden key changes and intense emotional delivery. He scored a string of international hits in the 1960s and enjoyed a late-career resurgence in the 1980s as a member of the Traveling Wilburys and with posthumous hits from his Mystery Girl sessions."
+      },
+      "genres": [
+        "Oldies",
+        "Classic Rock",
+        "60s",
+        "Rockabilly",
+        "Pop Rock",
+        "Rock And Roll",
+        "Country",
+        "Rock",
+        "Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "459BB234-01B2-46CD-ACC7-34599A146298",
+      "name": "The Animals",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Animals are a British rock band formed in Newcastle upon Tyne in the early 1960s, known for their deep, bluesy sound and Eric Burdon's powerful vocals. They were part of the British Invasion and gained fame with their rendition of the traditional folk song \"The House of the Rising Sun,\" which became a major hit. Their music blends rock, blues, and rhythm and blues, often featuring gritty guitar riffs and soulful vocals. The band underwent several lineup changes and evolved their style over the years, incorporating psychedelic and folk rock elements."
+      },
+      "genres": [
+        "Rock",
+        "Oldies",
+        "Classic Rock",
+        "British",
+        "60s",
+        "British Invasion",
+        "Blues Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "FA493725-3DBB-4F65-B34F-F5C20E65B3FC",
+      "name": "Jerry Lee Lewis",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Jerry Lee Lewis (1935–2022) was an American singer, songwriter and pianist whose dynamic, piano-driven style helped define 1950s rock and roll and later made him a major country star. He rose to fame at Sun Records with hits like \"Whole Lotta Shakin' Goin' On\" and \"Great Balls of Fire,\" became famous for wild stage antics and energetic boogie-woogie piano, survived a career scandal in 1958, and staged a successful country comeback in the late 1960s and 1970s."
+      },
+      "genres": [
+        "Rockabilly",
+        "Oldies",
+        "Rock And Roll",
+        "Classic Rock",
+        "Country",
+        "Rock",
+        "Piano Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "51619791-C11D-4E9E-9B13-5863BCD3F99E",
+      "name": "Chuck Berry",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Chuck Berry was an American guitarist, singer and songwriter who fused rhythm and blues, country and boogie into the archetypal sound of early rock and roll. Famous for his guitar-driven riffs, showman stage moves (including the 'duckwalk'), and vivid teen- and car-oriented storytelling lyrics, Berry created a template for rock songwriting and performance. He recorded enduring hits for Chess Records beginning in the mid-1950s and influenced generations of rock musicians worldwide."
+      },
+      "genres": [
+        "Classic Rock",
+        "Rock And Roll",
+        "Blues",
+        "Rock",
+        "Rockabilly",
+        "Rhythm And Blues"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "FF1945DF-A5DE-4C4A-83C0-422135E03BC0",
+      "name": "The Mamas & the Papas",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Mamas & The Papas were an American folk rock vocal group formed in the 1960s, famous for their harmonious blend of voices and influential contributions to the folk rock and pop rock genres. The group consisted of John Phillips, Michelle Phillips, Denny Doherty, and Cass Elliot. They are best known for their hit songs such as \"California Dreamin'\" and \"Monday, Monday.\" Their music combined elements of folk, rock, and pop with lush vocal harmonies and often featured introspective and evocative lyrics. The group was a significant part of the 1960s music scene and helped popularize the sunshine pop sound."
+      },
+      "genres": [
+        "Folk Rock",
+        "Pop",
+        "Sunshine Pop",
+        "Classic Rock",
+        "Oldies",
+        "Pop Rock",
+        "Rock",
+        "60s"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "2C718AA6-17F4-4D6B-A3D6-970673D77CE2",
+      "name": "Buddy Holly",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Buddy Holly (born Charles Hardin Holley) was a seminal American singer-songwriter and guitarist whose concise, melodic songs and three-piece band format helped define early rock and roll. Active in the mid-1950s, Holly led The Crickets, wrote and recorded hits that combined country, rhythm & blues and pop sensibilities, and influenced generations of rock musicians before his life and career were cut short by a 1959 plane crash."
+      },
+      "genres": [
+        "Oldies",
+        "Rockabilly",
+        "Rock And Roll",
+        "Country Rock",
+        "Rock",
+        "Pop Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "CFC55D91-0F05-454B-A3A3-F282D8E3283E",
+      "name": "Creedence Clearwater Revival",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Creedence Clearwater Revival (CCR) were an American rock band formed in El Cerrito, California, in 1967. Composed of John Fogerty (lead vocals, lead guitar), Tom Fogerty (rhythm guitar), Stu Cook (bass) and Doug Clifford (drums), CCR fused rock & roll, blues, country and folk into a concise, swamp‑tinged roots sound. Between 1968 and 1972 they released a string of high‑charting singles and albums characterized by direct songwriting, gritty vocals, driving rhythms and strong American imagery. Though short‑lived as a band, CCR's recordings have had lasting influence on roots rock, Southern rock and Americana and remain staples on classic‑rock radio worldwide."
+      },
+      "genres": [
+        "Blues Rock",
+        "Roots Rock",
+        "Rock",
+        "Southern Rock",
+        "Swamp Rock",
+        "60s",
+        "Classic Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "3A78E120-14F8-4DA2-93EE-1ED35F5FFEC7",
+      "name": "The Rolling Stones",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Rolling Stones are an English rock band formed in London in 1962 whose core early lineup coalesced around Mick Jagger and Keith Richards. Drawing heavily on American blues, R&B and rock and roll, they helped define the sound and image of modern rock. Across six decades they produced a string of iconic albums and singles, became famed for raucous live shows and stadium tours, and remained commercially and culturally influential worldwide."
+      },
+      "genres": [
+        "Blues",
+        "60s",
+        "Classic Rock",
+        "Rock",
+        "Blues Rock",
+        "British",
+        "Rock And Roll",
+        "Rhythm And Blues"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "ABB8E96A-54BB-4AAC-B211-2D315EEC93AA",
+      "name": "Nancy Sinatra",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Nancy Sinatra is an American singer and actress, best known for her 1960s hit songs such as \"These Boots Are Made for Walkin'\" and her collaborations with her father Frank Sinatra. She gained fame for her distinctive voice and style, blending pop, rock, and country influences. Nancy also appeared in several films and television shows, contributing to her multifaceted entertainment career."
+      },
+      "genres": [
+        "Country Pop",
+        "Oldies",
+        "60s",
+        "Pop",
+        "Classic Rock",
+        "Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "D4042EAD-0808-4846-A113-77CBD406F541",
+      "name": "Ben E. King",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Ben E. King was an influential American soul and R&B singer and songwriter, best known for his timeless hit \"Stand by Me.\" He began his career as a member of the Drifters before launching a successful solo career. King's smooth vocal style and emotive delivery helped define the soul genre in the 1960s, and his music continues to be celebrated for its emotional depth and timeless appeal."
+      },
+      "genres": [
+        "Soul",
+        "Blues",
+        "60s",
+        "R & B",
+        "Oldies",
+        "Classic Rock",
+        "Soul Blues",
+        "R&B"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0C7D6CAE-B0A0-4AF5-8974-BB7D8F09F496",
+      "name": "Little Richard",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Little Richard (Richard Wayne Penniman) was a groundbreaking American singer, songwriter and pianist whose raw, high-energy performances, falsetto wails and pounding piano established many of the stylistic hallmarks of rock and roll. Blending gospel intensity, rhythm & blues drive and boogie-woogie piano, he created hit records in the mid-1950s that became foundational rock standards. His flamboyant stage persona and unapologetic showmanship influenced generations of performers across genres."
+      },
+      "genres": [
+        "Soul",
+        "Rock",
+        "Oldies",
+        "Rhythm And Blues",
+        "Rockabilly",
+        "Rock And Roll",
+        "Gospel"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "854E8C19-2DB7-46F1-8EE3-DF38722A0D1C",
+      "name": "The Righteous Brothers",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Righteous Brothers are an American vocal duo formed in the early 1960s by Bill Medley and Bobby Hatfield. They became famous for powerful, emotive lead vocals and close-harmony arrangements, combining soul, pop and doo-wop influences. Working with producers such as Phil Spector, they scored major hits including \"You've Lost That Lovin' Feelin'\", \"Unchained Melody\" and \"Soul and Inspiration.\" Their recordings helped popularize blue-eyed soul and lush, orchestral pop production; their work has endured through reissues and film use (notably the revival of \"Unchained Melody\"). The pair were inducted into the Rock and Roll Hall of Fame (2003). Bobby Hatfield died in 2003; Bill Medley has continued recording and performing in various configurations since."
+      },
+      "genres": [
+        "Oldies",
+        "Blue Eyed Soul",
+        "Soul",
+        "Pop",
+        "60s",
+        "Classic Rock",
+        "Blue-Eyed Soul",
+        "R&B"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "5335493E-F130-4DA0-949A-EDEB80F13492",
+      "name": "Bee Gees",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Bee Gees were a vocal harmony group formed by brothers Barry, Robin and Maurice Gibb whose career spanned pop ballads, blue‑eyed soul and the peak disco era; they became global superstars in the 1960s and 1970s, writing and performing numerous international hits and composing songs for other major artists. Their late‑1970s string of disco hits and their contributions to the Saturday Night Fever soundtrack helped define the sound and commercial peak of disco."
+      },
+      "genres": [
+        "Disco",
+        "70s",
+        "Oldies",
+        "Pop",
+        "Classic Rock",
+        "Soft Rock",
+        "Adult Contemporary",
+        "Blue-Eyed Soul"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "D409FDF1-4699-4D21-8613-06431E750C20",
+      "name": "Janis Joplin",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Janis Joplin (1943–1970) was an American singer-songwriter noted for her raw, soulful vocal delivery and charismatic stage presence. Emerging from the 1960s San Francisco scene, she became a leading voice of the psychedelic/blues-rock era through her work with Big Brother and the Holding Company and later with Kozmic Blues Band and Full Tilt Boogie Band. Her powerful interpretations of blues and soul standards, plus emotionally direct originals, made her an icon of countercultural rock and a model for future female rock vocalists."
+      },
+      "genres": [
+        "Blues Rock",
+        "Blues",
+        "Rock",
+        "Psychedelic Rock",
+        "Soul",
+        "60s",
+        "Classic Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "6C5ADD79-DE04-4DDE-BFA0-943FF34E6186",
+      "name": "Tom Jones",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Tom Jones (Thomas John Woodward, b. 7 June 1940) is a Welsh singer whose powerful, emotive voice and charismatic stage presence made him an international star from the mid-1960s onward. He rose to fame with hits such as \"It's Not Unusual,\" \"What's New Pussycat?\", and \"Delilah,\" and has maintained a long, varied career spanning pop, rock, soul, country and adult-contemporary styles. Knighted for services to music, Jones is known for reinventions across decades, high-energy live performances, and crossover collaborations that introduced his voice to multiple generations."
+      },
+      "genres": [
+        "Rock",
+        "Oldies",
+        "Pop",
+        "Classic Rock",
+        "Soul",
+        "Pop Rock",
+        "R&B",
+        "Traditional Pop",
+        "Easy Listening",
+        "Adult Contemporary"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "62625DD2-1799-4C7B-81BB-32F5EB92EF4F",
+      "name": "Joe Cocker",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Joe Cocker was an English rock and blues singer famous for his distinctive gritty voice, passionate delivery, and dynamic stage presence. He gained international fame in the late 1960s and 1970s with hits like \"With a Little Help from My Friends\" and \"You Are So Beautiful.\" His style blended rock, blues, and soul influences, and he was known for his emotive interpretations of songs by other artists."
+      },
+      "genres": [
+        "Classic Rock",
+        "Soul",
+        "Blues Rock",
+        "Rock",
+        "Blues"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "1BBCDDBC-EC0D-440F-A5E9-7AE289585178",
+      "name": "Queen",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Queen is a British rock band formed in London in 1970 by Freddie Mercury, Brian May and Roger Taylor, with John Deacon joining in 1971. The band blended progressive rock, hard rock and heavy metal origins with pop, arena and operatic elements to create theatrical, multi-layered recordings and stadium-ready anthems. They achieved international success with albums such as A Night at the Opera (1975) and singles like \"Bohemian Rhapsody,\" \"We Will Rock You\" and \"We Are the Champions.\" Queen's live performance at Live Aid (1985) is widely celebrated; Freddie Mercury's death in 1991 was a pivotal moment for the group. Brian May and Roger Taylor have continued to perform under the Queen name in various configurations (notably Queen + Paul Rodgers and Queen + Adam Lambert). Queen's catalogue, distinctive vocal harmonies, and showmanship have made them one of the world's best-selling and most influential rock acts."
+      },
+      "genres": [
+        "Hard Rock",
+        "Glam Rock",
+        "Classic Rock",
+        "Rock",
+        "80s",
+        "Arena Rock",
+        "Progressive Rock",
+        "Pop Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "86D14054-2D8C-474E-976E-FB16FAEB4044",
+      "name": "The Turtles",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Turtles are an American rock band formed in the early 1960s, best known for their catchy pop rock and folk rock songs. They gained fame with hits like \"Happy Together\" and were notable for their harmonious vocals and blending of folk and psychedelic rock elements. The band originally consisted of Howard Kaylan, Mark Volman, Al Nichol, Jim Pons, John Barbata, and Chuck Portz. They were influential in the 1960s music scene and contributed to the development of sunshine pop and baroque pop genres."
+      },
+      "genres": [
+        "Pop",
+        "Pop Rock",
+        "Rock",
+        "Classic Rock",
+        "Oldies",
+        "60s",
+        "Folk Rock",
+        "Psychedelic Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "4D32D0F3-A66B-47E1-BFEA-6AE974D9132B",
+      "name": "John Lennon",
+      "type": "urn:entity",
+      "properties": {
+        "description": "John Lennon was an English singer, songwriter and peace activist best known as a co-founder and principal songwriter of The Beatles. His work — both with the band and as a solo artist — blended melodic pop craftsmanship, raw emotional confession, political commentary and avant-garde experimentation. Lennon was a defining figure of 20th-century popular music and culture, celebrated for his incisive lyrics, distinctive voice, and public peace activism."
+      },
+      "genres": [
+        "British",
+        "Rock",
+        "Pop",
+        "Classic Rock",
+        "Singer & Songwriter",
+        "Singer-Songwriter",
+        "Pop Rock",
+        "Rock And Roll"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "7570CB15-9143-4901-BA9D-1C7AC6CC57B0",
+      "name": "Eagles",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Eagles are an American rock band formed in Los Angeles in 1971, celebrated for their tight vocal harmonies, blend of rock and country influences, and a string of commercial successes in the 1970s. Founding members Glenn Frey, Don Henley, Bernie Leadon and Randy Meisner first worked with Linda Ronstadt before releasing their debut album in 1972. Over the decade the lineup evolved—adding Don Felder, Joe Walsh and later Timothy B. Schmit—producing landmark albums including Their Greatest Hits (1971–1975), Hotel California and One of These Nights. The band became one of the best-selling acts in US history, shaped the country-rock and soft-rock sound of the era, reunited in the 1990s, continued to record and tour into the 21st century, and adjusted personnel following Glenn Frey’s death in 2016."
+      },
+      "genres": [
+        "Country Rock",
+        "Classic Rock",
+        "Soft Rock",
+        "Rock",
+        "70s",
+        "Country"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "1F168C32-EBB2-4376-B967-D2C48F130B23",
+      "name": "Dire Straits",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Dire Straits, formed in Deptford, London in 1977 by Mark and David Knopfler with John Illsley and Pick Withers, became internationally successful with a taut, guitar-focused sound, literate storytelling lyrics and polished studio production. They broke through with the single \"Sultans of Swing\" (1978) and reached peak commercial success with the 1985 album Brothers in Arms, driven by hits like \"Money for Nothing\" and \"Walk of Life.\" Led by Mark Knopfler's distinctive fingerstyle electric guitar and restrained vocal delivery, the band blended rock, blues and roots influences across concise, performance-tight arrangements. Dire Straits remained active through multiple lineup changes until disbanding in 1995; Mark Knopfler has since pursued a solo career."
+      },
+      "genres": [
+        "Rock",
+        "Guitar",
+        "80s",
+        "Blues",
+        "Classic Rock",
+        "Pub Rock",
+        "Roots Rock",
+        "Blues Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "8607C318-EF09-4D7A-B48E-3D4BBE45A968",
+      "name": "Aerosmith",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Aerosmith is an American rock band formed in Boston in 1970. Rooted in blues-based hard rock, the group—fronted by Steven Tyler with guitarists Joe Perry and Brad Whitford, bassist Tom Hamilton and drummer Joey Kramer—rose to international fame in the 1970s with albums like Toys in the Attic and Rocks. After lineup and substance struggles in the late 1970s and early 1980s, they staged a major commercial comeback in the late 1980s and 1990s, scoring multi-platinum albums, hit singles, award-winning music videos and enduring worldwide touring success. They are one of the best-selling American hard rock acts and remain active in recording and touring."
+      },
+      "genres": [
+        "Rock",
+        "70s",
+        "Classic Rock",
+        "80s",
+        "Hard Rock",
+        "Blues Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "02BC6028-DB30-4232-9CAB-0D0EF1814780",
+      "name": "Rod Stewart",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sir Rod Stewart is a British singer-songwriter whose career began in the 1960s and spans rock, pop, folk and soul-influenced material. Known for a distinctive raspy voice and charismatic stage presence, he rose to fame with bands (The Jeff Beck Group, Faces) and as a solo star with international hits like \"Maggie May\" and \"Da Ya Think I'm Sexy?\" He has enjoyed sustained commercial success across multiple decades, recording classics, covers and contemporary pop-rock songs, and was knighted for services to music and charity."
+      },
+      "genres": [
+        "Rock",
+        "70s",
+        "Pop Rock",
+        "Soft Rock",
+        "Classic Rock",
+        "Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "581BBB69-4CB8-4A3F-9304-2F7AE266C398",
+      "name": "Ricky Nelson",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Ricky Nelson was an American singer-songwriter and actor who became one of the first teen idols and a pioneer of rock and roll and rockabilly music. He gained fame as a child actor on the television series 'The Adventures of Ozzie and Harriet' and later launched a successful music career with hits in the late 1950s and early 1960s. Nelson's smooth vocal style and blend of rock and country influences helped shape early rock music and influenced many artists that followed."
+      },
+      "genres": [
+        "Classic Rock",
+        "60s",
+        "Rock And Roll",
+        "Rock",
+        "Rockabilly",
+        "Oldies",
+        "Pop",
+        "Rock and Roll"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0DF0411F-A029-4706-A90A-F563AF4BB325",
+      "name": "The Who",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The Who are an English rock band formed in London in 1964, built around songwriter and guitarist Pete Townshend and lead singer Roger Daltrey, with John Entwistle on bass and Keith Moon on drums. Famous for loud, confrontational live performances, guitar-smashing theatrics and ambitious concept albums, they pioneered the rock opera form with albums such as Tommy and Quadrophenia and helped shape hard-rock, mod and stadium-scale rock performance."
+      },
+      "genres": [
+        "Classic Rock",
+        "60s",
+        "British",
+        "Hard Rock",
+        "Mod Rock",
+        "Rock",
+        "Rock Opera",
+        "Mod"
+      ],
+      "keywords": []
+    }
+  ]
+}

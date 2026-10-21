@@ -1,0 +1,245 @@
+{
+  "mode": "memory_lane",
+  "provenance": {
+    "kind": "fixture",
+    "generatedAt": "2026-10-08",
+    "note": "A saved sample kit for Rosa, built from real Qloo results saved on Oct 8."
+  },
+  "profile": {
+    "suddenChange": false,
+    "displayName": "Rosa",
+    "supportLevel": "early",
+    "birthYear": 1942,
+    "hometown": "Chicago",
+    "favorites": [
+      {
+        "text": "Frank Sinatra",
+        "kind": "artist"
+      }
+    ],
+    "thingsToAvoid": [
+      "none"
+    ]
+  },
+  "era": {
+    "start": 1952,
+    "end": 1972
+  },
+  "music": {
+    "status": "ok",
+    "items": [
+      {
+        "source": "qloo",
+        "qlooId": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+        "kind": "artist",
+        "title": "Ella Fitzgerald",
+        "whyPicked": "Qloo: people who love Frank Sinatra also love Ella Fitzgerald.",
+        "searchUrl": "https://open.spotify.com/search/Ella%20Fitzgerald"
+      },
+      {
+        "source": "qloo",
+        "qlooId": "E0CD9B0B-75BB-4DAE-BCB7-79AB5DE42A0D",
+        "kind": "artist",
+        "title": "Nat King Cole",
+        "whyPicked": "Qloo: people who love Frank Sinatra also love Nat King Cole.",
+        "searchUrl": "https://open.spotify.com/search/Nat%20King%20Cole"
+      },
+      {
+        "source": "qloo",
+        "qlooId": "78991296-9E4A-4559-996A-5C5B5DCB8374",
+        "kind": "artist",
+        "title": "Louis Armstrong",
+        "whyPicked": "Qloo: people who love Frank Sinatra also love Louis Armstrong.",
+        "searchUrl": "https://open.spotify.com/search/Louis%20Armstrong"
+      },
+      {
+        "source": "qloo",
+        "qlooId": "3F144530-744A-421D-A425-5AF95DD55F4F",
+        "kind": "artist",
+        "title": "Peggy Lee",
+        "whyPicked": "Qloo: people who love Frank Sinatra also love Peggy Lee.",
+        "searchUrl": "https://open.spotify.com/search/Peggy%20Lee"
+      },
+      {
+        "source": "qloo",
+        "qlooId": "15D12B84-FEC9-4049-B783-BAC121CA4904",
+        "kind": "artist",
+        "title": "Tony Bennett",
+        "whyPicked": "Qloo: people who love Frank Sinatra also love Tony Bennett.",
+        "searchUrl": "https://open.spotify.com/search/Tony%20Bennett"
+      }
+    ]
+  },
+  "screen": {
+    "status": "ok",
+    "items": [
+      {
+        "source": "qloo",
+        "qlooId": "3DD33BA9-A183-4931-A5C9-4629C2F3CBDD",
+        "kind": "movie",
+        "title": "Designing Woman",
+        "year": 1957,
+        "whyPicked": "Qloo: a film from 1957 that Frank Sinatra fans also enjoy.",
+        "searchUrl": "https://www.youtube.com/results?search_query=Designing%20Woman%201957%20trailer"
+      },
+      {
+        "source": "qloo",
+        "qlooId": "09CF9AA5-02BD-4035-9D65-4773181AA633",
+        "kind": "movie",
+        "title": "Sweet Charity",
+        "year": 1969,
+        "whyPicked": "Qloo: a film from 1969 that Frank Sinatra fans also enjoy.",
+        "searchUrl": "https://www.youtube.com/results?search_query=Sweet%20Charity%201969%20trailer"
+      },
+      {
+        "source": "qloo",
+        "qlooId": "5FD46A30-6F82-40CE-8DBA-DF86DF33F0B8",
+        "kind": "tv",
+        "title": "Route 66",
+        "year": 1960,
+        "whyPicked": "Qloo: a show from 1960 that Frank Sinatra fans also enjoy.",
+        "searchUrl": "https://www.youtube.com/results?search_query=Route%2066%201960%20opening"
+      }
+    ]
+  },
+  "dish": {
+    "status": "ok",
+    "items": [
+      {
+        "source": "qloo",
+        "name": "Chicago-style deep-dish pizza",
+        "qlooTagId": "urn:tag:specialty_dish:place:chicago_style_pizza",
+        "caveat": "Something to talk about, not to serve. Check diet, chewing and swallowing needs before offering any food."
+      }
+    ]
+  },
+  "place": {
+    "status": "ok",
+    "items": [
+      {
+        "source": "qloo",
+        "qlooId": "49BECC83-406C-446B-A460-C64579EFB2B0",
+        "name": "Maxwell Street Market",
+        "genre": "urn:tag:genre:place:market",
+        "whyPicked": "Qloo: a Chicago place popular with people who love Frank Sinatra. A place to talk about, not a visit suggestion."
+      }
+    ]
+  },
+  "activityIdeas": [],
+  "prompts": [
+    "What music did people dance to when you were young?",
+    "Which singer's voice do you like best, and what do you like about it?",
+    "What was it like going to the movies back then?",
+    "What foods remind you of Chicago?",
+    "Tell me about a market or a busy street you liked to visit."
+  ],
+  "trace": [
+    {
+      "id": "t1",
+      "kind": "tool",
+      "label": "resolve_favorite",
+      "input": {
+        "query": "Frank Sinatra",
+        "types": "urn:entity:artist"
+      },
+      "outputSummary": "Frank Sinatra → FC0F8D26-BA80-4D83-8BBF-FC011DC8D241",
+      "excluded": [],
+      "ms": 0,
+      "status": "ok"
+    },
+    {
+      "id": "t2",
+      "kind": "tool",
+      "label": "get_music",
+      "input": {
+        "seed": "Frank Sinatra"
+      },
+      "outputSummary": "10 artists returned.",
+      "excluded": [],
+      "ms": 0,
+      "status": "ok"
+    },
+    {
+      "id": "t3",
+      "kind": "tool",
+      "label": "get_screen(movie)",
+      "input": {
+        "seed": "Frank Sinatra",
+        "filter.release_year": "1952–1972"
+      },
+      "outputSummary": "10 films returned, all in era.",
+      "excluded": [],
+      "ms": 0,
+      "status": "ok"
+    },
+    {
+      "id": "t4",
+      "kind": "filter",
+      "label": "content filter (D3)",
+      "input": {
+        "list": "movies"
+      },
+      "outputSummary": "2 films excluded before Claude sees them.",
+      "excluded": [
+        {
+          "title": "Last Tango in Paris (1972)",
+          "reason": "Mature content: rated NC-17."
+        },
+        {
+          "title": "Charly (1968)",
+          "reason": "Sensitive theme: memory decline."
+        }
+      ],
+      "ms": 0,
+      "status": "ok"
+    },
+    {
+      "id": "t5",
+      "kind": "tool",
+      "label": "get_places",
+      "input": {
+        "seed": "Frank Sinatra",
+        "location": "Chicago"
+      },
+      "outputSummary": "10 places returned; 4 pass the landmark allowlist (D4).",
+      "excluded": [
+        {
+          "title": "Benihana - Chicago (John Hancock)",
+          "reason": "Not a landmark (urn:tag:genre:place:restaurant:japanese)."
+        },
+        {
+          "title": "Giordano's",
+          "reason": "Not a landmark (urn:tag:genre:place:restaurant:pizza)."
+        },
+        {
+          "title": "Credit Union 1 Arena",
+          "reason": "Not a landmark (urn:tag:genre:place:arena)."
+        },
+        {
+          "title": "Santa Baby Bar at Stolen Saddle",
+          "reason": "Not a landmark (urn:tag:genre:place:restaurant:bar)."
+        },
+        {
+          "title": "East Bank Club",
+          "reason": "Not a landmark (urn:tag:genre:place:fitness_center)."
+        },
+        {
+          "title": "Carlucci Rosemont",
+          "reason": "Not a landmark (urn:tag:genre:place:restaurant:italian)."
+        }
+      ],
+      "ms": 0,
+      "status": "ok"
+    },
+    {
+      "id": "t6",
+      "kind": "validator",
+      "label": "hand-picked for this sample (no Claude call)",
+      "input": {},
+      "outputSummary": "Picks above were chosen by hand for this fixture. Maxwell Street Market over Cloud Gate, which was built in 2006, after Rosa's era. The dish is shown without its restaurant: Giordano's opened in 1974, also after her era. In live runs, Claude makes these choices.",
+      "excluded": [],
+      "ms": 0,
+      "status": "ok"
+    }
+  ]
+}
