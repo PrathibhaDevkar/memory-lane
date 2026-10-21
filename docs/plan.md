@@ -200,7 +200,7 @@ sequenceDiagram
 | `get_dish(seed_ids)` | insights, restaurants in the hometown, `take=50` | Keeps restaurants that list specialty dishes, minus noisy entries (`1_2_rack_ribs`, `gino_s_house_salad`). No dish → a gap, never an unrelated cuisine |
 | `submit_kit(...)` | none | Strict schema: picks by ID, a short reason each, questions, gaps |
 
-Seeds must be IDs an earlier tool returned; a run makes at most **12 Qloo calls**; the Qloo client keeps **at most 2 calls in flight** and retries a 429 or 5xx (Qloo rate-limits bursts).
+Seeds must be IDs an earlier tool returned; a run makes at most **14 Qloo calls**; the Qloo client keeps **at most 2 calls in flight** and retries a 429 or 5xx (Qloo rate-limits bursts).
 
 ### 7.2 Loop control (`lib/agent/run.ts`)
 
@@ -230,7 +230,7 @@ flowchart TD
     FAILK --> OUT
 ```
 
-**Expected path:** the usual lookups run in code first (one `/search` per favorite, then music, films, TV, places and dishes seeded with the top match), then 1 Claude turn (pick and submit); 2 when Claude fixes something: the modern-favorite hop, a traditions seed, or the wrong match. 6–9 Qloo calls per kit. Claude reads short handles (`a1`, `m2`) instead of Qloo's IDs, the tools and system prompt are cached, the example profile's live kit is reused for a few hours, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-haiku-5-5`; Sonnet or Opus only with an approval recorded in `CLAUDE_MODEL_APPROVAL`, see CLAUDE.md) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals for Sonnet and Opus (Haiku has none). Every live kit is audited and returns its token use and alerts in response headers ([token-alerts.md](token-alerts.md)). Names and years in the kit always come from Qloo, never from Claude's text.
+**Expected path:** the usual lookups run in code first (one `/search` per favorite, then music, films, TV, places and dishes seeded with the top match), then 1 Claude turn (pick and submit); 2 only when Claude fixes a wrong match. The modern-favorite hop runs in code too: when only artists seed music (Qloo gives artists no year), a second list seeded with the top in-era film (`music_from_film`) is ready if the favorite turns out to be modern. Traditions add one short Claude call alongside the lookups (no tools, no thinking: just an artist's name), which the code looks up in Qloo (`tradition_music`). 6–11 Qloo calls per kit. Claude reads short handles (`a1`, `m2`) instead of Qloo's IDs, the tools and system prompt are cached, the example profile's live kit is reused for a few hours, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-haiku-5-5`; Sonnet or Opus only with an approval recorded in `CLAUDE_MODEL_APPROVAL`, see CLAUDE.md) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals for Sonnet and Opus (Haiku has none). Every live kit is audited and returns its token use and alerts in response headers ([token-alerts.md](token-alerts.md)). Names and years in the kit always come from Qloo, never from Claude's text.
 
 ---
 

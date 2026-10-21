@@ -15,7 +15,8 @@ vi.mock("@/lib/qloo/client", () => ({
 }));
 
 const { RunContext } = await import("@/lib/qloo/tools");
-const { agentConfig, buildLiveKit, DEFAULT_MODEL, FINISH_NOW, traditionsToDo } = await import("@/lib/agent/run");
+const { agentConfig, artistFromReply, buildLiveKit, DEFAULT_MODEL, FINISH_NOW, traditionQuestion, traditionsToDo } = await import("@/lib/agent/run");
+const { auditKit } = await import("@/lib/agent/audit");
 const { qlooGet } = await import("@/lib/qloo/client");
 
 const rosa = {
@@ -206,20 +207,119 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     expect(kit.music.items[0]).toMatchObject({ title: "Frank Sinatra", qlooId: "SINATRA" });
   });
 
-  it("asks Claude to seed music from the caregiver's traditions, and only when there are some", async () => {
-    expect(traditionsToDo(undefined)).toBeUndefined();
-    expect(traditionsToDo("  ")).toBeUndefined();
-    expect(traditionsToDo("Catholic hymns")).toMatch(/"Catholic hymns".*resolve_favorite.*artist's name.*get_music/);
-
+  describe("music for the caregiver's traditions", () => {
     const submit = () => msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }]);
-    const withTraditions = fakeClient([submit()]);
-    await buildLiveKit({ ...rosa, traditions: "Catholic hymns" }, { client: withTraditions.client });
-    expect(JSON.stringify(withTraditions.sent[0].body.messages[0])).toContain("to_do");
+    const reply = (text: string) => msg([{ type: "text", text }], "end_turn", { input_tokens: 70, output_tokens: 5 });
+    const elena = { ...rosa, traditions: "Catholic hymns" };
 
-    // Without traditions the message is unchanged: no to_do field at all.
-    const without = fakeClient([submit()]);
-    await buildLiveKit(rosa, { client: without.client });
-    expect(JSON.stringify(without.sent[0].body.messages[0])).not.toContain("to_do");
+    it("asks for an artist in one short call, then looks the music up in code, so the kit needs one main call", async () => {
+      const { client, create, sent } = fakeClient([reply("Bing Crosby"), submit()]);
+      const kit = await buildLiveKit(elena, { client });
+      expect(create).toHaveBeenCalledTimes(2);
+      // The short call: no tools, no system prompt, no thinking, and only the traditions and years.
+      const ask = sent[0].body as unknown as Record<string, unknown> & Body;
+      expect(ask.tools).toBeUndefined();
+      expect(ask.system).toBeUndefined();
+      expect(ask.thinking).toEqual({ type: "disabled" });
+      expect(ask.output_config).toEqual({ effort: "low" });
+      const question = JSON.stringify(ask.messages);
+      expect(question).toContain("Catholic hymns");
+      expect(question).toContain("1952–1972");
+      expect(question).not.toContain("Rosa");
+      // The main call gets the music and no to_do.
+      const first = JSON.stringify(sent[1].body.messages[0]);
+      expect(first).toContain("tradition_music");
+      expect(first).not.toContain("to_do");
+      const step = kit.trace.find((s) => s.label === "Claude, an artist for the traditions")!;
+      expect(step).toMatchObject({ kind: "llm", outputSummary: "Named Bing Crosby" });
+      expect(step.input.usage).toEqual({ in: 70, cacheWrite: 0, cacheRead: 0, out: 5 });
+      expect(auditKit(kit).calls).toBe(2);
+    });
+
+    it("leaves traditions to the main call when Claude names no artist", async () => {
+      const { client, sent } = fakeClient([reply("none"), submit()]);
+      await buildLiveKit(elena, { client });
+      const first = JSON.stringify(sent[1].body.messages[0]);
+      expect(first).not.toContain("tradition_music");
+      expect(first).not.toContain("to_do");
+    });
+
+    it("falls back to asking Claude in the loop when the short call fails", async () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const sent: Body[] = [];
+      const create = vi.fn(async (body: Body) => {
+        sent.push(structuredClone(body));
+        if (sent.length === 1) throw new Error("network down");
+        return submit();
+      });
+      await buildLiveKit(elena, { client: { beta: { messages: { create } } } as unknown as Anthropic });
+      expect(JSON.stringify(sent[1].messages[0])).toContain("to_do");
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("traditions_call_failed"));
+      warn.mockRestore();
+    });
+
+    it("makes no extra call and changes nothing without traditions", async () => {
+      expect(traditionsToDo(undefined)).toBeUndefined();
+      expect(traditionsToDo("  ")).toBeUndefined();
+      expect(traditionsToDo("Catholic hymns")).toMatch(/"Catholic hymns".*resolve_favorite.*artist's name.*get_music/);
+      const { client, create, sent } = fakeClient([submit()]);
+      await buildLiveKit(rosa, { client });
+      expect(create).toHaveBeenCalledTimes(1);
+      const first = JSON.stringify(sent[0].body.messages[0]);
+      expect(first).not.toContain("to_do");
+      expect(first).not.toContain("tradition_music");
+    });
+
+    it("reads only a name from the reply", () => {
+      expect(artistFromReply("Bing Crosby")).toBe("Bing Crosby");
+      expect(artistFromReply(' "Mahalia Jackson." ')).toBe("Mahalia Jackson");
+      expect(artistFromReply("Bing Crosby\nHe recorded many hymns.")).toBe("Bing Crosby");
+      expect(artistFromReply("none")).toBeNull();
+      expect(artistFromReply("None fits these traditions.")).toBeNull();
+      expect(artistFromReply("")).toBeNull();
+      expect(artistFromReply("I would suggest looking for a choir that sang in Latin")).toBeNull();
+      expect(traditionQuestion(" Catholic hymns ", era)).toMatch(/1952–1972: "Catholic hymns"\. Name one/);
+    });
+  });
+
+  it("adds music seeded with the top film when only artists seed music, so a modern favorite needs no extra call", async () => {
+    const entity = (id: string, name: string, year?: number) => ({ entity_id: id, name, properties: { release_year: year }, genres: [], keywords: [] });
+    const original = vi.mocked(qlooGet).getMockImplementation()!;
+    vi.mocked(qlooGet).mockImplementation(async (path: string, params?: Record<string, string | number | undefined>) => {
+      const type = String(params?.["filter.type"] ?? "");
+      const seeds = String(params?.["signal.interests.entities"] ?? "");
+      const entities =
+        path === "/search" ? [params?.query === "Mary Poppins" ? entity("POPPINS", "Mary Poppins", 1964) : entity("SWIFT", "Taylor Swift")]
+        : type.endsWith("movie") ? [entity("POPPINS", "Mary Poppins", 1964)]
+        : type.endsWith("artist") ? (seeds === "POPPINS" ? [entity("JEPSEN", "Carly Rae Jepsen"), entity("SINATRA", "Frank Sinatra")] : [entity("JEPSEN", "Carly Rae Jepsen")])
+        : [];
+      return { ok: true, status: 200, url: path, ms: 1, cached: false, entities };
+    });
+    try {
+      // Stands in for Claude: picks the era artist from music_from_film, with no extra lookup.
+      type Artist = { id: string; name: string };
+      let message: { lookups: { music: { artists: Artist[] }; music_from_film: Artist[] } } | undefined;
+      const create = vi.fn(async (body: Body) => {
+        message = JSON.parse((body.messages[0].content as string).split("\n\n")[1]);
+        const pick = message!.lookups.music_from_film.find((a) => a.name === "Frank Sinatra")!;
+        return msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: pick.id, why: "x" }] } }]);
+      });
+      const client = { beta: { messages: { create } } } as unknown as Anthropic;
+      const kit = await buildLiveKit({ ...rosa, favorites: [{ text: "Taylor Swift", kind: "artist" }] }, { client });
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(message!.lookups.music.artists.map((a) => a.name)).toEqual(["Carly Rae Jepsen"]);
+      // Only artists not already in music.
+      expect(message!.lookups.music_from_film.map((a) => a.name)).toEqual(["Frank Sinatra"]);
+      expect(kit.music.items[0]).toMatchObject({ title: "Frank Sinatra", qlooId: "SINATRA" });
+
+      // A film favorite from the person's era already gives music its era: no second music list.
+      vi.mocked(qlooGet).mockClear();
+      const june = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }])]);
+      await buildLiveKit({ ...rosa, favorites: [{ text: "Mary Poppins", kind: "movie" }] }, { client: june.client });
+      expect(JSON.stringify(june.sent[0].body.messages[0])).not.toContain("music_from_film");
+    } finally {
+      vi.mocked(qlooGet).mockImplementation(original);
+    }
   });
 
   it("lets Claude fix a problem with another lookup, running that turn's tools in parallel", async () => {
