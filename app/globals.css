@@ -1,12 +1,15 @@
 @import "tailwindcss";
 
-/* Warm "memory book" palette. Contrast checked for body text on --paper and --card (WCAG AA+). */
+/* Warm "memory book" palette, made for older eyes: text is at least 7:1 against every background
+   it sits on (WCAG AAA), and the edges of inputs and buttons (--control) at least 3:1. --line is
+   only for decorative dividers. */
 :root {
   --paper: #faf6ef;
   --card: #ffffff;
   --ink: #2a2420;
-  --muted: #5f564d;
+  --muted: #4f463e;
   --line: #e4dccf;
+  --control: #857869;
   --accent: #8a3b12;
   --accent-ink: #ffffff;
   --accent-soft: #f6e7dc;
@@ -24,6 +27,7 @@
     --ink: #f3ece4;
     --muted: #c3b8ab;
     --line: #3d352e;
+    --control: #8f8377;
     --accent: #f0a77a;
     --accent-ink: #1b1714;
     --accent-soft: #3a2a20;
@@ -40,6 +44,7 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-control: var(--control);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
@@ -53,6 +58,50 @@
 
 html {
   font-size: 18px; /* readable default for caregivers on phones and tablets */
+}
+
+/* The text-size control in the header (lib/text-size.ts). Everything is sized in rem, so the whole
+   page grows with it, buttons included. */
+html[data-text-size="large"] {
+  font-size: 21px;
+}
+html[data-text-size="largest"] {
+  font-size: 24px;
+}
+
+/* Buttons and button-like links: at least 48px tall, with a visible edge, for older hands and eyes. */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: center;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .btn-secondary {
+    border: 2px solid var(--control);
+    background: var(--card);
+    color: var(--ink);
+  }
+  .btn-secondary:hover {
+    background: var(--accent-soft);
+  }
+  .btn-link {
+    border: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .btn-link:hover {
+    background: var(--accent-soft);
+  }
 }
 
 body {

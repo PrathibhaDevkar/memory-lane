@@ -4,6 +4,8 @@
 // during the session. Each reaction is logged and moves on; "Stop" ends with reassurance (P5).
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/analytics/client";
+import { isSpotifySearch } from "@/lib/links";
 import { buildCards, CARD_LABEL, REACTIONS, type LogEntry, type Reaction, type SessionLog } from "@/lib/session";
 import type { Kit } from "@/lib/types";
 
@@ -46,7 +48,7 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
         <button
           type="button"
           onClick={() => finish(entries)}
-          className="mt-8 rounded-xl bg-accent px-6 py-3.5 text-lg font-semibold text-accent-ink"
+          className="btn btn-primary mt-8 min-h-14 px-8 text-lg"
         >
           Write the session note
         </button>
@@ -58,7 +60,7 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
     return (
       <section className="mx-auto max-w-2xl rounded-2xl border border-line bg-card p-6 text-center">
         <p className="text-lg">This kit has nothing to show in a session yet.</p>
-        <button type="button" onClick={onBack} className="mt-6 rounded-full border border-line px-4 py-2 font-medium">
+        <button type="button" onClick={onBack} className="btn btn-secondary mt-6">
           ← Back to the kit
         </button>
       </section>
@@ -68,17 +70,17 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
   const card = cards[index];
   return (
     <section aria-labelledby="card-title" className="mx-auto flex min-h-[70vh] max-w-2xl flex-col">
-      <div className="no-print flex items-center justify-between gap-3 text-muted">
-        <p aria-live="polite">
+      <div className="no-print flex items-center justify-between gap-3">
+        <p aria-live="polite" className="font-medium text-muted">
           {index + 1} of {cards.length}
         </p>
-        <button type="button" onClick={() => finish(entries)} className="rounded-full border border-line px-4 py-2 text-sm font-medium hover:bg-accent-soft">
+        <button type="button" onClick={() => finish(entries)} className="btn btn-secondary">
           End session
         </button>
       </div>
 
       <div className="mt-6 flex flex-1 flex-col justify-center rounded-2xl border border-line bg-card p-6 sm:p-10">
-        <p className="text-sm font-semibold uppercase tracking-wide text-muted">{CARD_LABEL[card.kind]}</p>
+        <p className="font-semibold text-muted">{CARD_LABEL[card.kind]}</p>
         <h2 id="card-title" ref={headingRef} tabIndex={-1} className="mt-2 font-serif text-4xl font-semibold leading-tight outline-none sm:text-5xl">
           {card.title}
         </h2>
@@ -88,7 +90,8 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
             href={card.link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 self-start rounded-xl border-2 border-accent px-5 py-3 text-lg font-semibold text-accent"
+            onClick={() => track("media_opened", { where: "session", service: isSpotifySearch(card.link!.href) ? "spotify" : "youtube" })}
+            className="btn btn-link mt-6 min-h-14 self-start px-6 text-lg"
           >
             {card.link.label} ↗<span className="sr-only"> (opens a new tab)</span>
           </a>
@@ -96,7 +99,7 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
       </div>
 
       <div className="mt-6">
-        <p id="reaction-hint" className="mb-3 text-sm text-muted">
+        <p id="reaction-hint" className="mb-3 text-muted">
           How did that land? If they seem upset or tired, pause or tap Stop.
         </p>
         <div role="group" aria-describedby="reaction-hint" className="grid grid-cols-2 gap-3 sm:grid-cols-5">
@@ -107,8 +110,8 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
               onClick={() => react(r.value)}
               className={
                 r.value === "stopped"
-                  ? "col-span-2 rounded-xl border-2 border-error px-3 py-4 text-lg font-semibold text-error sm:col-span-1"
-                  : "rounded-xl border border-line bg-card px-3 py-4 text-lg font-medium hover:bg-accent-soft"
+                  ? "col-span-2 min-h-16 rounded-xl border-2 border-error bg-card px-3 py-4 text-lg font-semibold text-error sm:col-span-1"
+                  : "min-h-16 rounded-xl border-2 border-control bg-card px-3 py-4 text-lg font-semibold hover:bg-accent-soft"
               }
             >
               {r.label}

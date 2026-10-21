@@ -65,7 +65,8 @@ The year window, hometown and safety rules come from the caregiver's form and ar
 - **No memory tests, no invented memories.** Questions never ask someone to remember, never quiz, and never state facts about their past; code rejects any that do.
 - **Distress means stop.** Every kit lists signs to watch for; every card has "Not today" and "Stop"; anything stopped at is left out of the next kit.
 - **Nothing invented.** If Qloo has nothing suitable, the kit says so instead of guessing.
-- **Privacy.** Nothing about a real person is stored. Demo personas are fictional.
+- **Privacy.** Nothing about a real person is stored. Demo personas are fictional. Optional PostHog analytics count which screens and buttons are used and what each kit cost in tokens, cookieless and without anything a caregiver types ([docs/analytics.md](docs/analytics.md)).
+- **Easy to read.** Large text and buttons, strong contrast, and a Text size control for older eyes.
 
 ## Built with
 

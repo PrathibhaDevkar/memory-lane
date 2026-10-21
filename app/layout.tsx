@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist } from "next/font/google";
+import { TEXT_SIZE_SCRIPT } from "@/lib/text-size";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,7 +22,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${fraunces.variable} h-full antialiased`}>
+    // The head script may set data-text-size before React starts, hence suppressHydrationWarning.
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${fraunces.variable} h-full antialiased`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: TEXT_SIZE_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

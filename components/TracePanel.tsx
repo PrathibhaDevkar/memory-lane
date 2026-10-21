@@ -32,7 +32,7 @@ export function buildMs(trace: TraceStep[]): number {
   return total + lookups;
 }
 
-export function TracePanel({ trace }: { trace: TraceStep[] }) {
+export function TracePanel({ trace, onOpen }: { trace: TraceStep[]; onOpen?: () => void }) {
   if (!trace.length) return null;
   const claude = trace.filter((s) => s.kind === "llm").length;
   const qloo = trace.filter((s) => s.kind === "tool").length;
@@ -48,16 +48,16 @@ export function TracePanel({ trace }: { trace: TraceStep[] }) {
     .join(" · ");
 
   return (
-    <details className="no-print rounded-2xl border border-line bg-card p-5 sm:p-6">
+    <details className="no-print rounded-2xl border border-line bg-card p-5 sm:p-6" onToggle={(e) => e.currentTarget.open && onOpen?.()}>
       <summary className="cursor-pointer">
         <span className="font-serif text-2xl font-semibold">How this kit was made</span>
-        <span className="mt-1 block text-sm text-muted">{summary}</span>
+        <span className="mt-1 block text-muted">{summary}</span>
       </summary>
       <ol className="mt-5 space-y-4">
         {trace.map((step) => (
           <li key={step.id} className="border-l-2 border-line pl-4">
             <p className="flex flex-wrap items-baseline gap-x-2">
-              <span className="rounded-full border border-line px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-muted">
+              <span className="rounded-full border border-control px-2 py-0.5 text-sm font-semibold text-muted">
                 {KIND_LABEL[step.kind]}
               </span>
               <span className="font-medium">{step.label}</span>

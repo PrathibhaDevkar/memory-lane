@@ -10,7 +10,7 @@ export function SafetyStop({ stop }: { stop: SafetyStopData }) {
         Let&apos;s pause today&apos;s session for {stop.profile.displayName}
       </h2>
       <p className="mt-4 text-lg">{stop.message}</p>
-      <p className="mt-4 text-sm text-muted">
+      <p className="mt-4 text-muted">
         Memory Lane supports activities. It can&apos;t tell what a change means, and it gives no medical advice.
       </p>
     </section>
