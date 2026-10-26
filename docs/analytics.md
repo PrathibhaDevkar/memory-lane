@@ -22,6 +22,7 @@ Only the events and properties listed in [`lib/analytics/events.ts`](../lib/anal
 | `session_started`, `session_ended` | none | Session mode starts and ends |
 | `note_action` | `action`: `copy`, `whatsapp`, `print`, `build_next`, `back_to_kit` | Buttons on the session note |
 | `text_size_changed` | `size`: `standard`, `large`, `largest` | The Text size control |
+| `read_aloud` | none | A session card is read aloud (not which card) |
 
 **From the server** (token use, sent after the response so a kit is never slowed down):
 

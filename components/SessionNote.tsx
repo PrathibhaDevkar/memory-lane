@@ -5,21 +5,23 @@
 
 import { useState } from "react";
 import { track } from "@/lib/analytics/client";
-import { avoidNextTime, buildCareNote, type SessionLog } from "@/lib/session";
+import { buildCareNote, nextKitProfile, type NextKit, type SessionLog } from "@/lib/session";
 import { whatsappUrl } from "@/lib/share";
 import type { Kit } from "@/lib/types";
 
 type Props = {
   kit: Kit;
   log: SessionLog;
-  onBuildNext: (extraAvoid: string[]) => void;
+  onBuildNext: (next: NextKit) => void;
   onBackToKit: () => void;
 };
+
+const names = (xs: { text: string }[]) => xs.map((x) => x.text).join(", ");
 
 export function SessionNote({ kit, log, onBuildNext, onBackToKit }: Props) {
   const [note, setNote] = useState(() => buildCareNote(kit, log));
   const [copied, setCopied] = useState(false);
-  const avoid = avoidNextTime(log);
+  const next = nextKitProfile(kit.profile, log);
 
   async function copy() {
     track("note_action", { action: "copy" });
@@ -88,9 +90,19 @@ export function SessionNote({ kit, log, onBuildNext, onBackToKit }: Props) {
 
       <div className="no-print rounded-2xl border border-line bg-card p-5">
         <p className="font-semibold">Next session</p>
-        {avoid.length > 0 && (
+        {next.favoritesAdded.length > 0 && (
           <p className="mt-1">
-            The next kit will leave out: <strong>{avoid.join(", ")}</strong>.
+            The next kit will build on what they lit up with: <strong>{names(next.favoritesAdded)}</strong>.
+          </p>
+        )}
+        {next.favoritesSkipped.length > 0 && (
+          <p className="mt-1">
+            They also lit up with <strong>{names(next.favoritesSkipped)}</strong>. The favorites list is full, so you can swap one in on the form.
+          </p>
+        )}
+        {next.avoidAdded.length + next.avoidSkipped.length > 0 && (
+          <p className="mt-1">
+            The next kit will leave out: <strong>{[...next.avoidAdded, ...next.avoidSkipped].join(", ")}</strong>.
           </p>
         )}
         <div className="mt-3 flex flex-wrap gap-3">
@@ -98,7 +110,7 @@ export function SessionNote({ kit, log, onBuildNext, onBackToKit }: Props) {
             type="button"
             onClick={() => {
               track("note_action", { action: "build_next" });
-              onBuildNext(avoid);
+              onBuildNext(next);
             }}
             className="btn btn-secondary"
           >

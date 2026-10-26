@@ -457,7 +457,7 @@ No rule changes; traditions and former work reach Qloo only as seeds Claude reso
 | ✅ `SafetyStop.tsx` | Calm full-page message, no kit |
 | ✅ `KitView.tsx` | Support level in the header, **"Watch for"** strip, "Ideas" labeled as suggestions, calm late-level wording; Start session · Send to WhatsApp · Print in the toolbar |
 | ✅ `SessionMode.tsx` | Full-screen, large type, one card at a time; each card: Play/Search · **Lit up · Calm · Not interested · Not today · Stop**. Stop ends with brief reassurance guidance |
-| ✅ `SessionNote.tsx` | Reactions and time of day + a short care note from a template; Copy · Send to WhatsApp · Print; nothing sent to the server; "Build next kit" adds anything marked Stop to things to avoid |
+| ✅ `SessionNote.tsx` | Reactions and time of day + a short care note from a template; Copy · Send to WhatsApp · Print; nothing sent to the server; "Build next kit" adds anything marked Stop to things to avoid (and takes it out of the favorites), and, since Oct 26, the songs, films and shows that lit them up to the favorites, so Qloo finds more like them |
 | ✅ `TracePanel.tsx` | "How this kit was made": Claude turns, Qloo calls, what was screened out and why |
 | ✅ `lib/share.ts` | Plain-text kit and note + `https://wa.me/?text=` link (no API) |
 | ✅ `MemoryLaneApp.tsx` | Form → kit or safety stop → session → note; everything in memory; the next session asks the safety question again |
