@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { promptProblem, validatePrompts } from "@/lib/agent/validate-prompts";
+import { checkPrompts, promptProblem, validatePrompts } from "@/lib/agent/validate-prompts";
 
 describe("promptProblem (D10: care-practice question rules)", () => {
   it.each([
@@ -83,5 +83,20 @@ describe("validatePrompts (per support level)", () => {
 
   it("flags an early kit with too few open questions", () => {
     expect(validatePrompts(["Would you like this song?"], "early").meetsLevel).toBe(false);
+  });
+});
+
+describe("checkPrompts (each card, in order, for the comparison)", () => {
+  it("gives every card its reason, the level's count included, and agrees with validatePrompts", () => {
+    const cards = ["Do you remember your first dance?", "What music did people dance to?", "Which song should we play next?", "How did you spend a Sunday?"];
+    expect(checkPrompts(cards, "late").map((c) => c.problem)).toEqual([
+      "Asks them to remember, which can feel like a test.",
+      null,
+      null,
+      "More than 2 for this support level.",
+    ]);
+    const { kept, dropped } = validatePrompts(cards, "late");
+    expect(kept).toEqual(cards.slice(1, 3));
+    expect(dropped.map((d) => d.title)).toEqual([cards[0], cards[3]]);
   });
 });

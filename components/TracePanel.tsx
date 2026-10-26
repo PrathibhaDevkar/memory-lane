@@ -32,7 +32,7 @@ export function buildMs(trace: TraceStep[]): number {
   return total + lookups;
 }
 
-export function TracePanel({ trace, onOpen }: { trace: TraceStep[]; onOpen?: () => void }) {
+export function TracePanel({ trace, onOpen, title = "How this kit was made" }: { trace: TraceStep[]; onOpen?: () => void; title?: string }) {
   if (!trace.length) return null;
   const claude = trace.filter((s) => s.kind === "llm").length;
   const qloo = trace.filter((s) => s.kind === "tool").length;
@@ -50,7 +50,7 @@ export function TracePanel({ trace, onOpen }: { trace: TraceStep[]; onOpen?: () 
   return (
     <details className="no-print rounded-2xl border border-line bg-card p-5 sm:p-6" onToggle={(e) => e.currentTarget.open && onOpen?.()}>
       <summary className="cursor-pointer">
-        <span className="font-serif text-2xl font-semibold">How this kit was made</span>
+        <span className="font-serif text-2xl font-semibold">{title}</span>
         <span className="mt-1 block text-muted">{summary}</span>
       </summary>
       <ol className="mt-5 space-y-4">

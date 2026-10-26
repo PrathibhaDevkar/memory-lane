@@ -70,7 +70,7 @@ Stage one is pass/fail: the project fits the theme and reasonably applies the Ql
 | D2 | Music's era comes from its seed. Any entity can seed music (a film works). If a favorite is modern, seed music with the top in-era film instead | `filter.release_year` doesn't apply to artists. Verified: Taylor Swift → *Mary Poppins* (1964) → Sinatra, Dean Martin, Carole King |
 | D3 | Content filter on every result: rating blocklist (R, NC-17, X, TV-MA); Qloo's **War** genre; sensitive phrases in `plot_themes_description` **only**; profanity in the title. Exclusions shown in the trace with a reason | Keyword tags record minor plot details: matching them dropped *The Sound of Music* and 19 of June's 25 TV shows. Theme-only catches all 8 known offenders and keeps every classic tested ([research §2.3](research.md#23-the-content-filter)) |
 | D4 | Places: landmark genres first, framed as "a place to talk about". Claude then picks one (and a restaurant for the dish) that existed in the person's era and says why | The genre allowlist also lets in modern attractions (Cloud Gate, 2006) and themed restaurants |
-| D5 | Demo comparison: modern vs. era favorite, plus AI-only vs. Memory Lane | Qloo rejects requests with no favorite (400) |
+| D5 *(AI-only built Oct 26)* | Demo comparison: modern vs. era favorite, plus AI-only vs. Memory Lane. Built as "Compare with Claude on its own" under each kit: the same model and care rules without Qloo, each pick then checked against Qloo and each question against the question rules | Qloo rejects requests with no favorite (400). Showing the checks makes the difference Qloo makes visible instead of claimed |
 | D6 | A failed Qloo call or an empty section shows the gap and the reason. Never filled with invented data | Project rule |
 | D7 | Never send `signal.demographics.age` | The age signal reflects what an age group likes *today*, not when they were young |
 | D8 *(built Oct 15; wording under team review)* | Stage-aware kits: the caregiver chooses the support level; it changes the mix and the questions | Care practice: support needs change with the stage, and day to day |
@@ -257,7 +257,7 @@ flowchart LR
 | No invented data (D6) | `lib/agent/kit.ts` | An empty section is a gap with a reason |
 | Media | Kit page | Search links only; the schema rejects other hosts and embeds |
 | Claims | Copy review | No "therapy", "treatment" or "improves memory" anywhere |
-| AI-only comparison mode | `lib/agent/llm-only.ts` (planned) | No tools, no grounding; items carry `source: "llm"` and are labeled "not checked against Qloo" |
+| Comparison with Claude on its own | `lib/compare.ts` | Same model and care rules, no tools and no Qloo; each pick is then looked up in Qloo by name, given its release year and screened with the kit's filters, and each question checked with the question rules. Shown only next to a kit, labeled "for comparison only", never used in a session |
 
 ---
 
@@ -374,7 +374,7 @@ Planned files are listed in §12.
 | 0 | Can Qloo match an era? | ✅ Done (GO) |
 | 1 | Scaffold, contract, form → kit, deployed | ✅ Live at [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) |
 | 2 | Live agent: Qloo tools, filters, Claude loop | ✅ Checked live on Oct 19 and Oct 20 (Haiku 5.5, all six personas passed; [audit](../audits/2026-10-19-claude-haiku-5-5-medium.md)), with two token cuts since. Production still serves sample kits until keys and Redis are set in Vercel |
-| 3 | Care-practice features, session mode, trace, comparison | ✅ Built Oct 15–21: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret), larger text and analytics. The comparison with Claude on its own is in review (§11.1) |
+| 3 | Care-practice features, session mode, trace, comparison | ✅ Built Oct 15–26: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret), larger text and analytics, and the comparison with Claude on its own. Next: more demo kits once live runs work (§12) |
 | 4 | Ship: from working to winning, then submit | 🟡 Started Oct 26; the plan is in §11.1 |
 
 ```mermaid
@@ -472,7 +472,7 @@ No rule changes; traditions and former work reach Qloo only as seeds Claude reso
 | ✅ `SafetyStop.tsx` | Calm full-page message, no kit |
 | ✅ `KitView.tsx` | Support level in the header, **"Watch for"** strip, "Ideas" labeled as suggestions, calm late-level wording; Start session · Send to WhatsApp · Print in the toolbar |
 | ✅ `SessionMode.tsx` | Full-screen, large type, one card at a time; each card: Play/Search · **Lit up · Calm · Not interested · Not today · Stop**. Stop ends with brief reassurance guidance |
-| ✅ `SessionNote.tsx` | Reactions and time of day + a short care note from a template; Copy · Send to WhatsApp · Print; nothing sent to the server; "Build next kit" adds anything marked Stop to things to avoid |
+| ✅ `SessionNote.tsx` | Reactions and time of day + a short care note from a template; Copy · Send to WhatsApp · Print; nothing sent to the server; "Build next kit" adds anything marked Stop to things to avoid (and takes it out of the favorites), and, since Oct 26, the songs, films and shows that lit them up to the favorites, so Qloo finds more like them |
 | ✅ `TracePanel.tsx` | "How this kit was made": Claude turns, Qloo calls, what was screened out and why |
 | ✅ `lib/share.ts` | Plain-text kit and note + `https://wa.me/?text=` link (no API) |
 | ✅ `MemoryLaneApp.tsx` | Form → kit or safety stop → session → note; everything in memory; the next session asks the safety question again |
@@ -581,7 +581,7 @@ Saved resident profiles (consent and a privacy setup first) · care-home roster 
 |---|---|---|
 | Support-level labels and the sudden-change wording | Oct 16 | With the team for review |
 | Default Claude model (speed, quality, cost) | Oct 19 | `claude-haiku-5-5` (team rule). Sonnet or Opus only after an approved smoke-check audit |
-| Stream the trace live, or show it after? | Oct 20 | Show after, unless kits take longer than ~15 s |
+| Stream the trace live, or show it after? | Oct 20 | Streamed (Oct 26): live kits took 16–21 s, so the page shows each Qloo lookup and Claude call as it happens |
 | Place era check on Wikidata | Oct 19 | Only if Phase 2 lands on time |
 
 ---

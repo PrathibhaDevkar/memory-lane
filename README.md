@@ -29,8 +29,9 @@ Reminiscence (music, films, food and places from someone's youth, plus gentle co
 
 1. **A few details:** a quick safety check, the name they like to be called, how much support they need today, birth year, hometown, one to three remembered favorites, things to avoid, and optionally their former work, first language and traditions.
 2. **A session kit:** songs, a film or TV show, a place and a dish to talk about, all from the years they were about 10 to 30, plus questions that invite a story instead of testing memory.
-3. **Session mode:** one large card at a time on a tablet: play a song, ask one question, note how it landed (Lit up · Calm · Not interested · Not today · Stop).
+3. **Session mode:** one large card at a time on a tablet: play a song, ask one question, note how it landed (Lit up · Calm · Not interested · Not today · Stop). Cards can be read aloud with the device's own voice.
 4. **A session note:** what sparked a reaction, written up for the family or care team. Copy, print or send it to WhatsApp. It's built in your browser; Memory Lane keeps no copy.
+5. **The next kit builds on it:** what lit them up becomes a favorite, so Qloo finds more like it; what the session stopped at is left out.
 
 ## How Qloo drives it
 
@@ -47,6 +48,8 @@ Qloo picks; the agent decides what to ask Qloo; code enforces the rules.
 | **Safety** | Qloo's ratings, genres and theme summaries screen out mature titles and anything *about* dementia, illness, war, grief or abuse, before the agent sees them |
 
 Every song, film, place and dish carries the Qloo ID that proves where it came from; anything the agent can't ground in a Qloo result this run is removed. The few activity ideas the agent may add (for people who need more support) are labeled as suggestions, not Qloo data. The **"How this kit was made"** panel shows every Qloo lookup and what was screened out, and why.
+
+**Compare with Claude on its own**, under each kit, shows what Qloo adds instead of claiming it. Claude gets the same person and the same care rules but no Qloo; each of its picks is then looked up in Qloo, given its release year and screened with the kit's filters, and each question goes through the question rules. The result sits next to the kit: picks found in Qloo, films from their years, picks the filters would leave out, questions that follow the rules. It's for comparison only: those picks never reach a session.
 
 ## How the agent works
 
@@ -100,6 +103,7 @@ npm run typecheck
 npm run lint
 node scripts/smoke.mjs http://localhost:3000            # 7 personas end to end against a running app
 npm run smoke -- rosa walt june                         # the same with .env.local loaded: SMOKE_TOKEN skips the limits; prints tokens and cost per kit
+npm run smoke -- rosa --compare                         # also Claude on its own for each persona, checked against Qloo
 set -a; source .env.local; set +a; LIVE=1 npx vitest run tests/live   # the Qloo tools against the real API
 ```
 

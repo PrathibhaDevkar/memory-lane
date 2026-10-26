@@ -6,8 +6,9 @@ import { buildLiveKit } from "@/lib/agent/run";
 import { SAFETY_STOP_MESSAGE } from "@/lib/care";
 import { fixtureKit, kitSource } from "@/lib/kit-source";
 import { reusedExampleKit, saveExampleKit } from "@/lib/kit-cache";
+import { progressResponse, wantsProgress, type KitAnswer, type ProgressEvent } from "@/lib/kit-stream";
 import { isSmokeRequest, liveKitBlocked } from "@/lib/ratelimit";
-import { KitSchema, ProfileSchema, type SafetyStop } from "@/lib/types";
+import { KitSchema, ProfileSchema, type Profile, type SafetyStop } from "@/lib/types";
 import { addDailyUsage } from "@/lib/usage";
 
 // Upper bound for one kit build. The agent's own time budget (lib/agent/run.ts) stays below
@@ -62,42 +63,51 @@ export async function POST(request: Request) {
         captureAfterResponse("kit_refused", { reason: refusalReason(blocked) });
         return Response.json({ error: blocked }, { status: 429 });
       }
-      const started = Date.now();
-      try {
-        // Validate the agent's kit against the shared contract before sending it.
-        const kit = KitSchema.parse(await buildLiveKit(parsed.data));
-        await saveExampleKit(parsed.data, kit);
-        // Audit the kit and its token use, add it to today's totals, and return both, with any
-        // token alerts, in the response headers (docs/token-alerts.md). No profile details are logged.
-        const audit = auditKit(kit);
-        const today = await addDailyUsage(audit);
-        const alerts = [...audit.alerts, ...(today?.alerts ?? [])];
-        console.log(JSON.stringify({ event: "kit_audit", ...audit, todayTokens: today?.tokens, todayUsd: today?.usd }));
-        if (alerts.length) console.warn(JSON.stringify({ event: "token_alert", model: audit.model, alerts }));
-        // The same numbers go to PostHog, for token use over time (docs/analytics.md).
-        captureAfterResponse("kit_built", kitBuiltProperties(audit, today, alerts, Date.now() - started));
-        return Response.json(kit, { headers: auditHeaders(audit, alerts) });
-      } catch (err) {
-        // Out of budget: a spend limit set in the Claude Console (400), the tier's monthly cap (429), or
-        // no credits left. Retrying won't help until it's raised, so say live kits are paused.
-        if (err instanceof Anthropic.APIError && (err.status === 400 || err.status === 429) && /usage limits|credit balance/i.test(err.message)) {
-          console.error(`Claude API spend limit: ${err.message}`);
-          captureAfterResponse("kit_refused", { reason: "paused" });
-          return Response.json({ error: LIVE_KITS_PAUSED }, { status: 503 });
-        }
-        if (err instanceof Anthropic.RateLimitError) {
-          captureAfterResponse("kit_refused", { reason: "claude_busy" });
-          return Response.json({ error: "Too many requests to Claude right now." }, { status: 429 });
-        }
-        if (err instanceof Anthropic.APIError) {
-          console.error(`Claude API error ${err.status}: ${err.message}`);
-          captureAfterResponse("kit_refused", { reason: "claude_error" });
-          return Response.json({ error: "Claude couldn't build the kit." }, { status: 502 });
-        }
-        console.error("Kit build failed:", err);
-        captureAfterResponse("kit_refused", { reason: "error" });
-        return Response.json({ error: "Something went wrong building the kit." }, { status: 500 });
-      }
+      // The page asks to watch the build: each Qloo lookup and Claude call as it happens, then the
+      // answer (lib/kit-stream.ts). Everything else gets plain JSON with the audit in the headers.
+      if (wantsProgress(request)) return progressResponse((onProgress) => liveKit(parsed.data, onProgress));
+      const answer = await liveKit(parsed.data);
+      return Response.json(answer.body, { status: answer.status, headers: answer.headers });
     }
+  }
+}
+
+/** Builds a live kit, audits it and counts its tokens; errors become the message to show. */
+async function liveKit(profile: Profile, onProgress?: (event: ProgressEvent) => void): Promise<KitAnswer> {
+  const started = Date.now();
+  try {
+    // Validate the agent's kit against the shared contract before sending it.
+    const kit = KitSchema.parse(await buildLiveKit(profile, { onProgress }));
+    await saveExampleKit(profile, kit);
+    // Audit the kit and its token use, add it to today's totals, and return both, with any
+    // token alerts, in the response headers (docs/token-alerts.md). No profile details are logged.
+    const audit = auditKit(kit);
+    const today = await addDailyUsage(audit);
+    const alerts = [...audit.alerts, ...(today?.alerts ?? [])];
+    console.log(JSON.stringify({ event: "kit_audit", ...audit, todayTokens: today?.tokens, todayUsd: today?.usd }));
+    if (alerts.length) console.warn(JSON.stringify({ event: "token_alert", model: audit.model, alerts }));
+    // The same numbers go to PostHog, for token use over time (docs/analytics.md).
+    captureAfterResponse("kit_built", kitBuiltProperties(audit, today, alerts, Date.now() - started));
+    return { status: 200, body: kit, headers: auditHeaders(audit, alerts) };
+  } catch (err) {
+    // Out of budget: a spend limit set in the Claude Console (400), the tier's monthly cap (429), or
+    // no credits left. Retrying won't help until it's raised, so say live kits are paused.
+    if (err instanceof Anthropic.APIError && (err.status === 400 || err.status === 429) && /usage limits|credit balance/i.test(err.message)) {
+      console.error(`Claude API spend limit: ${err.message}`);
+      captureAfterResponse("kit_refused", { reason: "paused" });
+      return { status: 503, body: { error: LIVE_KITS_PAUSED } };
+    }
+    if (err instanceof Anthropic.RateLimitError) {
+      captureAfterResponse("kit_refused", { reason: "claude_busy" });
+      return { status: 429, body: { error: "Too many requests to Claude right now." } };
+    }
+    if (err instanceof Anthropic.APIError) {
+      console.error(`Claude API error ${err.status}: ${err.message}`);
+      captureAfterResponse("kit_refused", { reason: "claude_error" });
+      return { status: 502, body: { error: "Claude couldn't build the kit." } };
+    }
+    console.error("Kit build failed:", err);
+    captureAfterResponse("kit_refused", { reason: "error" });
+    return { status: 500, body: { error: "Something went wrong building the kit." } };
   }
 }

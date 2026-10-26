@@ -3,13 +3,70 @@
 // Session mode (docs/plan.md §12.5): one card at a time, large type, made for a tablet held
 // during the session. Each reaction is logged and moves on; "Stop" ends with reassurance (P5).
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { track } from "@/lib/analytics/client";
 import { isSpotifySearch } from "@/lib/links";
-import { buildCards, CARD_LABEL, REACTIONS, type LogEntry, type Reaction, type SessionLog } from "@/lib/session";
+import { localVoice, spokenText } from "@/lib/read-aloud";
+import { buildCards, CARD_LABEL, REACTIONS, type LogEntry, type Reaction, type SessionCard, type SessionLog } from "@/lib/session";
 import type { Kit } from "@/lib/types";
 
 type Props = { kit: Kit; onEnd: (log: SessionLog) => void; onBack: () => void };
+
+const speech = () => (typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null);
+
+/** The on-device voice to read with (its URI), or "" when there isn't one. Voices load late, so this listens. */
+function useLocalVoice(): string {
+  return useSyncExternalStore(
+    (onChange) => {
+      const s = speech();
+      if (!s) return () => {};
+      // Older Safari has only the onvoiceschanged property.
+      if (typeof s.addEventListener !== "function") {
+        s.onvoiceschanged = onChange;
+        return () => {
+          s.onvoiceschanged = null;
+        };
+      }
+      s.addEventListener("voiceschanged", onChange);
+      return () => s.removeEventListener("voiceschanged", onChange);
+    },
+    () => localVoice(speech()?.getVoices() ?? [])?.voiceURI ?? "",
+    () => "",
+  );
+}
+
+/** Reads the card on screen aloud; stops when the card changes or the session ends. */
+function ReadAloud({ card }: { card: SessionCard }) {
+  const voiceURI = useLocalVoice();
+  const [speaking, setSpeaking] = useState(false);
+  useEffect(() => {
+    return () => speech()?.cancel();
+  }, [card.id]);
+  if (!voiceURI) return null;
+
+  function toggle() {
+    const s = speech();
+    const voice = s?.getVoices().find((v) => v.voiceURI === voiceURI);
+    if (!s || !voice) return;
+    s.cancel();
+    if (speaking) return setSpeaking(false);
+    const utterance = new SpeechSynthesisUtterance(spokenText(card));
+    utterance.voice = voice;
+    utterance.lang = voice.lang;
+    utterance.rate = 0.9; // a little slower than usual
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    track("read_aloud", {});
+    setSpeaking(true);
+    s.speak(utterance);
+  }
+
+  return (
+    <button type="button" onClick={toggle} aria-pressed={speaking} className="btn btn-secondary min-h-14 self-start px-6 text-lg">
+      {speaking ? "Stop reading" : "Read aloud"}
+    </button>
+  );
+}
 
 export function SessionMode({ kit, onEnd, onBack }: Props) {
   const [cards] = useState(() => buildCards(kit));
@@ -85,17 +142,20 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
           {card.title}
         </h2>
         {card.detail && <p className="mt-4 text-lg text-muted">{card.detail}</p>}
-        {card.link && (
-          <a
-            href={card.link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => track("media_opened", { where: "session", service: isSpotifySearch(card.link!.href) ? "spotify" : "youtube" })}
-            className="btn btn-link mt-6 min-h-14 self-start px-6 text-lg"
-          >
-            {card.link.label} ↗<span className="sr-only"> (opens a new tab)</span>
-          </a>
-        )}
+        <div className="no-print mt-6 flex flex-wrap gap-3">
+          {card.link && (
+            <a
+              href={card.link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => track("media_opened", { where: "session", service: isSpotifySearch(card.link!.href) ? "spotify" : "youtube" })}
+              className="btn btn-link min-h-14 self-start px-6 text-lg"
+            >
+              {card.link.label} ↗<span className="sr-only"> (opens a new tab)</span>
+            </a>
+          )}
+          <ReadAloud key={card.id} card={card} />
+        </div>
       </div>
 
       <div className="mt-6">

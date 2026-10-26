@@ -7,11 +7,15 @@ Every live kit is audited, and the same API call returns its Claude token use, i
 | Where | What you see | When |
 | --- | --- | --- |
 | Response headers of `POST /api/kit` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, `X-Kit-Audit` (`pass` or `fail`), and `X-Token-Alert` when a limit is passed | Every live kit |
+| Response headers of `POST /api/compare` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, and `X-Token-Alert` when a daily limit is passed | Every live comparison with Claude on its own |
+| Server log (Vercel → Logs) | `claude_turn` per Claude call; `kit_audit` per kit; `comparison_call` and `comparison_audit` per comparison; `token_alert` for a kit with alerts; `token_alert_daily` once, for the kit that crosses a daily limit; `model_not_approved` when Sonnet or Opus is set without approval | Live kits |
+| `npm run smoke` | An `audit` line and, if any, an `ALERT` line per persona. `--report` also writes `audits/<date>-<model>-<effort>.md`; `--compare` adds each persona's comparison, with its tokens and cost | Smoke checks |
+| Response headers of `POST /api/kit` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, `X-Kit-Audit` (`pass` or `fail`), and `X-Token-Alert` when a limit is passed. When the page asks to watch the build, the same values come in the stream's last line, under `audit` | Every live kit |
 | Server log (Vercel → Logs) | `claude_turn` per Claude call; `kit_audit` per kit; `token_alert` for a kit with alerts; `token_alert_daily` once, for the kit that crosses a daily limit; `model_not_approved` when Sonnet or Opus is set without approval | Live kits |
 | `npm run smoke` | An `audit` line and, if any, an `ALERT` line per persona. `--report` also writes `audits/<date>-<model>-<effort>.md` | Smoke checks |
 | Claude Console | Spend alerts at $10 and $25 and a $40 monthly spend limit on the `memory-lane` workspace | Set once in the Console |
 
-The logs and headers carry token counts, cost, model and quality signals only, never profile details. Saved and reused kits make no Claude call, so they carry no audit headers.
+The logs and headers carry token counts, cost, model and quality signals only, never profile details. Saved and reused kits make no Claude call, so they carry no audit headers. A comparison counts in today's totals like a kit.
 
 ## Limits
 

@@ -167,6 +167,43 @@ export const SafetyStopSchema = z.object({
 
 export const KitResponseSchema = z.union([KitSchema, SafetyStopSchema]);
 
+// ---------- Comparison: Claude alone, checked against Qloo (docs/plan.md D5) ----------
+
+// For a kit, the same person and instructions go to Claude without Qloo; each pick is then checked
+// against Qloo, and each question against the question rules. For comparison only: these picks
+// never reach a session. A check claims only what it could check: "unknown" when Qloo can't tell
+// (artists have no year; dishes aren't Qloo entities).
+export const CheckResultSchema = z.enum(["yes", "no", "unknown"]);
+
+export const ComparedPickSchema = z.object({
+  section: z.enum(["music", "screen", "place", "dish"]),
+  title: z.string().min(1), // as Claude gave it
+  year: z.number().int().optional(), // the year Claude gave (films and shows)
+  why: z.string(), // Claude's reason
+  inQloo: CheckResultSchema, // found by name in Qloo
+  qlooName: z.string().optional(), // what it matched in Qloo
+  qlooYear: z.number().int().optional(), // the release year Qloo has
+  inEra: CheckResultSchema, // films and shows: released within the person's formative years
+  screenedOut: z.string().optional(), // why Memory Lane's content filter or avoid list would leave it out
+});
+
+export const ComparedQuestionSchema = z.object({
+  text: z.string().min(1),
+  keeps: z.boolean(), // passes Memory Lane's question rules
+  reason: z.string().optional(), // why the rules would drop it
+});
+
+export const ComparisonSchema = z.object({
+  mode: z.literal("comparison"),
+  provenance: ProvenanceSchema,
+  profile: ProfileSchema,
+  era: EraWindowSchema,
+  model: z.string().min(1), // the Claude model that answered on its own
+  picks: z.array(ComparedPickSchema),
+  questions: z.array(ComparedQuestionSchema),
+  trace: z.array(TraceStepSchema), // the Claude call and each Qloo check
+});
+
 export type FavoriteKind = z.infer<typeof FavoriteKindSchema>;
 export type Favorite = z.infer<typeof FavoriteSchema>;
 export type Profile = z.infer<typeof ProfileSchema>;
@@ -183,3 +220,7 @@ export type SupportLevel = z.infer<typeof SupportLevelSchema>;
 export type ActivityIdea = z.infer<typeof ActivityIdeaSchema>;
 export type SafetyStop = z.infer<typeof SafetyStopSchema>;
 export type KitResponse = z.infer<typeof KitResponseSchema>;
+export type CheckResult = z.infer<typeof CheckResultSchema>;
+export type ComparedPick = z.infer<typeof ComparedPickSchema>;
+export type ComparedQuestion = z.infer<typeof ComparedQuestionSchema>;
+export type Comparison = z.infer<typeof ComparisonSchema>;
