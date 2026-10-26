@@ -1,9 +1,11 @@
 // End-to-end check: builds a kit for each persona through the running app and prints what came back.
 //
 // Run:  npm run dev:agent            (in another terminal; KIT_SOURCE=agent)
-//       node scripts/smoke.mjs [base-url] [persona...] [--save] [--report]
+//       node scripts/smoke.mjs [base-url] [persona...] [--save] [--report] [--compare]
 // --save writes each live kit to fixtures/kits/<persona>.json, labeled as a saved run, for use
 // as a demo (then add it to lib/demos.ts).
+// --compare also asks /api/compare for each persona (Claude on its own, checked against Qloo) and
+// prints what the checks found and what it cost; --report adds them to the audit.
 // Default base URL: http://localhost:3000. Personas: rosa walt june swift margaret okafor elena (default: all).
 // With SMOKE_TOKEN set (npm run smoke reads .env.local), the run skips the live-kit limits and
 // never gets the example profile's reused kit, so every kit is built fresh.
@@ -17,7 +19,9 @@ const args = process.argv.slice(2);
 const BASE = args.find((a) => a.startsWith("http")) ?? "http://localhost:3000";
 const SAVE = args.includes("--save");
 const REPORT = args.includes("--report");
+const COMPARE = args.includes("--compare");
 const rows = [];
+const compared = [];
 const only = args.filter((a) => !a.startsWith("http") && !a.startsWith("--"));
 
 const base = { suddenChange: false, supportLevel: "early", thingsToAvoid: ["none"] };
@@ -105,6 +109,7 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
     model: header("x-claude-model") ?? "none", effort: claude.at(-1)?.input.effort ?? "none", calls: header("x-claude-calls") ?? String(claude.length),
     tokens: header("x-claude-tokens") ?? "", cost: header("x-claude-cost-usd") ?? "", alert: header("x-token-alert") ?? "",
   });
+  if (COMPARE) await compare(key, profile);
   if (SAVE && passed && kit.provenance.kind === "live") {
     const date = kit.provenance.generatedAt;
     const saved = { ...kit, provenance: { kind: "cached", generatedAt: date, note: `A saved live run from ${date}, shown as a demo.` } };
@@ -116,22 +121,61 @@ for (const [key, profile] of Object.entries(PERSONAS)) {
 }
 console.log(failures ? `\n${failures} persona(s) failed.` : "\nAll personas produced a kit.");
 
+/** Claude on its own for the same person, with what the checks found (lib/compare-summary.ts). */
+async function compare(key, profile) {
+  const t0 = Date.now();
+  const res = await fetch(`${BASE}/api/compare`, { method: "POST", headers, body: JSON.stringify(profile) });
+  const secs = ((Date.now() - t0) / 1000).toFixed(1);
+  const c = await res.json().catch(() => null);
+  if (!res.ok || c?.mode !== "comparison") {
+    failures++;
+    console.log(`  compare  FAILED (HTTP ${res.status}): ${JSON.stringify(c).slice(0, 200)}`);
+    compared.push({ key, secs, note: `HTTP ${res.status}` });
+    return;
+  }
+  const checkable = c.picks.filter((p) => p.section !== "dish");
+  const screen = c.picks.filter((p) => p.section === "screen");
+  const row = {
+    key, secs, source: c.provenance.kind,
+    found: `${checkable.filter((p) => p.inQloo === "yes").length} of ${checkable.length}`,
+    inYears: `${screen.filter((p) => p.inEra === "yes").length} of ${screen.length}`,
+    leftOut: c.picks.filter((p) => p.screenedOut).length,
+    kept: `${c.questions.filter((q) => q.keeps).length} of ${c.questions.length}`,
+    tokens: res.headers.get("x-claude-tokens") ?? "", cost: res.headers.get("x-claude-cost-usd") ?? "",
+  };
+  compared.push(row);
+  console.log(`  compare  Claude on its own (${c.model}, ${secs}s, ${row.source}): found in Qloo ${row.found} · films in their years ${row.inYears} · left out ${row.leftOut} · questions kept ${row.kept}${row.cost ? ` · ${row.tokens} · $${row.cost}` : ""}`);
+  for (const p of c.picks) console.log(`           ${p.section.padEnd(6)} ${p.title}${p.year ? ` (${p.year})` : ""}: in Qloo ${p.inQloo}${p.qlooYear ? `, Qloo year ${p.qlooYear}` : ""}${p.section === "screen" ? `, in their years ${p.inEra}` : ""}${p.screenedOut ? `, left out: ${p.screenedOut}` : ""}`);
+  for (const q of c.questions) console.log(`           ${q.keeps ? "kept   " : "dropped"} ${q.text}${q.reason ? ` (${q.reason})` : ""}`);
+}
+
 if (REPORT) {
   const live = rows.filter((r) => r.model && r.model !== "none");
   const model = live[0]?.model ?? "no-model";
   const effort = live[0]?.effort ?? "none";
   const date = new Date().toISOString().slice(0, 10);
   const total = live.reduce((n, r) => n + (Number(r.cost) || 0), 0);
+  const compareTotal = compared.reduce((n, r) => n + (Number(r.cost) || 0), 0);
   const cell = (s) => String(s ?? "").replace(/\|/g, "/");
   const lines = [
     `# Smoke-check audit: ${model} at ${effort} effort, ${date}`,
     "",
-    `Base URL: ${BASE}. ${rows.filter((r) => r.passed).length} of ${rows.length} personas passed. Claude cost for the run: $${total.toFixed(4)} at list prices.`,
+    `Base URL: ${BASE}. ${rows.filter((r) => r.passed).length} of ${rows.length} personas passed. Claude cost for the run: $${total.toFixed(4)} at list prices${compared.length ? `, plus $${compareTotal.toFixed(4)} for the comparisons` : ""}.`,
     "",
     "| Persona | Passed | Source | Sections | Questions | Claude calls | Tokens | Cost (US$) | Seconds | Alerts |",
     "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ...rows.map((r) => `| ${r.key} | ${r.passed ? "yes" : "no"} | ${cell(r.source ?? r.note)} | ${cell(r.sections)} | ${cell(r.questions)} | ${cell(r.calls)} | ${cell(r.tokens)} | ${cell(r.cost)} | ${r.secs} | ${cell(r.alert)} |`),
     "",
+    ...(compared.length
+      ? [
+          "Claude on its own (`--compare`), checked against Qloo and the question rules:",
+          "",
+          "| Persona | Source | Found in Qloo | Films in their years | Left out by filters | Questions kept | Tokens | Cost (US$) | Seconds |",
+          "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+          ...compared.map((r) => `| ${r.key} | ${cell(r.source ?? r.note)} | ${cell(r.found)} | ${cell(r.inYears)} | ${cell(r.leftOut)} | ${cell(r.kept)} | ${cell(r.tokens)} | ${cell(r.cost)} | ${r.secs} |`),
+          "",
+        ]
+      : []),
     "Read the kits themselves too: questions that invite stories, picks from the right era, nothing on an avoid list.",
     "Approval: _names and date_ (see CLAUDE.md, Model rule).",
     "",

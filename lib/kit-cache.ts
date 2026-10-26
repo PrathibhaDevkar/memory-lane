@@ -4,9 +4,10 @@
 
 import { EXAMPLE_PROFILE } from "@/lib/example-profile";
 import { redis } from "@/lib/redis";
-import { KitSchema, ProfileSchema, type Kit, type Profile } from "@/lib/types";
+import { ComparisonSchema, KitSchema, ProfileSchema, type Comparison, type Kit, type Profile } from "@/lib/types";
 
 const KEY = "ml:example-kit:v1";
+const COMPARISON_KEY = "ml:example-comparison:v1";
 
 /** A positive whole number from the environment, or the fallback for blank or invalid values. */
 function count(value: string | undefined, fallback: number): number {
@@ -53,5 +54,32 @@ export async function saveExampleKit(profile: Profile, kit: Kit): Promise<void> 
     await redis.set(KEY, kit, { ex: EXAMPLE_KIT_HOURS * 3600 });
   } catch (err) {
     console.error("Example kit save failed:", err);
+  }
+}
+
+export const REUSED_COMPARISON_NOTE =
+  "This comparison was made live for the example profile and is reused for a few hours, so repeat clicks don't call Claude again.";
+
+/** The stored comparison for the example profile, labeled as reused, or null. */
+export async function reusedExampleComparison(profile: Profile): Promise<Comparison | null> {
+  if (!redis || !isExampleProfile(profile)) return null;
+  try {
+    const stored = ComparisonSchema.safeParse(await redis.get(COMPARISON_KEY));
+    if (!stored.success) return null;
+    const c = stored.data;
+    return { ...c, provenance: { kind: "cached", generatedAt: c.provenance.generatedAt, note: REUSED_COMPARISON_NOTE } };
+  } catch (err) {
+    console.error("Example comparison read failed:", err);
+    return null;
+  }
+}
+
+/** Keeps a live comparison for the example profile for EXAMPLE_KIT_HOURS. */
+export async function saveExampleComparison(profile: Profile, comparison: Comparison): Promise<void> {
+  if (!redis || comparison.provenance.kind !== "live" || !isExampleProfile(profile)) return;
+  try {
+    await redis.set(COMPARISON_KEY, comparison, { ex: EXAMPLE_KIT_HOURS * 3600 });
+  } catch (err) {
+    console.error("Example comparison save failed:", err);
   }
 }

@@ -33,16 +33,21 @@ export function promptProblem(p: string, level: SupportLevel = "early"): string 
   return null;
 }
 
+/** Each card in order, with the reason the rules drop it (null when it's kept). */
+export function checkPrompts(prompts: string[], level: SupportLevel = "early"): { text: string; problem: string | null }[] {
+  const limit = KIT_LIMITS[level].prompts;
+  let kept = 0;
+  return prompts.map((text) => {
+    const problem = promptProblem(text, level) ?? (kept < limit ? null : `More than ${limit} for this support level.`);
+    if (!problem) kept++;
+    return { text, problem };
+  });
+}
+
 export function validatePrompts(prompts: string[], level: SupportLevel = "early") {
-  const limits = KIT_LIMITS[level];
-  const kept: string[] = [];
-  const dropped: { title: string; reason: string }[] = [];
-  for (const p of prompts) {
-    const problem = promptProblem(p, level);
-    if (problem) dropped.push({ title: p, reason: problem });
-    else if (kept.length < limits.prompts) kept.push(p.trim());
-    else dropped.push({ title: p, reason: `More than ${limits.prompts} for this support level.` });
-  }
+  const checked = checkPrompts(prompts, level);
+  const kept = checked.filter((c) => !c.problem).map((c) => c.text.trim());
+  const dropped = checked.flatMap((c) => (c.problem ? [{ title: c.text, reason: c.problem }] : []));
   const open = kept.filter((p) => OPEN_START.test(body(p))).length;
-  return { kept, dropped, open, meetsLevel: open >= limits.minOpenPrompts };
+  return { kept, dropped, open, meetsLevel: open >= KIT_LIMITS[level].minOpenPrompts };
 }
