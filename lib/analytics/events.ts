@@ -20,6 +20,7 @@ export type ClientEvents = {
   session_ended: Record<string, never>;
   note_action: { action: "copy" | "whatsapp" | "print" | "build_next" | "back_to_kit" };
   text_size_changed: { size: "standard" | "large" | "largest" };
+  read_aloud: Record<string, never>; // a session card read aloud (not which card)
 };
 
 /** Server events: what each kit cost, and why a live kit was refused. */
@@ -66,6 +67,7 @@ export const CLIENT_EVENTS: Allowed<ClientEvents> = {
   session_ended: [],
   note_action: ["action"],
   text_size_changed: ["size"],
+  read_aloud: [],
 };
 
 export const SERVER_EVENTS: Allowed<ServerEvents> = {

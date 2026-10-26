@@ -29,8 +29,9 @@ Reminiscence (music, films, food and places from someone's youth, plus gentle co
 
 1. **A few details:** a quick safety check, the name they like to be called, how much support they need today, birth year, hometown, one to three remembered favorites, things to avoid, and optionally their former work, first language and traditions.
 2. **A session kit:** songs, a film or TV show, a place and a dish to talk about, all from the years they were about 10 to 30, plus questions that invite a story instead of testing memory.
-3. **Session mode:** one large card at a time on a tablet: play a song, ask one question, note how it landed (Lit up · Calm · Not interested · Not today · Stop).
+3. **Session mode:** one large card at a time on a tablet: play a song, ask one question, note how it landed (Lit up · Calm · Not interested · Not today · Stop). Cards can be read aloud with the device's own voice.
 4. **A session note:** what sparked a reaction, written up for the family or care team. Copy, print or send it to WhatsApp. It's built in your browser; Memory Lane keeps no copy.
+5. **The next kit builds on it:** what lit them up becomes a favorite, so Qloo finds more like it; what the session stopped at is left out.
 
 ## How Qloo drives it
 

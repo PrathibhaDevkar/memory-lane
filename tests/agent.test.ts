@@ -207,6 +207,21 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     expect(kit.music.items[0]).toMatchObject({ title: "Frank Sinatra", qlooId: "SINATRA" });
   });
 
+  it("reports each step as it happens, and when Claude starts choosing, for the page to show", async () => {
+    const { client } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "f1", why: "x" }] } }])]);
+    const events: { type: string; phase?: string; step?: Record<string, unknown> }[] = [];
+    const kit = await buildLiveKit(rosa, { client, onProgress: (e) => events.push(e) });
+    // Lookups first, then Claude, then the kit's own check: the same steps as the trace, in order.
+    expect(events[0]).toEqual({ type: "phase", phase: "lookups" });
+    const choosing = events.findIndex((e) => e.phase === "choosing");
+    expect(events.slice(1, choosing).every((e) => e.type === "step" && e.step?.kind === "tool")).toBe(true);
+    const steps = events.filter((e) => e.type === "step").map((e) => e.step!);
+    expect(steps.map((s) => s.id)).toEqual(kit.trace.map((s) => s.id));
+    expect(steps.at(-2)).toMatchObject({ kind: "llm", label: "Claude, turn 1" });
+    // The page gets what it shows, not the lookups' inputs (model, token counts, seed IDs).
+    expect(steps.every((s) => !("input" in s))).toBe(true);
+  });
+
   describe("music for the caregiver's traditions", () => {
     const submit = () => msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }]);
     const reply = (text: string) => msg([{ type: "text", text }], "end_turn", { input_tokens: 70, output_tokens: 5 });

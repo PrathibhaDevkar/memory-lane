@@ -4,7 +4,7 @@ import rosa from "@/fixtures/kits/rosa.json";
 import { EXAMPLE_PROFILE, IntakeForm } from "@/components/IntakeForm";
 import { SessionMode } from "@/components/SessionMode";
 import { SessionNote } from "@/components/SessionNote";
-import { avoidNextTime, buildCards, buildCareNote, type SessionLog } from "@/lib/session";
+import { avoidNextTime, buildCards, buildCareNote, buildOnNextTime, nextKitProfile, type SessionLog } from "@/lib/session";
 import { kitAsText, whatsappUrl } from "@/lib/share";
 import { KitSchema, type Kit } from "@/lib/types";
 
@@ -118,6 +118,60 @@ describe("avoidNextTime", () => {
         ]),
       ),
     ).toEqual(["Designing Woman"]);
+  });
+});
+
+describe("the next kit builds on the session", () => {
+  const litUp = log([
+    { cardId: "a", kind: "song", title: "Ella Fitzgerald", reaction: "lit_up" },
+    { cardId: "b", kind: "question", title: "What music did people dance to?", reaction: "lit_up" },
+    { cardId: "c", kind: "film", title: "Roman Holiday (1953)", reaction: "lit_up" },
+    { cardId: "d", kind: "place", title: "Maxwell Street Market", reaction: "lit_up" },
+    { cardId: "e", kind: "song", title: "Nat King Cole", reaction: "calm" },
+    { cardId: "f", kind: "song", title: "ella fitzgerald", reaction: "lit_up" },
+  ]);
+
+  it("turns songs, films and shows they lit up with into favorites, without the year; not questions or places", () => {
+    expect(buildOnNextTime(litUp)).toEqual([
+      { text: "Ella Fitzgerald", kind: "artist" },
+      { text: "Roman Holiday", kind: "movie" },
+    ]);
+  });
+
+  it("adds them to the favorites within the form's limit of 3, and names any that didn't fit", () => {
+    const next = nextKitProfile(kit.profile, litUp); // Rosa has one favorite, Frank Sinatra
+    expect(next.profile.favorites.map((f) => f.text)).toEqual(["Frank Sinatra", "Ella Fitzgerald", "Roman Holiday"]);
+    expect(next.favoritesAdded).toHaveLength(2);
+
+    const full = { ...kit.profile, favorites: [{ text: "Frank Sinatra", kind: "artist" as const }, { text: "Doris Day", kind: "artist" as const }] };
+    const fewer = nextKitProfile(full, litUp);
+    expect(fewer.favoritesAdded).toEqual([{ text: "Ella Fitzgerald", kind: "artist" }]);
+    expect(fewer.favoritesSkipped).toEqual([{ text: "Roman Holiday", kind: "movie" }]);
+  });
+
+  it("never seeds the next kit with something the session stopped at, even a favorite (P5)", () => {
+    const stopped = log([
+      { cardId: "a", kind: "song", title: "Frank Sinatra", reaction: "stopped" },
+      { cardId: "b", kind: "song", title: "Ella Fitzgerald", reaction: "lit_up" },
+    ]);
+    const next = nextKitProfile(kit.profile, stopped);
+    expect(next.favoritesRemoved).toEqual([{ text: "Frank Sinatra", kind: "artist" }]);
+    expect(next.profile.favorites).toEqual([{ text: "Ella Fitzgerald", kind: "artist" }]);
+    expect(next.profile.thingsToAvoid).toEqual(["Frank Sinatra"]); // "none" is replaced
+  });
+
+  it("keeps the avoid list within its limit, as before", () => {
+    const ten = { ...kit.profile, thingsToAvoid: Array.from({ length: 10 }, (_, i) => `thing ${i}`) };
+    const next = nextKitProfile(ten, log([{ cardId: "a", kind: "place", title: "Navy Pier", reaction: "stopped" }]));
+    expect(next.avoidAdded).toEqual([]);
+    expect(next.avoidSkipped).toEqual(["Navy Pier"]);
+    expect(next.profile.thingsToAvoid).toHaveLength(10);
+  });
+
+  it("the note says what the next kit will build on and leave out", () => {
+    const html = renderToStaticMarkup(<SessionNote kit={kit} log={litUp} onBuildNext={() => {}} onBackToKit={() => {}} />);
+    expect(html).toContain("The next kit will build on what they lit up with: <strong>Ella Fitzgerald, Roman Holiday</strong>");
+    expect(html).not.toContain("will leave out");
   });
 });
 
