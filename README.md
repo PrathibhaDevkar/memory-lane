@@ -48,6 +48,8 @@ Qloo picks; the agent decides what to ask Qloo; code enforces the rules.
 
 Every song, film, place and dish carries the Qloo ID that proves where it came from; anything the agent can't ground in a Qloo result this run is removed. The few activity ideas the agent may add (for people who need more support) are labeled as suggestions, not Qloo data. The **"How this kit was made"** panel shows every Qloo lookup and what was screened out, and why.
 
+**Compare with Claude on its own**, under each kit, shows what Qloo adds instead of claiming it. Claude gets the same person and the same care rules but no Qloo; each of its picks is then looked up in Qloo, given its release year and screened with the kit's filters, and each question goes through the question rules. The result sits next to the kit: picks found in Qloo, films from their years, picks the filters would leave out, questions that follow the rules. It's for comparison only: those picks never reach a session.
+
 ## How the agent works
 
 A Claude agent with five Qloo tools and a strict "submit the kit" step:
@@ -100,6 +102,7 @@ npm run typecheck
 npm run lint
 node scripts/smoke.mjs http://localhost:3000            # 7 personas end to end against a running app
 npm run smoke -- rosa walt june                         # the same with .env.local loaded: SMOKE_TOKEN skips the limits; prints tokens and cost per kit
+npm run smoke -- rosa --compare                         # also Claude on its own for each persona, checked against Qloo
 set -a; source .env.local; set +a; LIVE=1 npx vitest run tests/live   # the Qloo tools against the real API
 ```
 

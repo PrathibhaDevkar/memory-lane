@@ -12,9 +12,10 @@ const fake = vi.hoisted(() => ({
 }));
 vi.mock("@/lib/redis", () => ({ redis: fake }));
 
-const { EXAMPLE_KIT_HOURS, REUSED_NOTE, isExampleProfile, reusedExampleKit, saveExampleKit } = await import("@/lib/kit-cache");
+const { EXAMPLE_KIT_HOURS, REUSED_COMPARISON_NOTE, REUSED_NOTE, isExampleProfile, reusedExampleComparison, reusedExampleKit, saveExampleComparison, saveExampleKit } =
+  await import("@/lib/kit-cache");
 const { EXAMPLE_PROFILE } = await import("@/lib/example-profile");
-const { KitSchema, ProfileSchema } = await import("@/lib/types");
+const { ComparisonSchema, KitSchema, ProfileSchema } = await import("@/lib/types");
 
 const KEY = "ml:example-kit:v1";
 const example = ProfileSchema.parse(EXAMPLE_PROFILE);
@@ -74,5 +75,37 @@ describe("reusing the example profile's kit", () => {
     expect(await local.reusedExampleKit(example)).toBeNull();
     expect(fake.set).not.toHaveBeenCalled();
     vi.doUnmock("@/lib/redis");
+  });
+});
+
+describe("reusing the example profile's comparison", () => {
+  const COMPARISON_KEY = "ml:example-comparison:v1";
+  const comparison = ComparisonSchema.parse({
+    mode: "comparison",
+    provenance: { kind: "live", generatedAt: "2026-10-26T12:00:00.000Z" },
+    profile: example,
+    era: { start: 1952, end: 1972 },
+    model: "claude-haiku-5-5",
+    picks: [{ section: "music", title: "Dean Martin", why: "Crooner.", inQloo: "yes", inEra: "unknown" }],
+    questions: [],
+    trace: [],
+  });
+
+  it("keeps a live comparison for the example profile and serves it back labeled as reused", async () => {
+    await saveExampleComparison(example, comparison);
+    expect(fake.set).toHaveBeenCalledWith(COMPARISON_KEY, comparison, { ex: EXAMPLE_KIT_HOURS * 3600 });
+    const reused = await reusedExampleComparison(example);
+    expect(reused?.provenance).toEqual({ kind: "cached", generatedAt: comparison.provenance.generatedAt, note: REUSED_COMPARISON_NOTE });
+    expect(reused?.picks).toEqual(comparison.picks);
+  });
+
+  it("never keeps one for anyone else, or one that wasn't live", async () => {
+    await saveExampleComparison({ ...example, displayName: "Walt" }, comparison);
+    await saveExampleComparison(example, { ...comparison, provenance: { kind: "cached", generatedAt: "2026-10-26" } });
+    expect(fake.set).not.toHaveBeenCalled();
+    store.set(COMPARISON_KEY, comparison);
+    expect(await reusedExampleComparison({ ...example, displayName: "Walt" })).toBeNull();
+    store.set(COMPARISON_KEY, { picks: "not a comparison" });
+    expect(await reusedExampleComparison(example)).toBeNull();
   });
 });

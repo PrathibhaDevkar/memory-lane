@@ -70,7 +70,7 @@ Stage one is pass/fail: the project fits the theme and reasonably applies the Ql
 | D2 | Music's era comes from its seed. Any entity can seed music (a film works). If a favorite is modern, seed music with the top in-era film instead | `filter.release_year` doesn't apply to artists. Verified: Taylor Swift → *Mary Poppins* (1964) → Sinatra, Dean Martin, Carole King |
 | D3 | Content filter on every result: rating blocklist (R, NC-17, X, TV-MA); Qloo's **War** genre; sensitive phrases in `plot_themes_description` **only**; profanity in the title. Exclusions shown in the trace with a reason | Keyword tags record minor plot details: matching them dropped *The Sound of Music* and 19 of June's 25 TV shows. Theme-only catches all 8 known offenders and keeps every classic tested ([research §2.3](research.md#23-the-content-filter)) |
 | D4 | Places: landmark genres first, framed as "a place to talk about". Claude then picks one (and a restaurant for the dish) that existed in the person's era and says why | The genre allowlist also lets in modern attractions (Cloud Gate, 2006) and themed restaurants |
-| D5 | Demo comparison: modern vs. era favorite, plus AI-only vs. Memory Lane | Qloo rejects requests with no favorite (400) |
+| D5 *(AI-only built Oct 26)* | Demo comparison: modern vs. era favorite, plus AI-only vs. Memory Lane. Built as "Compare with Claude on its own" under each kit: the same model and care rules without Qloo, each pick then checked against Qloo and each question against the question rules | Qloo rejects requests with no favorite (400). Showing the checks makes the difference Qloo makes visible instead of claimed |
 | D6 | A failed Qloo call or an empty section shows the gap and the reason. Never filled with invented data | Project rule |
 | D7 | Never send `signal.demographics.age` | The age signal reflects what an age group likes *today*, not when they were young |
 | D8 *(built Oct 15; wording under team review)* | Stage-aware kits: the caregiver chooses the support level; it changes the mix and the questions | Care practice: support needs change with the stage, and day to day |
@@ -257,7 +257,7 @@ flowchart LR
 | No invented data (D6) | `lib/agent/kit.ts` | An empty section is a gap with a reason |
 | Media | Kit page | Search links only; the schema rejects other hosts and embeds |
 | Claims | Copy review | No "therapy", "treatment" or "improves memory" anywhere |
-| AI-only comparison mode | `lib/agent/llm-only.ts` (planned) | No tools, no grounding; items carry `source: "llm"` and are labeled "not checked against Qloo" |
+| Comparison with Claude on its own | `lib/compare.ts` | Same model and care rules, no tools and no Qloo; each pick is then looked up in Qloo by name, given its release year and screened with the kit's filters, and each question checked with the question rules. Shown only next to a kit, labeled "for comparison only", never used in a session |
 
 ---
 
@@ -374,7 +374,7 @@ Planned files are listed in §12.
 | 0 | Can Qloo match an era? | ✅ Done (GO) |
 | 1 | Scaffold, contract, form → kit, deployed | ✅ Live at [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) (sample kit). PR open for review |
 | 2 | Live agent: Qloo tools, filters, Claude loop | 🟡 Built and tested on its own branch, not pushed. Qloo side verified live; **Claude side waiting on an API key** |
-| 3 | Care-practice features, session mode, trace, comparison | 🟡 Built Oct 15: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret). Next: AI-only comparison; more demo kits once live runs work (§12) |
+| 3 | Care-practice features, session mode, trace, comparison | 🟡 Built Oct 15: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret). Comparison with Claude on its own built Oct 26. Next: more demo kits once live runs work (§12) |
 | 4 | Ship: polish, README, description, video, submit | ⏳ |
 
 ```mermaid

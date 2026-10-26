@@ -10,7 +10,8 @@ import { track } from "@/lib/analytics/client";
 import { DEMOS } from "@/lib/demos";
 import type { SessionLog } from "@/lib/session";
 import { kitAsText, whatsappUrl } from "@/lib/share";
-import { KitResponseSchema, MAX_THINGS_TO_AVOID, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
+import { KitResponseSchema, MAX_THINGS_TO_AVOID, type Comparison, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
+import { CompareSection } from "./CompareSection";
 import { IntakeForm, type FieldErrors } from "./IntakeForm";
 import { KitView } from "./KitView";
 import { SafetyStop } from "./SafetyStop";
@@ -29,6 +30,8 @@ export function MemoryLaneApp() {
   const [lastProfile, setLastProfile] = useState<Profile | undefined>();
   // The kit last shown, so going back to the form never loses it: one tap returns to it.
   const [lastKit, setLastKit] = useState<Kit | undefined>();
+  // The last comparison with Claude on its own, so a session and back doesn't lose it.
+  const [compared, setCompared] = useState<{ kit: Kit; comparison: Comparison } | undefined>();
   const kitRef = useRef<HTMLDivElement>(null);
 
   function showKit(kit: Kit) {
@@ -210,6 +213,13 @@ export function MemoryLaneApp() {
           onMediaOpen={(service) => track("media_opened", { where: "kit", service })}
           onTraceOpen={() => track("how_made_opened", {})}
         />
+        {kit.mode === "memory_lane" && (
+          <CompareSection
+            kit={kit}
+            saved={compared?.kit === kit ? compared.comparison : undefined}
+            onShown={(comparison) => setCompared({ kit, comparison })}
+          />
+        )}
       </div>
     );
   }
