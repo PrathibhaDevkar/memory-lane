@@ -11,13 +11,16 @@ export type ClientEvents = {
   form_action: { action: "add_favorite" | "remove_favorite" | "more_about_opened" };
   kit_shown: { source: "live" | "cached" | "fixture"; seconds: number };
   kit_failed: { reason: "check_fields" | "limit" | "paused" | "server" | "shape" | "network" };
-  kit_action: { action: "start_session" | "whatsapp" | "print" | "change_details" | "back_to_kit" };
+  kit_action: { action: "start_session" | "whatsapp" | "print" | "change_details" | "back_to_kit" | "compare" };
+  comparison_shown: { source: "live" | "cached" };
+  comparison_failed: { reason: "not_live" | "limit" | "paused" | "server" | "shape" | "network" };
   media_opened: { where: "kit" | "session"; service: "spotify" | "youtube" };
   how_made_opened: Record<string, never>;
   session_started: Record<string, never>;
   session_ended: Record<string, never>;
   note_action: { action: "copy" | "whatsapp" | "print" | "build_next" | "back_to_kit" };
   text_size_changed: { size: "standard" | "large" | "largest" };
+  read_aloud: Record<string, never>; // a session card read aloud (not which card)
 };
 
 /** Server events: what each kit cost, and why a live kit was refused. */
@@ -42,6 +45,9 @@ export type ServerEvents = {
     today_usd?: number;
   };
   kit_refused: { reason: "not_configured" | "visitor_limit" | "daily_limit" | "paused" | "claude_busy" | "claude_error" | "error" };
+  // Claude on its own, checked against Qloo (lib/compare.ts): what it cost.
+  comparison_built: { source: "live" | "reused"; model?: string; input_tokens?: number; output_tokens?: number; cost_usd?: number | null; build_seconds?: number };
+  comparison_refused: { reason: "not_configured" | "visitor_limit" | "daily_limit" | "paused" | "claude_busy" | "claude_error" | "error" };
 };
 
 type Allowed<T> = { [E in keyof T]: readonly (keyof T[E])[] };
@@ -53,12 +59,15 @@ export const CLIENT_EVENTS: Allowed<ClientEvents> = {
   kit_shown: ["source", "seconds"],
   kit_failed: ["reason"],
   kit_action: ["action"],
+  comparison_shown: ["source"],
+  comparison_failed: ["reason"],
   media_opened: ["where", "service"],
   how_made_opened: [],
   session_started: [],
   session_ended: [],
   note_action: ["action"],
   text_size_changed: ["size"],
+  read_aloud: [],
 };
 
 export const SERVER_EVENTS: Allowed<ServerEvents> = {
@@ -82,6 +91,8 @@ export const SERVER_EVENTS: Allowed<ServerEvents> = {
     "today_usd",
   ],
   kit_refused: ["reason"],
+  comparison_built: ["source", "model", "input_tokens", "output_tokens", "cost_usd", "build_seconds"],
+  comparison_refused: ["reason"],
 };
 
 /** Only the listed properties, and only plain values (no objects that could smuggle text in). */

@@ -1,6 +1,6 @@
 # Memory Lane: Submission
 
-> Draft Devpost text and the submission checklist. **[Bracketed]** items are placeholders: results that don't exist yet, or things only the team can write. Every other sentence is true of the code as of Oct 15; re-check before submitting.
+> Draft Devpost text and the submission checklist. **[Bracketed]** items are placeholders: results that don't exist yet, features still in review, or things only the team can write. Every other sentence is true of `feat/phase2-real-data` as of Oct 26 (measurements from the live checks on Oct 19 and Oct 20); re-check before submitting.
 > Deadline: **Oct 30, 2026, 11:45 pm ET**; target Oct 29. Rules: [qloo.devpost.com/rules](https://qloo.devpost.com/rules).
 
 ---
@@ -37,7 +37,7 @@ A caregiver answers a few questions: a safety check, the name the person likes t
 - **A place and a dish to talk about** from their hometown
 - **Questions** that invite a story, never test memory
 
-Then **session mode** shows one large card at a time on a tablet. The caregiver plays a song, asks one question, and marks how it landed: *Lit up, Calm, Not interested, Not today, Stop*. At the end Memory Lane writes a **session note** for the family or care team (copy, print or send to WhatsApp), and the next kit leaves out anything the session stopped at.
+Then **session mode** shows one large card at a time on a tablet. The caregiver plays a song, asks one question, and marks how it landed: *Lit up, Calm, Not interested, Not today, Stop*. At the end Memory Lane writes a **session note** for the family or care team (copy, print or send to WhatsApp), and the next kit leaves out anything the session stopped at. **[When PR #14 is merged: the next kit also builds on what lit them up, and session cards can be read aloud with the device's own voices.]**
 
 **Safety comes first.** If the caregiver reports a sudden change (new confusion, unusual drowsiness), there is no kit: Memory Lane says to contact their nurse or doctor, because that can have a medical cause.
 
@@ -48,18 +48,25 @@ Qloo does the picking; the agent decides what to ask; code enforces the rules.
 - **`/v2/insights`** seeded with that entity finds the **music** people who love it also love.
 - **Films and TV** use a **release-year window** computed from the birth year. Without it, Qloo returned films older audiences watch *today*; with it, every title we tested was from the right years.
 - **Places** use the hometown as the location, ranked to historic landmarks first; **dishes** come from hometown restaurants' specialty dishes via a restaurant tag filter.
-- **A modern favorite still works:** for someone born in 1942 who names Taylor Swift, the agent finds an in-era film through Qloo (*Mary Poppins*, 1964) and seeds music with that, which gives Frank Sinatra, Dean Martin and Carole King. **[Qloo side verified Oct 14; confirm the agent takes this path in a live run.]**
+- **A modern favorite still works:** for someone born in 1942 who names Taylor Swift, Qloo's films for her years start with *Mary Poppins* (1964), and music seeded with that film gives Frank Sinatra, Dean Martin and Carole King. Memory Lane prepares that second list in code, so Claude can swap the modern music for it in the same call. **[The Swift kit passed in the live checks on Oct 19 and Oct 20, in one Claude call since Oct 20. Save it as a demo and quote the artists it actually picked.]**
 - **Qloo's own metadata keeps it safe:** ratings, genres and one-line theme summaries screen out mature titles and anything *about* dementia, illness, war, grief or abuse. Every exclusion is shown with its reason.
 
 Every song, film, place and dish carries the Qloo ID that proves where it came from. Anything the agent can't ground in a Qloo result from this run is removed, and an empty section says so instead of guessing. The few activity ideas the agent may add are labeled as suggestions, not Qloo data.
 
 ## Why it's agentic
 
-**[Confirm each behavior in this paragraph with live runs before submitting.]** A Claude agent with five Qloo tools plans its own lookups. It resolves the favorites, runs music, film, TV, place and dish lookups together, notices when a favorite is too modern and routes around it, and chooses picks that existed in the person's era, explaining each choice. It finishes with a strict "submit the kit" step that code checks. The **"How this kit was made"** panel shows every Claude turn, every Qloo lookup and everything screened out.
+Memory Lane runs the lookups every kit needs in code first: it resolves the favorites, then looks up music, films, TV, places and dishes together. A typical kit then takes a single Claude call. Claude works from what came back:
+- It chooses the picks that fit this person and explains each one.
+- It notices when a favorite is too modern and switches to music seeded by an in-era film.
+- It can call one of the five Qloo tools itself when a lookup matched the wrong thing (at most 4 calls and 100 seconds per kit).
+
+When the caregiver gives traditions, a short extra Claude call names an artist from that tradition and the code looks it up. Every kit ends with a strict "submit the kit" step that code checks. The **"How this kit was made"** panel shows every Claude turn, every Qloo lookup and everything screened out. **[When PR #13 is merged: the page shows each step live while the kit builds.]**
 
 ## How we built it
 
-Next.js 16 on Vercel, the Claude API with tool use, and the Qloo Hackathon API. Rules that must never be skipped (the year window, the hometown, the safety filter, the safety check) live in code rather than in the prompt. Qloo calls are capped per kit, queued two at a time, cached and retried; the agent has a turn limit and a time budget, and always ends. **[N]** automated tests cover the filters (against real Qloo responses), the agent loop, the safety check, the question rules and the screens.
+Next.js 16 on Vercel, the Claude API (Claude Haiku 5.5) with tool use, and the Qloo Hackathon API. Rules that must never be skipped live in code rather than in the prompt: the year window, the hometown, the safety filter and the safety check. Qloo calls are capped per kit, queued two at a time, cached and retried. The agent has a call limit and a time budget, so it always ends. More than 200 automated tests cover the filters (against real Qloo responses), the agent loop, the safety check, the question rules and the screens. **[Re-count before submitting: 217 on Oct 26, before the PRs in review.]**
+
+Every live kit is audited and its token use measured. In the Oct 20 live check of six personas, a kit cost $0.0014–0.0018 in Claude tokens and took 16–21 seconds. Cheap kits are what let the demo stay free for judges.
 
 ## Challenges we ran into
 
@@ -68,6 +75,7 @@ Next.js 16 on Vercel, the Claude API with tool use, and the Qloo Hackathon API. 
 - **Places are mostly current businesses,** and some "landmarks" are modern attractions. We rank historic places first and have the agent check each place existed in the person's era.
 - **Bursts of parallel calls hit Qloo's rate limit,** so the client queues them.
 - **Even "Do you remember…?" can feel like a test.** We rewrote the question rules around inviting stories, adjusted for how much support someone needs.
+- **Keeping it cheap enough to stay free.** We moved the usual lookups into code, so they run before Claude is called, and gave Claude short handles instead of Qloo's 36-character IDs. What Claude reads per kit fell from about 27,000 characters to about 13,000, and a kit went from 2 Claude calls to 1. The first live audit then showed that Claude's own output, mostly thinking, was 80–90% of a kit's cost. So modern favorites and traditions now get their extra music lookups in code instead of extra Claude calls.
 
 ## Accomplishments that we're proud of
 
@@ -97,6 +105,7 @@ From individual caregivers to care homes: saved resident profiles (with consent 
 1. Open **https://memory-lane-two-umber.vercel.app**. No sign-in.
 2. Click **Try a demo → Rosa** for a full kit; open **"How this kit was made"** at the bottom to see the Qloo lookups and what was screened out. Click **Start session**, mark a few reactions, tap **Stop**, and read the session note.
 3. Click **Try a demo → Margaret** to see the safety check: no kit, a prompt to contact a nurse or doctor.
-4. To build your own kit, fill in the form (or **Fill in an example**) and click **Build the session kit**. **[Expected time for a live kit: N seconds.]**
+4. To build your own kit, fill in the form (or **Fill in an example (Rosa)**) and click **Build the session kit**. A live kit takes about 15 to 20 seconds. **[Only once live kits are on in production; until then the form returns the sample kit.]**
+5. **[When PR #16 is merged and live kits are on: under any kit, click **Compare with Claude on its own** to see what Claude suggests without Qloo, and how its picks and questions hold up against Qloo and the question rules.]**
 
 All personas are fictional. Please don't enter details about a real person.
