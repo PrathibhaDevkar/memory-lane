@@ -6,7 +6,7 @@ Every live kit is audited, and the same API call returns its Claude token use, i
 
 | Where | What you see | When |
 | --- | --- | --- |
-| Response headers of `POST /api/kit` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, `X-Kit-Audit` (`pass` or `fail`), and `X-Token-Alert` when a limit is passed | Every live kit |
+| Response headers of `POST /api/kit` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, `X-Kit-Audit` (`pass` or `fail`), and `X-Token-Alert` when a limit is passed. When the page asks to watch the build, the same values come in the stream's last line, under `audit` | Every live kit |
 | Server log (Vercel → Logs) | `claude_turn` per Claude call; `kit_audit` per kit; `token_alert` for a kit with alerts; `token_alert_daily` once, for the kit that crosses a daily limit; `model_not_approved` when Sonnet or Opus is set without approval | Live kits |
 | `npm run smoke` | An `audit` line and, if any, an `ALERT` line per persona. `--report` also writes `audits/<date>-<model>-<effort>.md` | Smoke checks |
 | Claude Console | Spend alerts at $10 and $25 and a $40 monthly spend limit on the `memory-lane` workspace | Set once in the Console |
