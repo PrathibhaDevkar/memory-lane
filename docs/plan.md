@@ -401,7 +401,7 @@ gantt
     Larger text, analytics               :done,    b6, 2026-10-21, 1d
 
     section Phase 4: Ship
-    Progress, comparison, next kit (PRs) :active,  c0, 2026-10-26, 1d
+    Progress, comparison, next kit (PRs) :done,    c0, 2026-10-26, 1d
     Live kits in production, demo kits   :         c1, 2026-10-27, 1d
     Tester study                         :         c4, 2026-10-27, 2d
     README, description, video           :         c2, 2026-10-27, 2d
@@ -422,7 +422,7 @@ Judges score four things equally, and use of Qloo also breaks ties (§2.3). On O
 | Track | What | Who | Status (Oct 26) |
 |---|---|---|---|
 | **1. A site judges can use** | Decide PR #12 (switch to `low` effort: about 24% faster and 20% cheaper in Prathibha's 48-kit test, same quality). Live kits in production: keys, `KIT_SOURCE=agent`, Upstash Redis, `SMOKE_TOKEN`, then promote. Limits judges won't hit: 20 kits per visitor an hour and 1,000 a day, under $2 a day even if every one is used ($0.0014–0.0018 a kit on Oct 20). Save 3–4 more demo kits from live runs (the Taylor Swift case, Elena, Mr. Okafor, June): they open instantly and are never limited | Prathibha (Vercel and keys); decisions by both | Waiting on the decisions |
-| **2. Make the agent and Qloo visible** | **Watch it work:** each Qloo lookup and Claude's turn shown as they happen while a kit builds ([PR #13](https://github.com/PrathibhaDevkar/memory-lane/pull/13)). **Compare with Claude on its own:** the same person and care rules without Qloo, each pick checked against Qloo and each question against the rules, side by side with the kit ([PR #15](https://github.com/PrathibhaDevkar/memory-lane/pull/15) contract, [PR #16](https://github.com/PrathibhaDevkar/memory-lane/pull/16)); it also gives the tester study its AI-only list. **The next kit builds on what lit up,** and **Read aloud** on session cards with on-device voices only ([PR #14](https://github.com/PrathibhaDevkar/memory-lane/pull/14)) | Abil with Claude; Prathibha reviews, and runs the live smoke check for anything that changes the agent | In review |
+| **2. Make the agent and Qloo visible** | **Watch it work:** each Qloo lookup and Claude's turn shown as they happen while a kit builds ([PR #13](https://github.com/PrathibhaDevkar/memory-lane/pull/13)). **Compare with Claude on its own:** the same person and care rules without Qloo, each pick checked against Qloo and each question against the rules, side by side with the kit ([PR #15](https://github.com/PrathibhaDevkar/memory-lane/pull/15) contract, [PR #16](https://github.com/PrathibhaDevkar/memory-lane/pull/16)); it also gives the tester study its AI-only list. **The next kit builds on what lit up,** and **Read aloud** on session cards with on-device voices only ([PR #14](https://github.com/PrathibhaDevkar/memory-lane/pull/14)) | Abil with Claude; Prathibha reviews, and runs the live smoke check for anything that changes the agent | Merged Oct 26; the comparison still needs a live run |
 | **3. Evidence and story** | Tester study: 3 adults aged 60+ on the blind comparison (research §5), reported exactly as it happened. Devpost placeholders filled with measured facts ([submission.md](submission.md)), README screenshots, a video under 3 minutes. Final checks: a stranger test, production as an anonymous visitor, the license shown in the repo's About section, then submit on Thursday Oct 29 | Both | Measured facts filled in; the rest waits on Tracks 1 and 2 |
 
 **Left for "What's next":** group sessions for care homes, saved profiles with consent, and more languages.
