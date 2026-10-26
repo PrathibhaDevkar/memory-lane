@@ -27,6 +27,8 @@ export class RunContext {
   /** For each dish tag ID, the restaurants (ID → name) that listed it in this run. */
   readonly dishPlaces = new Map<string, Map<string, string>>();
   readonly trace: TraceStep[] = [];
+  /** Told about each trace step as it's recorded, so the page can show progress while the kit builds. */
+  onStep?: (step: TraceStep) => void;
   qlooCalls = 0;
   private step = 0;
   constructor(
@@ -35,7 +37,15 @@ export class RunContext {
     readonly fetchImpl?: typeof fetch,
     /** Epoch ms when the kit's time budget runs out. Qloo calls don't run past it. */
     readonly deadline = Infinity,
-  ) {}
+  ) {
+    // Every step is pushed onto the trace, from the tools, the agent loop and the kit builder alike.
+    const push = this.trace.push.bind(this.trace);
+    this.trace.push = (...steps: TraceStep[]) => {
+      const length = push(...steps);
+      for (const s of steps) this.onStep?.(s);
+      return length;
+    };
+  }
 
   nextId() {
     return `t${++this.step}`;
@@ -136,11 +146,16 @@ const short = (s: string | undefined, n = 100) => (s && s.length > n ? `${s.slic
 export async function runTool(ctx: RunContext, name: string, input: unknown): Promise<ToolOutput> {
   const started = Date.now();
   const args = (input ?? {}) as Record<string, unknown>;
+  const given = Array.isArray(args.seed_ids) ? (args.seed_ids as unknown[]).map(String) : [];
+  const seeds = given.map((s) => ctx.idFor(s));
+  // Music seeded with a film or show a lookup found (the hop for a modern favorite) says so.
+  const fromScreen = seeds.some((id) => ["movie", "tv"].includes(ctx.seen.get(id)?.kind ?? ""));
+  const label = name === "get_screen" ? `get_screen(${String(args.kind)})` : name === "get_music" && fromScreen ? "get_music(from film)" : name;
   const record = (summary: string, excluded: Excluded[], status: "ok" | "gap") =>
     ctx.trace.push({
       id: ctx.nextId(),
       kind: "tool",
-      label: name === "get_screen" ? `get_screen(${String(args.kind)})` : name,
+      label,
       input: args,
       outputSummary: summary,
       excluded,
@@ -153,8 +168,6 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
   };
 
   // Seeds must come from earlier tool results.
-  const given = Array.isArray(args.seed_ids) ? (args.seed_ids as unknown[]).map(String) : [];
-  const seeds = given.map((s) => ctx.idFor(s));
   if (name !== "resolve_favorite") {
     if (!seeds.length) return fail("seed_ids is empty");
     const unknown = given.filter((s) => !ctx.seen.has(ctx.idFor(s)));

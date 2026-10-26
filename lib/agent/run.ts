@@ -20,6 +20,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { eraWindow } from "@/lib/era";
+import { progressStep, type ProgressEvent } from "@/lib/kit-stream";
 import type { EraWindow, Kit, Profile } from "@/lib/types";
 import { lookUpTradition, RunContext, runTool, TOOLS, type TraditionMusic } from "@/lib/qloo/tools";
 import { buildKit } from "./kit";
@@ -226,12 +227,21 @@ function usageOf(response: Anthropic.Beta.BetaMessage) {
 
 export async function buildLiveKit(
   profile: Profile,
-  opts: { client?: Anthropic; fetchImpl?: typeof fetch; budgetMs?: number } = {},
+  opts: {
+    client?: Anthropic;
+    fetchImpl?: typeof fetch;
+    budgetMs?: number;
+    /** Each step as it happens, and when Claude starts choosing: the page shows them while it waits. */
+    onProgress?: (event: ProgressEvent) => void;
+  } = {},
 ): Promise<Kit> {
   const client = opts.client ?? new Anthropic();
   const { model, effort } = agentConfig();
   const deadline = Date.now() + (opts.budgetMs ?? BUDGET_MS);
   const ctx = new RunContext(profile, eraWindow(profile.birthYear), opts.fetchImpl, deadline);
+  const progress = opts.onProgress;
+  if (progress) ctx.onStep = (step) => progress({ type: "step", step: progressStep(step) });
+  progress?.({ type: "phase", phase: "lookups" });
 
   // The traditions call needs no Qloo result, so it runs alongside the usual lookups.
   const [found, tradition] = await Promise.all([lookUpFirst(ctx), musicForTraditions(ctx, client, model)]);
@@ -267,6 +277,7 @@ export async function buildLiveKit(
       askedToFinish = true;
     }
 
+    progress?.({ type: "phase", phase: "choosing" });
     const t0 = Date.now();
     let response: Anthropic.Beta.BetaMessage;
     try {

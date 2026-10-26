@@ -566,7 +566,7 @@ Saved resident profiles (consent and a privacy setup first) · care-home roster 
 |---|---|---|
 | Support-level labels and the sudden-change wording | Oct 16 | With the team for review |
 | Default Claude model (speed, quality, cost) | Oct 19 | `claude-haiku-5-5` (team rule). Sonnet or Opus only after an approved smoke-check audit |
-| Stream the trace live, or show it after? | Oct 20 | Show after, unless kits take longer than ~15 s |
+| Stream the trace live, or show it after? | Oct 20 | Streamed (Oct 26): live kits took 16–21 s, so the page shows each Qloo lookup and Claude call as it happens |
 | Place era check on Wikidata | Oct 19 | Only if Phase 2 lands on time |
 
 ---

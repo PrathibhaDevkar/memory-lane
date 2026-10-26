@@ -8,9 +8,11 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics/client";
 import { DEMOS } from "@/lib/demos";
+import { NDJSON, readKitResponse, StreamEndedError } from "@/lib/kit-stream";
 import type { SessionLog } from "@/lib/session";
 import { kitAsText, whatsappUrl } from "@/lib/share";
 import { KitResponseSchema, MAX_FAVORITES, MAX_THINGS_TO_AVOID, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
+import { BuildProgress, startProgress, withEvent, type Progress } from "./BuildProgress";
 import { IntakeForm, type FieldErrors } from "./IntakeForm";
 import { KitView } from "./KitView";
 import { SafetyStop } from "./SafetyStop";
@@ -19,6 +21,7 @@ import { SessionNote } from "./SessionNote";
 
 type State =
   | { view: "form"; busy: boolean; errors?: FieldErrors; message?: string; notice?: string; askSafetyAgain?: boolean }
+  | { view: "building"; progress: Progress }
   | { view: "kit"; kit: Kit }
   | { view: "stop"; stop: SafetyStopData }
   | { view: "session"; kit: Kit }
@@ -47,34 +50,38 @@ export function MemoryLaneApp() {
 
   async function build(profile: Profile) {
     setLastProfile(profile);
-    setState({ view: "form", busy: true });
+    // A live kit streams its progress (each Qloo lookup and Claude call); a saved kit just arrives.
+    setState({ view: "building", progress: startProgress(profile.displayName) });
     const started = performance.now();
     try {
       const res = await fetch("/api/kit", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json", accept: `${NDJSON}, application/json` },
         body: JSON.stringify(profile),
       });
-      const body = await res.json().catch(() => null);
-      if (res.status === 400) {
+      const { status, body: answer } = await readKitResponse(res, (event) =>
+        setState((s) => (s.view === "building" ? { view: "building", progress: withEvent(s.progress, event) } : s)),
+      );
+      const body = answer as { issues?: FieldErrors; error?: unknown } | null;
+      if (status === 400) {
         track("kit_failed", { reason: "check_fields" });
         setState({ view: "form", busy: false, errors: body?.issues, message: "Please check the highlighted fields." });
         return;
       }
-      if (!res.ok) {
+      if (status < 200 || status > 299) {
         // Limits and paused live kits come with the server's own wording.
-        const fromServer = (res.status === 429 || res.status === 503) && typeof body?.error === "string" ? body.error : null;
+        const fromServer = (status === 429 || status === 503) && typeof body?.error === "string" ? body.error : null;
         const message =
           fromServer ??
-          (res.status === 429
+          (status === 429
             ? "Too many kits in a short time. Please try again in a little while."
             : "Something went wrong on our side. Please try again.");
-        track("kit_failed", { reason: res.status === 429 ? "limit" : res.status === 503 ? "paused" : "server" });
+        track("kit_failed", { reason: status === 429 ? "limit" : status === 503 ? "paused" : "server" });
         setState({ view: "form", busy: false, message });
         return;
       }
       // Validate the response against the shared contract before showing it.
-      const parsed = KitResponseSchema.safeParse(body);
+      const parsed = KitResponseSchema.safeParse(answer);
       if (!parsed.success) {
         track("kit_failed", { reason: "shape" });
         setState({ view: "form", busy: false, message: "The kit came back in an unexpected shape. Please try again." });
@@ -86,10 +93,22 @@ export function MemoryLaneApp() {
       }
       track("kit_shown", { source: parsed.data.provenance.kind, seconds: Math.round((performance.now() - started) / 100) / 10 });
       showKit(parsed.data);
-    } catch {
+    } catch (err) {
       track("kit_failed", { reason: "network" });
-      setState({ view: "form", busy: false, message: "Couldn't reach Memory Lane. Check the connection and try again." });
+      const message =
+        err instanceof StreamEndedError
+          ? "The connection dropped while the kit was being built. Please try again."
+          : "Couldn't reach Memory Lane. Check the connection and try again.";
+      setState({ view: "form", busy: false, message });
     }
+  }
+
+  if (state.view === "building") {
+    return (
+      <div ref={kitRef} tabIndex={-1} className="outline-none">
+        <BuildProgress progress={state.progress} />
+      </div>
+    );
   }
 
   if (state.view === "stop") {

@@ -66,6 +66,15 @@ describe("Qloo tools", () => {
     expect(String(calls.at(-1)!["signal.interests.entities"])).toBe(ctx.idFor("f1"));
   });
 
+  it("labels music seeded with a film a lookup found, so the trace and the progress panel can tell the two apart", async () => {
+    const ctx = new RunContext(june, { start: 1968, end: 1988 });
+    await runTool(ctx, "resolve_favorite", { name: "The Sound of Music", kind: "movie" });
+    const films = parse(await runTool(ctx, "get_screen", { seed_ids: ["f1"], kind: "movie" }));
+    await runTool(ctx, "get_music", { seed_ids: ["f1"] }); // a favorite: fans of it
+    await runTool(ctx, "get_music", { seed_ids: [films.titles[0].id] }); // a film from their years
+    expect(ctx.trace.filter((s) => s.label.startsWith("get_music")).map((s) => s.label)).toEqual(["get_music", "get_music(from film)"]);
+  });
+
   it("refuses seeds that no earlier tool returned", async () => {
     const ctx = new RunContext(june, { start: 1968, end: 1988 });
     const out = await runTool(ctx, "get_music", { seed_ids: ["MADE-UP-ID"] });
