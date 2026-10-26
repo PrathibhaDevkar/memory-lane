@@ -372,14 +372,14 @@ Planned files are listed in §12.
 | Phase | What | Status |
 |---|---|---|
 | 0 | Can Qloo match an era? | ✅ Done (GO) |
-| 1 | Scaffold, contract, form → kit, deployed | ✅ Live at [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) (sample kit). PR open for review |
-| 2 | Live agent: Qloo tools, filters, Claude loop | 🟡 Built and tested on its own branch, not pushed. Qloo side verified live; **Claude side waiting on an API key** |
-| 3 | Care-practice features, session mode, trace, comparison | 🟡 Built Oct 15: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret). Next: AI-only comparison; more demo kits once live runs work (§12) |
-| 4 | Ship: polish, README, description, video, submit | ⏳ |
+| 1 | Scaffold, contract, form → kit, deployed | ✅ Live at [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) |
+| 2 | Live agent: Qloo tools, filters, Claude loop | ✅ Checked live on Oct 19 and Oct 20 (Haiku 5.5, all six personas passed; [audit](../audits/2026-10-19-claude-haiku-5-5-medium.md)), with two token cuts since. Production still serves sample kits until keys and Redis are set in Vercel |
+| 3 | Care-practice features, session mode, trace, comparison | ✅ Built Oct 15–21: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret), larger text and analytics. The comparison with Claude on its own is in review (§11.1) |
+| 4 | Ship: from working to winning, then submit | 🟡 Started Oct 26; the plan is in §11.1 |
 
 ```mermaid
 gantt
-    title Memory Lane: schedule from Oct 15 (one builder)
+    title Memory Lane: schedule (updated Oct 26)
     dateFormat  YYYY-MM-DD
     axisFormat  %b %d
 
@@ -390,27 +390,42 @@ gantt
 
     section Phase 2: Live
     Contract, safety stop, intake, rules :done,    a1, 2026-10-15, 1d
-    Live run of all personas (needs key) :         a2, 2026-10-17, 1d
-    Abuse limit, deploy, smoke           :         a3, 2026-10-18, 1d
-    GATE live kits on production         :milestone, g2, 2026-10-18, 0d
+    Limits, token cut, smoke             :done,    a3, 2026-10-18, 2d
+    Live run of all personas             :done,    a2, 2026-10-19, 2d
+    GATE live kits on production         :milestone, g2, 2026-10-27, 0d
 
     section Phase 3: Product
-    Buffer, place era check (optional)   :         b1, 2026-10-19, 1d
     Trace panel                          :done,    b2, 2026-10-15, 1d
-    Model timing (needs key)             :         b2b, 2026-10-20, 1d
     Session mode, note, WhatsApp share   :done,    b3, 2026-10-15, 1d
-    AI-only toggle, demo buttons         :         b4, 2026-10-22, 1d
-    Polish: watch-for, ideas, print      :         b5, 2026-10-23, 1d
-    Tester comparison, fixes             :         b6, 2026-10-24, 2d
+    Demo buttons, watch-for, print       :done,    b5, 2026-10-15, 1d
+    Larger text, analytics               :done,    b6, 2026-10-21, 1d
 
     section Phase 4: Ship
-    Mobile, loading and error states     :         c1, 2026-10-26, 1d
+    Progress, comparison, next kit (PRs) :active,  c0, 2026-10-26, 1d
+    Live kits in production, demo kits   :         c1, 2026-10-27, 1d
+    Tester study                         :         c4, 2026-10-27, 2d
     README, description, video           :         c2, 2026-10-27, 2d
     Stranger test, final checks          :         c3, 2026-10-28, 1d
     SUBMIT                               :milestone, sub, 2026-10-29, 0d
 ```
 
-**Cut order if late:** place era check → AI-only toggle → print layout for the note → activity ideas. **Never cut:** the safety stop, the question rules, session mode.
+**Cut order if late:** README screenshots → saved demo kits beyond two → the video's length (a short walk-through beats none). **Never cut:** the safety stop, the question rules, session mode, live kits judges can use without hitting a limit, and results reported exactly as they happened.
+
+### 11.1 Phase 4: from working to winning (planned Oct 26)
+
+Judges score four things equally, and use of Qloo also breaks ties (§2.3). On Oct 26 a judge would have found four gaps in the first two minutes:
+1. **No live agent on the site.** Production serves saved kits, so nobody can watch the agent work.
+2. **The limit trips judges.** At 3 kits per visitor an hour, a judge trying a few kits hits it.
+3. **No proof that Qloo beats a chatbot.** §2.2 says differentiation "must be proven", and nothing showed it.
+4. **The submission isn't finished:** no tester results, placeholders in the Devpost text, no video.
+
+| Track | What | Who | Status (Oct 26) |
+|---|---|---|---|
+| **1. A site judges can use** | Decide PR #12 (switch to `low` effort: about 24% faster and 20% cheaper in Prathibha's 48-kit test, same quality). Live kits in production: keys, `KIT_SOURCE=agent`, Upstash Redis, `SMOKE_TOKEN`, then promote. Limits judges won't hit: 20 kits per visitor an hour and 1,000 a day, under $2 a day even if every one is used ($0.0014–0.0018 a kit on Oct 20). Save 3–4 more demo kits from live runs (the Taylor Swift case, Elena, Mr. Okafor, June): they open instantly and are never limited | Prathibha (Vercel and keys); decisions by both | Waiting on the decisions |
+| **2. Make the agent and Qloo visible** | **Watch it work:** each Qloo lookup and Claude's turn shown as they happen while a kit builds ([PR #13](https://github.com/PrathibhaDevkar/memory-lane/pull/13)). **Compare with Claude on its own:** the same person and care rules without Qloo, each pick checked against Qloo and each question against the rules, side by side with the kit ([PR #15](https://github.com/PrathibhaDevkar/memory-lane/pull/15) contract, [PR #16](https://github.com/PrathibhaDevkar/memory-lane/pull/16)); it also gives the tester study its AI-only list. **The next kit builds on what lit up,** and **Read aloud** on session cards with on-device voices only ([PR #14](https://github.com/PrathibhaDevkar/memory-lane/pull/14)) | Abil with Claude; Prathibha reviews, and runs the live smoke check for anything that changes the agent | In review |
+| **3. Evidence and story** | Tester study: 3 adults aged 60+ on the blind comparison (research §5), reported exactly as it happened. Devpost placeholders filled with measured facts ([submission.md](submission.md)), README screenshots, a video under 3 minutes. Final checks: a stranger test, production as an anonymous visitor, the license shown in the repo's About section, then submit on Thursday Oct 29 | Both | Measured facts filled in; the rest waits on Tracks 1 and 2 |
+
+**Left for "What's next":** group sessions for care homes, saved profiles with consent, and more languages.
 
 **Submission draft:** Devpost text, judge testing instructions and the official checklist are in [submission.md](submission.md).
 
