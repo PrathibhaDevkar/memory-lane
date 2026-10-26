@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import rosa from "@/fixtures/kits/rosa.json";
-import { KitSchema, MediaItemSchema, ProfileSchema } from "@/lib/types";
+import { ComparisonSchema, KitSchema, MediaItemSchema, ProfileSchema } from "@/lib/types";
 
 const profile = {
   suddenChange: false,
@@ -85,5 +85,34 @@ describe("KitSchema sections", () => {
     expect(
       KitSchema.safeParse({ ...kit, dish: { status: "gap", items: [], gapReason: "Qloo returned no dishes" } }).success,
     ).toBe(true);
+  });
+});
+
+describe("ComparisonSchema (Claude alone, checked against Qloo)", () => {
+  const comparison = {
+    mode: "comparison",
+    provenance: { kind: "live", generatedAt: "2026-10-26T12:00:00.000Z" },
+    profile,
+    era: { start: 1952, end: 1972 },
+    model: "claude-haiku-5-5",
+    picks: [
+      { section: "music", title: "Ella Fitzgerald", why: "A jazz great.", inQloo: "yes", qlooName: "Ella Fitzgerald", inEra: "unknown" },
+      { section: "screen", title: "Casablanca", year: 1942, why: "A classic.", inQloo: "yes", qlooYear: 1942, inEra: "no" },
+      { section: "dish", title: "Deep-dish pizza", why: "Chicago's own.", inQloo: "unknown", inEra: "unknown" },
+    ],
+    questions: [
+      { text: "What music did you dance to?", keeps: true },
+      { text: "Do you remember your first dance?", keeps: false, reason: "Asks them to remember, which can feel like a test." },
+    ],
+    trace: [],
+  };
+
+  it("accepts a comparison that says only what each check found", () => {
+    expect(ComparisonSchema.safeParse(comparison).success).toBe(true);
+  });
+
+  it("allows only yes, no or unknown for a check, and only the kit's sections", () => {
+    expect(ComparisonSchema.safeParse({ ...comparison, picks: [{ ...comparison.picks[0], inQloo: "probably" }] }).success).toBe(false);
+    expect(ComparisonSchema.safeParse({ ...comparison, picks: [{ ...comparison.picks[0], section: "books" }] }).success).toBe(false);
   });
 });
