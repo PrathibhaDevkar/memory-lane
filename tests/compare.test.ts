@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { buildComparison, ComparisonRefusedError, matchByName, sameName, type AiAlone } from "@/lib/compare";
+import { SYSTEM_PROMPT } from "@/lib/agent/prompts";
+import { AI_ALONE_SYSTEM, buildComparison, ComparisonRefusedError, matchByName, sameName, type AiAlone } from "@/lib/compare";
 import { clearQlooCache } from "@/lib/qloo/client";
 import type { QlooEntity } from "@/lib/qloo/types";
 import { ComparisonSchema, type Profile } from "@/lib/types";
@@ -77,6 +78,15 @@ beforeEach(() => {
   queries = [];
 });
 afterEach(() => vi.unstubAllEnvs());
+
+describe("the same care rules", () => {
+  it("gives Claude on its own the agent's question rules word for word", () => {
+    // A fair comparison: if the agent's rules change, the comparison's must too.
+    const rules = SYSTEM_PROMPT.split("Every question or comment:\n")[1].split("\n\n")[0].split("\n");
+    expect(rules.length).toBeGreaterThanOrEqual(3);
+    for (const rule of rules) expect(AI_ALONE_SYSTEM).toContain(rule);
+  });
+});
 
 describe("matching Claude's names to Qloo", () => {
   it("ignores case, accents, punctuation and a leading The", () => {
