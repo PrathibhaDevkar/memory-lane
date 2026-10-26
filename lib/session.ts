@@ -7,7 +7,7 @@
 
 import { SUPPORT_LEVELS } from "./care";
 import { isSpotifySearch } from "./links";
-import type { Kit } from "./types";
+import { MAX_FAVORITES, MAX_THINGS_TO_AVOID, type Favorite, type FavoriteKind, type Kit, type Profile } from "./types";
 
 export type CardKind = "song" | "film" | "show" | "place" | "dish" | "question" | "comment" | "idea";
 
@@ -127,9 +127,65 @@ export function buildCareNote(kit: Kit, log: SessionLog): string {
   return lines.join("\n");
 }
 
+const withoutYear = (title: string) => title.replace(/ \(\d{4}\)$/, "");
+
 /** Things to add to the avoid list for the next kit: anything the session was stopped at (P5). */
 export function avoidNextTime(log: SessionLog): string[] {
-  return log.entries
-    .filter((e) => e.reaction === "stopped" && canLeaveOut(e.kind))
-    .map((e) => e.title.replace(/ \(\d{4}\)$/, ""));
+  return log.entries.filter((e) => e.reaction === "stopped" && canLeaveOut(e.kind)).map((e) => withoutYear(e.title));
+}
+
+// Cards that can seed the next kit, as the favorite kind Qloo looks them up by.
+const FAVORITE_KIND: Partial<Record<CardKind, FavoriteKind>> = { song: "artist", film: "movie", show: "tv" };
+
+/**
+ * Favorites for the next kit: the songs, films and shows they lit up with, so Qloo finds more like
+ * them (P8, close the loop: "Next time: more like …" in the note). In the order they came up.
+ */
+export function buildOnNextTime(log: SessionLog): Favorite[] {
+  const out: Favorite[] = [];
+  for (const e of log.entries) {
+    const kind = FAVORITE_KIND[e.kind];
+    const text = withoutYear(e.title).trim();
+    if (e.reaction !== "lit_up" || !kind || !text || text.length > 80) continue;
+    if (!out.some((f) => same(f.text, text))) out.push({ text, kind });
+  }
+  return out;
+}
+
+const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
+
+export type NextKit = {
+  profile: Profile;
+  favoritesAdded: Favorite[];
+  favoritesSkipped: Favorite[]; // lit up, but the favorites list is full
+  favoritesRemoved: Favorite[]; // a favorite the session stopped at: it shouldn't seed the next kit (P5)
+  avoidAdded: string[];
+  avoidSkipped: string[]; // stopped at, but the avoid list is full
+};
+
+/**
+ * The profile for the next kit, for the caregiver to review on the form: what lit them up is added
+ * to the favorites and what the session stopped at to things to avoid (and out of the favorites),
+ * within the form's limits. Nothing here leaves the browser.
+ */
+export function nextKitProfile(base: Profile, log: SessionLog): NextKit {
+  const stoppedAt = avoidNextTime(log);
+  const current = base.thingsToAvoid.filter((t) => t !== "none");
+  const freshAvoid = stoppedAt.filter((t) => !current.some((c) => same(c, t)));
+  const avoidAdded = freshAvoid.slice(0, Math.max(0, MAX_THINGS_TO_AVOID - current.length));
+  const avoid = [...current, ...avoidAdded];
+
+  const favoritesRemoved = base.favorites.filter((f) => stoppedAt.some((t) => same(t, f.text)));
+  const kept = base.favorites.filter((f) => !favoritesRemoved.includes(f));
+  const freshFavorites = buildOnNextTime(log).filter((f) => !kept.some((c) => same(c.text, f.text)));
+  const favoritesAdded = freshFavorites.slice(0, Math.max(0, MAX_FAVORITES - kept.length));
+
+  return {
+    profile: { ...base, thingsToAvoid: avoid.length ? avoid : ["none"], favorites: [...kept, ...favoritesAdded] },
+    favoritesAdded,
+    favoritesSkipped: freshFavorites.slice(favoritesAdded.length),
+    favoritesRemoved,
+    avoidAdded,
+    avoidSkipped: freshAvoid.slice(avoidAdded.length),
+  };
 }

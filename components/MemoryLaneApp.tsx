@@ -10,7 +10,7 @@ import { track } from "@/lib/analytics/client";
 import { DEMOS } from "@/lib/demos";
 import type { SessionLog } from "@/lib/session";
 import { kitAsText, whatsappUrl } from "@/lib/share";
-import { KitResponseSchema, MAX_THINGS_TO_AVOID, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
+import { KitResponseSchema, MAX_FAVORITES, MAX_THINGS_TO_AVOID, type Kit, type Profile, type SafetyStop as SafetyStopData } from "@/lib/types";
 import { IntakeForm, type FieldErrors } from "./IntakeForm";
 import { KitView } from "./KitView";
 import { SafetyStop } from "./SafetyStop";
@@ -129,25 +129,27 @@ export function MemoryLaneApp() {
           kit={kit}
           log={state.log}
           onBackToKit={() => setState({ view: "kit", kit })}
-          onBuildNext={(extraAvoid) => {
+          onBuildNext={(next) => {
             // Back to the form, ready to review: the support level can change from day to day.
-            // The next kit is for the person this session was about, even after a demo.
-            const base = kit.profile;
-            const current = base.thingsToAvoid.filter((t) => t !== "none");
-            // Stay within the form's limit; anything that doesn't fit is named in the notice.
-            const fresh = extraAvoid.filter((t) => !current.includes(t));
-            const added = fresh.slice(0, Math.max(0, MAX_THINGS_TO_AVOID - current.length));
-            const avoid = [...current, ...added];
-            setLastProfile({ ...base, thingsToAvoid: avoid.length ? avoid : ["none"] });
-            const skipped = fresh.slice(added.length);
+            // The next kit is for the person this session was about, even after a demo. What lit them
+            // up seeds it, what was stopped at is left out (lib/session.ts), all named in the notice.
+            setLastProfile(next.profile);
+            const names = (xs: { text: string }[]) => xs.map((x) => x.text).join(", ");
             setState({
               view: "form",
               busy: false,
               askSafetyAgain: true,
               notice: [
                 "Ready for the next kit.",
-                added.length ? `Added to things to avoid: ${added.join(", ")}.` : "",
-                skipped.length ? `The list is full (${MAX_THINGS_TO_AVOID}), so these weren't added: ${skipped.join(", ")}.` : "",
+                next.favoritesAdded.length ? `Added to favorites, because they lit up: ${names(next.favoritesAdded)}.` : "",
+                next.favoritesSkipped.length
+                  ? `They also lit up with ${names(next.favoritesSkipped)}, but the favorites list is full (${MAX_FAVORITES}); swap one in if you like.`
+                  : "",
+                next.favoritesRemoved.length ? `Taken out of favorites, because the session stopped at it: ${names(next.favoritesRemoved)}.` : "",
+                next.avoidAdded.length ? `Added to things to avoid: ${next.avoidAdded.join(", ")}.` : "",
+                next.avoidSkipped.length
+                  ? `The list is full (${MAX_THINGS_TO_AVOID}), so these weren't added: ${next.avoidSkipped.join(", ")}.`
+                  : "",
                 "Check today's answers before building.",
               ]
                 .filter(Boolean)
