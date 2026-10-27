@@ -74,6 +74,7 @@ const claude = (reply: Partial<{ parsed_output: AiAlone | null; stop_reason: str
 
 beforeEach(() => {
   vi.stubEnv("QLOO_API_KEY", "test-key");
+  vi.stubEnv("CLAUDE_EFFORT", ""); // the default, whatever the shell has set
   clearQlooCache();
   queries = [];
 });
