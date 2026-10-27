@@ -15,7 +15,7 @@ vi.mock("@/lib/qloo/client", () => ({
 }));
 
 const { RunContext } = await import("@/lib/qloo/tools");
-const { agentConfig, artistFromReply, buildLiveKit, DEFAULT_MODEL, FINISH_NOW, traditionQuestion, traditionsToDo } = await import("@/lib/agent/run");
+const { agentConfig, artistFromReply, buildLiveKit, DEFAULT_EFFORT, DEFAULT_MODEL, FINISH_NOW, traditionQuestion, traditionsToDo } = await import("@/lib/agent/run");
 const { auditKit } = await import("@/lib/agent/audit");
 const { qlooGet } = await import("@/lib/qloo/client");
 
@@ -148,6 +148,25 @@ describe("model rule: Haiku by default, Sonnet or Opus only with a recorded appr
     expect(agentConfig().effort).toBe("medium");
   });
 
+  it("reads CLAUDE_EFFORT whatever its spaces and capitals", () => {
+    expect(DEFAULT_EFFORT).toBe("low");
+    for (const [set, used] of [[" Medium ", "medium"], ["HIGH", "high"], ["max", "max"]]) {
+      vi.stubEnv("CLAUDE_EFFORT", set);
+      expect(agentConfig().effort).toBe(used);
+    }
+  });
+
+  it("falls back to low, and says so in the log, when CLAUDE_EFFORT is mistyped, so kits don't fail", () => {
+    const warn = quiet();
+    for (const set of ["lwo", "minimal", "1", "medium effort"]) {
+      vi.stubEnv("CLAUDE_EFFORT", set);
+      expect(agentConfig().effort).toBe("low");
+    }
+    expect(warn).toHaveBeenCalledTimes(4);
+    expect(String(warn.mock.calls[0][0])).toContain("effort_not_valid");
+    warn.mockRestore();
+  });
+
   it("falls back to Haiku, and says so in the log, when Sonnet or Opus is set without approval", () => {
     const warn = quiet();
     vi.stubEnv("CLAUDE_MODEL", "claude-opus-5-5");
@@ -192,6 +211,14 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     });
     return { client: { beta: { messages: { create } } } as unknown as Anthropic, create, sent };
   };
+
+  it("sends the default effort, low, with the main call", async () => {
+    vi.stubEnv("CLAUDE_EFFORT", "");
+    const { client, sent } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }])]);
+    await buildLiveKit(rosa, { client });
+    expect((sent[0].body as unknown as { output_config: unknown }).output_config).toEqual({ effort: "low" });
+    vi.unstubAllEnvs();
+  });
 
   it("runs the usual lookups in code, so the usual kit takes one Claude call", async () => {
     const { client, create, sent } = fakeClient([

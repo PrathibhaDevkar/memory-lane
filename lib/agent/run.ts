@@ -43,7 +43,9 @@ export const FINISH_NOW = "That's all the lookups for this kit. Call submit_kit 
 const LOOKUPS_CLOSED = JSON.stringify({ error: "Lookups are closed for this kit. Call submit_kit with what you have." });
 const OUT_OF_TIME = "The agent ran out of time before finishing.";
 
-type Effort = "low" | "medium" | "high" | "xhigh" | "max";
+const EFFORTS = ["low", "medium", "high", "xhigh", "max"] as const;
+type Effort = (typeof EFFORTS)[number];
+export const DEFAULT_EFFORT: Effort = "low";
 
 // Team rule (CLAUDE.md): Claude Haiku 5.5 by default. Sonnet or Opus only after the team approves a
 // switch backed by a smoke-check audit, recorded in CLAUDE_MODEL_APPROVAL, which must name the model
@@ -57,9 +59,13 @@ export function agentConfig() {
   const approved = requested.startsWith("claude-haiku") || approval.includes(requested);
   if (!approved) console.warn(JSON.stringify({ event: "model_not_approved", requested, using: DEFAULT_MODEL }));
   const model = approved ? requested : DEFAULT_MODEL;
-  // Low since Oct 27: the Oct 21 side-by-side (CLAUDE.md work log) passed all six personas at low and
-  // medium, with low about 24% faster and 20% cheaper. Change it only after another side-by-side check.
-  const effort = (process.env.CLAUDE_EFFORT || "low") as Effort;
+  // Low since Oct 27: the side-by-sides on Oct 21 and Oct 27 (CLAUDE.md work log) passed at low and
+  // medium, with low faster and cheaper. Change it only after another side-by-side check.
+  // A mistyped effort would make every call fail, so it falls back to the default and the log says so.
+  const asked = process.env.CLAUDE_EFFORT?.trim().toLowerCase() || DEFAULT_EFFORT;
+  const valid = (EFFORTS as readonly string[]).includes(asked);
+  if (!valid) console.warn(JSON.stringify({ event: "effort_not_valid", requested: process.env.CLAUDE_EFFORT, using: DEFAULT_EFFORT }));
+  const effort: Effort = valid ? (asked as Effort) : DEFAULT_EFFORT;
   return { model, effort };
 }
 

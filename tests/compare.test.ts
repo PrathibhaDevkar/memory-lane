@@ -89,6 +89,16 @@ describe("the same care rules", () => {
   });
 });
 
+describe("the same effort as the agent", () => {
+  it("asks Claude on its own at the effort a kit uses, including a CLAUDE_EFFORT override", async () => {
+    vi.stubEnv("CLAUDE_EFFORT", "medium");
+    const { parse } = claude();
+    const { usage: used } = await buildComparison(rosa, { client: { messages: { parse } } as unknown as Anthropic, fetchImpl: qloo });
+    expect((parse.mock.calls[0] as unknown[])[0]).toMatchObject({ output_config: { effort: "medium" } });
+    expect(used.effort).toBe("medium");
+  });
+});
+
 describe("matching Claude's names to Qloo", () => {
   it("ignores case, accents, punctuation and a leading The", () => {
     expect(sameName("Nat 'King' Cole", "Nat King Cole")).toBe(true);
