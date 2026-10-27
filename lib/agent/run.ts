@@ -142,17 +142,20 @@ async function musicForTraditions(
   console.log(JSON.stringify({ event: "claude_turn", turn: 0, purpose: "traditions", model: response.model, effort: "low", ...usage }));
   const text = response.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("");
   const artist = response.stop_reason === "refusal" ? null : artistFromReply(text);
+  // "none" means no artist fits these traditions. Any other reply that isn't a name (a question
+  // back, as for "Diwali", or a paragraph) gets the fallback, so the traditions aren't dropped.
+  const saidNone = !artist && /^none\b/i.test(text.trim().replace(/^["'“‘*]+/, ""));
   ctx.trace.push({
     id: ctx.nextId(),
     kind: "llm",
     label: "Claude, an artist for the traditions",
     input: { model: response.model, effort: "low", usage },
-    outputSummary: artist ? `Named ${artist}` : "No artist named",
+    outputSummary: artist ? `Named ${artist}` : saidNone ? "No artist fits these traditions" : "The reply wasn't an artist's name, so the main call looks one up",
     excluded: [],
     ms: Date.now() - t0,
     status: artist ? "ok" : "gap",
   });
-  if (!artist) return {};
+  if (!artist) return saidNone ? {} : fallback;
   const music = await lookUpTradition(ctx, artist);
   return music ? { music } : fallback;
 }
