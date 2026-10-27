@@ -117,7 +117,10 @@ describe("buildComparison", () => {
     expect(pick("Nat 'King' Cole")).toMatchObject({ section: "music", inQloo: "yes", qlooName: "Nat King Cole", inEra: "unknown" });
     expect(pick("The Crooners Club Band")).toMatchObject({ inQloo: "no", inEra: "unknown" });
     expect(pick("The Longest Day")).toMatchObject({ section: "screen", year: 1962, inQloo: "yes", qlooYear: 1962, inEra: "yes", screenedOut: "War film or series." });
-    expect(pick("Field of Dreams")).toMatchObject({ year: 1987, qlooYear: 1989, inEra: "no" });
+    // Qloo's "Field of Dreams" is from 1989, two years from Claude's 1987: maybe another film, so it
+    // isn't judged at all (unchecked, not wrong), and its year is kept to say so.
+    expect(pick("Field of Dreams")).toMatchObject({ year: 1987, inQloo: "no", qlooYear: 1989, inEra: "unknown" });
+    expect(pick("Field of Dreams")).not.toHaveProperty("qlooName");
     expect(pick("Wrigley Field")).toMatchObject({ section: "place", inQloo: "yes" });
     // Dishes aren't Qloo entities: not looked up, only checked against the avoid list.
     expect(pick("Deep-dish pizza")).toMatchObject({ section: "dish", inQloo: "unknown", inEra: "unknown" });
@@ -134,6 +137,27 @@ describe("buildComparison", () => {
     expect(JSON.stringify(request.messages)).toContain("1952–1972");
     expect(used).toMatchObject({ model: "claude-haiku-5-5", effort: "low", tokens: { in: 900, out: 1200 } });
     expect(used.costUsd).toBeGreaterThan(0);
+  });
+
+  it("judges a film only when Qloo's year is within a year of Claude's", async () => {
+    // Synthetic titles: one Qloo dates a year later (the same film, so it's judged), one Qloo only
+    // has from forty years later and rated R (another film, so it's unchecked and not screened on
+    // that film's rating).
+    SEARCH["Roman Holiday"] = [raw("Roman Holiday", { year: 1953 })];
+    SEARCH["The Old Mill"] = [raw("The Old Mill", { year: 1995, rating: "R" })];
+    const films: AiAlone = {
+      ...alone,
+      screen: [
+        { title: "Roman Holiday", kind: "film", year: 1952, why: "A romance from their twenties." },
+        { title: "The Old Mill", kind: "film", year: 1954, why: "A gentle story of the time." },
+      ],
+    };
+    const { comparison } = await buildComparison(rosa, { client: claude({ parsed_output: films }).client, fetchImpl: qloo });
+    const pick = (title: string) => comparison.picks.find((p) => p.title === title);
+    expect(pick("Roman Holiday")).toMatchObject({ inQloo: "yes", qlooYear: 1953, inEra: "yes" });
+    expect(pick("The Old Mill")).toMatchObject({ inQloo: "no", qlooYear: 1995, inEra: "unknown" });
+    expect(pick("The Old Mill")?.screenedOut).toBeUndefined();
+    expect(comparison.trace.find((s) => s.label === "Qloo check: The Old Mill")?.outputSummary).toMatch(/not counted as the same, so unchecked/);
   });
 
   it("checks the questions with the question rules, including the level's count", async () => {

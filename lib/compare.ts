@@ -5,7 +5,9 @@
 // never reach a session.
 //
 // A check claims only what it could check: Qloo gives artists no year, and dishes aren't Qloo
-// entities, so those stay "unknown".
+// entities, so those stay "unknown". A pick Qloo doesn't list is unchecked, not wrong: Qloo may not
+// have it, or have it under another name or year (Victor Olaiya and Orlando Julius, real highlife
+// musicians, weren't found in the first live run). Only a check that ran can count against Claude.
 
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
@@ -120,22 +122,32 @@ async function checkPick(
     return { pick: { ...base, inQloo: "unknown", inEra: "unknown" }, step: step(`Couldn't check: ${r.error}`, "gap", input) };
   }
   const match = matchByName(r.entities, item.title, item.year);
-  // Films and shows get the content filter (ratings, War genre, themes); artists and places only
-  // the caregiver's avoid list, exactly as in a kit's lookups.
-  const content = section === "screen";
-  const { excluded } = screen([match ?? named(item.title)], ctx.profile.thingsToAvoid, { content: content && Boolean(match) });
-  const screenedOut = excluded[0]?.reason;
   const qlooYear = match?.properties.release_year;
+  // A film or show counts as the same one only if Qloo's release year is within a year of Claude's:
+  // the same title can be a remake or another film, and judging that one would blame Claude for
+  // Qloo's search. A different year means it can't be checked, never that Claude was wrong.
+  const sameWork = section !== "screen" || item.year === undefined || qlooYear === undefined || Math.abs(qlooYear - item.year) <= 1;
+  const found = match && sameWork ? match : undefined;
+  // Films and shows get the content filter (ratings, War genre, themes); artists and places only
+  // the caregiver's avoid list, exactly as in a kit's lookups. Only a confirmed match is screened
+  // on Qloo's data; anything else is checked against the avoid list by its name.
+  const { excluded } = screen([found ?? named(item.title)], ctx.profile.thingsToAvoid, { content: section === "screen" && Boolean(found) });
+  const screenedOut = excluded[0]?.reason;
   const pick: ComparedPick = {
     ...base,
-    inQloo: match ? "yes" : "no",
-    ...(match ? { qlooName: match.name } : {}),
+    inQloo: found ? "yes" : "no",
+    ...(found ? { qlooName: found.name } : {}),
+    // For a same-titled film from another year, the year Qloo has, so the page can say so.
     ...(qlooYear ? { qlooYear } : {}),
-    inEra: section === "screen" && match ? inYears(ctx.era, qlooYear) : "unknown",
+    inEra: section === "screen" && found ? inYears(ctx.era, qlooYear) : "unknown",
     ...(screenedOut ? { screenedOut } : {}),
   };
-  const found = match ? `Found: ${match.name}${qlooYear ? ` (${qlooYear})` : ""}` : "Not found in Qloo by that name";
-  return { pick, step: step(found, match ? "ok" : "gap", input, excluded) };
+  const summary = found
+    ? `Found: ${found.name}${qlooYear ? ` (${qlooYear})` : ""}`
+    : match
+      ? `Qloo has "${match.name}" from ${qlooYear}, not ${item.year}: not counted as the same, so unchecked`
+      : "Not found in Qloo by that name, so unchecked";
+  return { pick, step: step(summary, found ? "ok" : "gap", input, excluded) };
 }
 
 /** Token counts for the call, as the agent logs them. */

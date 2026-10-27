@@ -7,6 +7,14 @@ import type { ComparedPick, Comparison, EraWindow, Kit } from "@/lib/types";
 
 export type ComparisonRow = { check: string; memoryLane: string; alone: string };
 
+/**
+ * What "not found" means, shown under the summary. A pick Qloo doesn't list isn't wrong: Qloo may
+ * not have it, or have it under another name or year. It just can't be checked, and a kit uses only
+ * what Qloo returns, so Memory Lane would leave it out. Only checks that ran count against Claude.
+ */
+export const UNCHECKED_NOTE =
+  "A pick that isn't found in Qloo isn't necessarily wrong: Qloo may not list it, or lists it under another name or year. It just can't be checked, so Memory Lane wouldn't use it.";
+
 /** "All 4", "3 of 4", "1 of 1", or the fallback when there's nothing to count. */
 export function outOf(n: number, total: number, none: string): string {
   if (total === 0) return none;
@@ -82,18 +90,27 @@ export function pickChecks(pick: ComparedPick, era: EraWindow): PickCheck[] {
     checks.push({ ok: null, text: "Not checked: dishes can't be looked up in Qloo" });
   } else if (pick.inQloo === "unknown") {
     checks.push({ ok: null, text: "Couldn't check Qloo this time" });
-  } else if (pick.section === "place") {
-    // Matched by name only: the town isn't checked.
-    checks.push(pick.inQloo === "yes" ? { ok: true, text: "A place by this name is in Qloo" } : { ok: false, text: "No place by this name in Qloo" });
+  } else if (pick.inQloo === "no") {
+    // Unchecked, not wrong (UNCHECKED_NOTE): never a failure.
+    checks.push({ ok: null, text: unchecked(pick) });
   } else {
-    checks.push(pick.inQloo === "yes" ? { ok: true, text: "In Qloo" } : { ok: false, text: "Not found in Qloo by this name" });
+    // Places are matched by name only: the town isn't checked.
+    checks.push({ ok: true, text: pick.section === "place" ? "A place by this name is in Qloo" : "In Qloo" });
   }
   if (pick.section === "screen" && pick.inQloo === "yes") {
     if (pick.inEra === "yes") checks.push({ ok: true, text: `Released ${pick.qlooYear}, in their years` });
     else if (pick.inEra === "no") checks.push({ ok: false, text: `Released ${pick.qlooYear}, outside ${era.start}–${era.end}` });
     else checks.push({ ok: null, text: "Qloo has no release year" });
-    if (pick.year && pick.qlooYear && pick.year !== pick.qlooYear) checks.push({ ok: false, text: `Claude said ${pick.year}` });
+    // Within a year (release dates vary by country), so information, not a mistake.
+    if (pick.year && pick.qlooYear && pick.year !== pick.qlooYear) checks.push({ ok: null, text: `Claude said ${pick.year}` });
   }
   if (pick.screenedOut) checks.push({ ok: false, text: `Would be left out: ${pick.screenedOut.replace(/\.$/, "")}` });
   return checks;
+}
+
+/** Why a pick couldn't be checked in Qloo, in words that don't blame anyone. */
+function unchecked(pick: ComparedPick): string {
+  if (pick.section === "screen" && pick.qlooYear && pick.year) return `Qloo has this title from ${pick.qlooYear}, not ${pick.year}, so it can't be checked`;
+  if (pick.section === "place") return "No place by this name in Qloo, so it can't be checked";
+  return "Not in Qloo under this name, so it can't be checked";
 }

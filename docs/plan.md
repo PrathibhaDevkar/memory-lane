@@ -521,12 +521,14 @@ No professional caregiver is available. **Adults aged 60+** judge era accuracy (
 flowchart LR
     A["1 · Meet Rosa<br/>born 1942, Chicago<br/>loves Sinatra"] --> B["2 · Build kit<br/>watch the trace:<br/>Qloo calls, filters, exclusions"]
     B --> C["3 · The kit<br/>Ella, Nat King Cole,<br/>a 1950s film, a Chicago landmark,<br/>open questions"]
-    C --> D["4 · Toggle AI-only<br/>generic or wrong-era picks,<br/>no reasons, no trace"]
+    C --> D["4 · Compare with Claude on its own<br/>same care rules, no Qloo;<br/>show what the checks found:<br/>unchecked is not wrong"]
     D --> E["5 · Enter Taylor Swift<br/>agent notices she is out of era,<br/>seeds music from an era film<br/>(the hop shows in the trace)"]
     E --> F["6 · Safety<br/>June's kit excludes<br/>Terms of Endearment: grief;<br/>Margaret gets no kit: safety stop"]
 ```
 
 Then **session mode**: one card at a time, reactions logged, and the care note at the end.
+
+**Step 4, carefully.** Show what the comparison's checks found and claim nothing more ([submission.md, Claims we can make](submission.md#claims-we-can-make-read-before-writing-recording-or-submitting)). A pick Qloo doesn't list is unchecked, not a mistake: in the first live run Qloo didn't list two real highlife musicians Claude suggested for Mr. Okafor. What counts against Claude on its own is what a check proved: a year outside their window, a pick the filters would leave out, a question that tests memory.
 
 ---
 

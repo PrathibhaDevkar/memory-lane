@@ -2,7 +2,7 @@
 // Claude's picks and questions with what the checks found. Pure (no state, no browser APIs), so it
 // renders on the server and in tests. For comparison only: these picks never reach a session.
 
-import { comparisonRows, pickChecks, type PickCheck } from "@/lib/compare-summary";
+import { comparisonRows, pickChecks, UNCHECKED_NOTE, type PickCheck } from "@/lib/compare-summary";
 import type { ComparedPick, Comparison, Kit } from "@/lib/types";
 import { TracePanel } from "./TracePanel";
 
@@ -51,6 +51,7 @@ export function ComparisonView({ kit, comparison }: { kit: Kit; comparison: Comp
           ))}
         </dl>
       </div>
+      <p>{UNCHECKED_NOTE}</p>
       <p className="text-muted">Places are matched by name only, so their town isn&apos;t checked. Dishes can&apos;t be looked up in Qloo.</p>
 
       <section aria-labelledby="alone-picks-title" className="space-y-4">
