@@ -1,4 +1,4 @@
-// Limits on live kits (docs/plan.md §12.2): a few per visitor each hour and a cap per day, kept in
+// Limits on live kits (docs/plan.md §12.2): per visitor each hour and a cap per day, kept in
 // Upstash Redis so they hold across serverless instances. Sample kits and the safety stop never
 // reach this code. In production, live kits are refused until Redis is configured, so the app
 // can't go live without limits. SMOKE_TOKEN lets scripts/smoke.mjs through.
@@ -13,8 +13,8 @@ function count(value: string | undefined, fallback: number): number {
   return value && Number.isInteger(n) && n > 0 ? n : fallback;
 }
 
-export const VISITOR_KITS_PER_HOUR = count(process.env.VISITOR_KITS_PER_HOUR, 3);
-export const DAILY_LIVE_KITS = count(process.env.DAILY_LIVE_KITS, 100);
+export const VISITOR_KITS_PER_HOUR = count(process.env.VISITOR_KITS_PER_HOUR, 30);
+export const DAILY_LIVE_KITS = count(process.env.DAILY_LIVE_KITS, 1000);
 
 const perVisitor = redis && new Ratelimit({ redis, prefix: "ml:visitor", limiter: Ratelimit.slidingWindow(VISITOR_KITS_PER_HOUR, "1 h") });
 const perDay = redis && new Ratelimit({ redis, prefix: "ml:day", limiter: Ratelimit.fixedWindow(DAILY_LIVE_KITS, "1 d") });

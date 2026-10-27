@@ -74,6 +74,7 @@ const claude = (reply: Partial<{ parsed_output: AiAlone | null; stop_reason: str
 
 beforeEach(() => {
   vi.stubEnv("QLOO_API_KEY", "test-key");
+  vi.stubEnv("CLAUDE_EFFORT", ""); // the default, whatever the shell has set
   clearQlooCache();
   queries = [];
 });
@@ -85,6 +86,16 @@ describe("the same care rules", () => {
     const rules = SYSTEM_PROMPT.split("Every question or comment:\n")[1].split("\n\n")[0].split("\n");
     expect(rules.length).toBeGreaterThanOrEqual(3);
     for (const rule of rules) expect(AI_ALONE_SYSTEM).toContain(rule);
+  });
+});
+
+describe("the same effort as the agent", () => {
+  it("asks Claude on its own at the effort a kit uses, including a CLAUDE_EFFORT override", async () => {
+    vi.stubEnv("CLAUDE_EFFORT", "medium");
+    const { parse } = claude();
+    const { usage: used } = await buildComparison(rosa, { client: { messages: { parse } } as unknown as Anthropic, fetchImpl: qloo });
+    expect((parse.mock.calls[0] as unknown[])[0]).toMatchObject({ output_config: { effort: "medium" } });
+    expect(used.effort).toBe("medium");
   });
 });
 

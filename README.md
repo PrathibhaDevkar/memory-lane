@@ -91,7 +91,7 @@ Settings are listed in [`.env.example`](.env.example): `CLAUDE_MODEL` (default `
 
 **Model rule:** Claude Haiku 5.5 is the default. Sonnet 5.5 or Opus 5.5 is used only after both of us approve it on a smoke-check audit (`npm run smoke -- --report`), recorded in `CLAUDE_MODEL_APPROVAL`; without that the app falls back to Haiku. Every live kit is audited (tokens, cost, quality bar), and its usage and any token alerts come back in the `/api/kit` response headers; see [docs/token-alerts.md](docs/token-alerts.md).
 
-Live kits are limited to 3 per visitor an hour and 100 a day (`VISITOR_KITS_PER_HOUR`, `DAILY_LIVE_KITS`), counted in Upstash Redis. In production, live kits stay off until Redis is configured; sample kits and the safety stop are never limited. When the Claude spend limit is reached, the app says live kits are paused.
+Live kits (and comparisons) are limited to 30 per visitor an hour and 1,000 a day (`VISITOR_KITS_PER_HOUR`, `DAILY_LIVE_KITS`), counted in Upstash Redis. In production, live kits stay off until Redis is configured; sample kits and the safety stop are never limited. When the Claude spend limit is reached, the app says live kits are paused.
 
 To keep Claude's token use low, the usual Qloo lookups run in code before Claude is called, including music for a modern favorite and for the caregiver's traditions, so a kit takes one Claude call (plus a short one that names an artist when traditions are given); Claude reads short handles (`a1`, `m2`) instead of Qloo's 36-character IDs; the tools and system prompt are cached; and the live kit for the form's example profile is reused for `EXAMPLE_KIT_HOURS` (default 6), so repeat demo clicks cost nothing.
 

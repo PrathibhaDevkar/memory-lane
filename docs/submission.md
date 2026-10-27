@@ -67,7 +67,7 @@ When the caregiver gives traditions, a short extra Claude call names an artist f
 
 Next.js 16 on Vercel, the Claude API (Claude Haiku 5.5) with tool use, and the Qloo Hackathon API. Rules that must never be skipped live in code rather than in the prompt: the year window, the hometown, the safety filter and the safety check. Qloo calls are capped per kit, queued two at a time, cached and retried. The agent has a call limit and a time budget, so it always ends. More than 200 automated tests cover the filters (against real Qloo responses), the agent loop, the safety check, the question rules and the screens. **[Re-count before submitting: 272 on Oct 27.]**
 
-Every live kit is audited and its token use measured. In the Oct 21 side-by-side of six personas, a kit at `low` effort, now the default, cost $0.0011–0.0015 in Claude tokens and took 8–13 seconds, against $0.0015–0.0017 and 12–15 seconds at `medium`, and every kit met the quality bar at both levels. Cheap kits are what let the demo stay free for judges.
+Every live kit is audited and its token use measured. In the Oct 27 side-by-side (30 live kits on the finished agent), a kit at `low` effort, now the default, cost $0.0010–0.0014 in Claude tokens and took 10–20 seconds, against $0.0012–0.0017 and 15–20 seconds at `medium`; 17 of 18 kits met the quality bar at `low` and 11 of 12 at `medium`, and no question in any kit broke the care rules. Cheap kits are what let the demo stay free for judges.
 
 ## Challenges we ran into
 
