@@ -15,6 +15,23 @@
 - [ ] Explain how Qloo is integrated and why the project is **agentic** (below)
 - [ ] One team member submits as the **Representative**
 - [ ] After submitting: keep Vercel up, the Qloo key valid and Claude credits funded **until Nov 16**
+- [ ] Every claim in the text, the video and the README passes **Claims we can make** (next section)
+
+---
+
+## Claims we can make (read before writing, recording or submitting)
+
+A claim we can't back up costs more than it wins, and the comparison is where it's easiest to overreach. These hold for this draft, the video, the README and anything said to judges:
+
+- **Numbers come from a dated run or count** (a live check, an audit report, the test count on a given day), and we say which.
+- **The comparison says what its checks found, and no more.** A pick that isn't in Qloo under that name is *unchecked*: Qloo may not list it, or lists it under another name or year. It never means Claude got it wrong. In the first live comparison (Oct 27) Qloo didn't list Victor Olaiya or Orlando Julius, both real highlife musicians. The page shows such picks in grey as "can't be checked".
+- **Only checks that ran count against Claude on its own:** a release year outside the person's years (when Claude's year and Qloo's agree), the content filter or avoid list, and the question rules. Say it like this: "For Mr. Okafor, 2 of Claude's 5 picks could be confirmed in Qloo; the other 3 aren't listed there under those names, so they can't be checked."
+- **Memory Lane's picks come from Qloo results and passed the filters.** Whether they're right *for a person* is for testers to say, not for us to claim.
+- **Testers** are "adults aged 60+" or "people who have looked after an older relative", reported exactly, with group sizes.
+- **No medical claims:** not therapy, no "improves memory", no health advice.
+- **Saved stays saved:** demo kits and reused results are labeled as saved runs; only live results are called live.
+
+`tests/claims.test.ts` fails if this draft, the README or the plan calls a pick “made up”, “hallucinated” or “fabricated”; words in quotes, like these, are being discussed and are skipped.
 
 ---
 
@@ -49,7 +66,7 @@ Qloo does the picking; the agent decides what to ask; code enforces the rules.
 - **Films and TV** use a **release-year window** computed from the birth year. Without it, Qloo returned films older audiences watch *today*; with it, every title we tested was from the right years.
 - **Places** use the hometown as the location, ranked to historic landmarks first; **dishes** come from hometown restaurants' specialty dishes via a restaurant tag filter.
 - **A modern favorite still works:** for someone born in 1942 who names Taylor Swift, Qloo's films for her years start with *Mary Poppins* (1964), and music seeded with that film gives Frank Sinatra, Dean Martin and Carole King. Memory Lane prepares that second list in code, so Claude can swap the modern music for it in the same call. **[The Swift kit passed in the live checks on Oct 19 and Oct 20, in one Claude call since Oct 20. Save it as a demo and quote the artists it actually picked.]**
-- **The difference Qloo makes, shown:** under any kit, **Compare with Claude on its own** gives Claude the same person and care rules but no Qloo, then looks each of its picks up in Qloo (found, released in their years, screened like a kit's) and checks each question against the question rules, side by side with the kit. **[Quote the numbers from a live run before submitting.]**
+- **The difference Qloo makes, shown:** under any kit, **Compare with Claude on its own** gives Claude the same person and care rules but no Qloo, then looks each of its picks up in Qloo (found, released in their years, screened like a kit's) and checks each question against the question rules, side by side with the kit. A pick Qloo doesn't list is shown as unchecked, never as a mistake: only the checks that ran count. **[Quote a full `--compare --report` run, worded as in Claims we can make.]**
 - **Qloo's own metadata keeps it safe:** ratings, genres and one-line theme summaries screen out mature titles and anything *about* dementia, illness, war, grief or abuse. Every exclusion is shown with its reason.
 
 Every song, film, place and dish carries the Qloo ID that proves where it came from. Anything the agent can't ground in a Qloo result from this run is removed, and an empty section says so instead of guessing. The few activity ideas the agent may add are labeled as suggestions, not Qloo data.
@@ -107,6 +124,6 @@ From individual caregivers to care homes: saved resident profiles (with consent 
 2. Click **Try a demo → Rosa** for a full kit; open **"How this kit was made"** at the bottom to see the Qloo lookups and what was screened out. Click **Start session**, mark a few reactions, tap **Stop**, and read the session note.
 3. Click **Try a demo → Margaret** to see the safety check: no kit, a prompt to contact a nurse or doctor.
 4. To build your own kit, fill in the form (or **Fill in an example (Rosa)**) and click **Build the session kit**. A live kit takes about 15 to 20 seconds. **[Only once live kits are on in production; until then the form returns the sample kit.]**
-5. Under any kit, click **Compare with Claude on its own** to see what Claude suggests without Qloo, and how its picks and questions hold up against Qloo and the question rules. **[Only once live kits are on in production.]**
+5. Under any kit, click **Compare with Claude on its own** to see what Claude suggests without Qloo, and how its picks and questions hold up against Qloo and the question rules. A pick Qloo doesn't list shows as "can't be checked": not a mistake, just something Qloo can't confirm. **[Only once live kits are on in production.]**
 
 All personas are fictional. Please don't enter details about a real person.
