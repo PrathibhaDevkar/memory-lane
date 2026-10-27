@@ -34,7 +34,7 @@ Also in this PR, found while checking edge cases:
 | Claude cost per kit, full runs | $0.0010–0.0014, about $0.0012 on average | $0.0012–0.0017, about $0.0014 on average |
 | Output tokens per kit (mostly thinking), first full run | 1,595–2,043 | 1,937–2,985 |
 | Seconds per kit, full runs | 10.0–19.5, about 15 on average | 14.5–20.4, about 17 on average |
-| Kit questions that broke the rules | 0 | 0 |
+| Kit questions dropped by the question check | 0 | 0 |
 | Comparison: Claude cost and time | $0.0003–0.0007, 3.4–8.0 s | $0.0007–0.0009, 7.2–10.0 s |
 
 What it means:
