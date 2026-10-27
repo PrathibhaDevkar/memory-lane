@@ -13,7 +13,7 @@ function count(value: string | undefined, fallback: number): number {
   return value && Number.isInteger(n) && n > 0 ? n : fallback;
 }
 
-export const VISITOR_KITS_PER_HOUR = count(process.env.VISITOR_KITS_PER_HOUR, 30);
+export const VISITOR_KITS_PER_HOUR = count(process.env.VISITOR_KITS_PER_HOUR, 20);
 export const DAILY_LIVE_KITS = count(process.env.DAILY_LIVE_KITS, 1000);
 
 const perVisitor = redis && new Ratelimit({ redis, prefix: "ml:visitor", limiter: Ratelimit.slidingWindow(VISITOR_KITS_PER_HOUR, "1 h") });

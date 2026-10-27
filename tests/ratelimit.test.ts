@@ -69,32 +69,32 @@ describe("liveKitBlocked", () => {
   it("says which limit was reached", async () => {
     const { liveKitBlocked } = await load(REDIS);
     limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:visitor" }));
-    expect(await liveKitBlocked(request())).toBe("You've built 30 kits in the last hour. Try a sample kit, or come back a little later.");
+    expect(await liveKitBlocked(request())).toBe("You've built 20 kits in the last hour. Try a sample kit, or come back a little later.");
     limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:day" }));
     expect(await liveKitBlocked(request())).toMatch(/Today's live kits are used up/);
   });
 
   it("takes its limits from the environment, ignoring blank or invalid values", async () => {
     const defaults = await load({ VISITOR_KITS_PER_HOUR: "", DAILY_LIVE_KITS: "lots" });
-    expect([defaults.VISITOR_KITS_PER_HOUR, defaults.DAILY_LIVE_KITS]).toEqual([30, 1000]);
+    expect([defaults.VISITOR_KITS_PER_HOUR, defaults.DAILY_LIVE_KITS]).toEqual([20, 1000]);
     const custom = await load({ ...REDIS, VISITOR_KITS_PER_HOUR: "5", DAILY_LIVE_KITS: "40" });
     expect([custom.VISITOR_KITS_PER_HOUR, custom.DAILY_LIVE_KITS]).toEqual([5, 40]);
     limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:visitor" }));
     expect(await custom.liveKitBlocked(request())).toMatch(/^You've built 5 kits/);
   });
 
-  it("allows the 30th kit in an hour and refuses the 31st, for that visitor only", async () => {
+  it("allows the 20th kit in an hour and refuses the 21st, for that visitor only", async () => {
     const { liveKitBlocked } = await load(REDIS);
-    // A counting stand-in for Upstash's sliding window: 30 per visitor, 1,000 a day.
+    // A counting stand-in for Upstash's sliding window: 20 per visitor, 1,000 a day.
     const used = new Map<string, number>();
     limit.mockImplementation(async (prefix: string, id: string) => {
       const n = (used.get(prefix + id) ?? 0) + 1;
       used.set(prefix + id, n);
-      return { success: n <= (prefix === "ml:visitor" ? 30 : 1000) };
+      return { success: n <= (prefix === "ml:visitor" ? 20 : 1000) };
     });
     const judge = request({ "x-forwarded-for": "198.51.100.1" });
-    for (let i = 1; i <= 30; i++) expect(await liveKitBlocked(judge)).toBeNull();
-    expect(await liveKitBlocked(judge)).toMatch(/^You've built 30 kits in the last hour/);
+    for (let i = 1; i <= 20; i++) expect(await liveKitBlocked(judge)).toBeNull();
+    expect(await liveKitBlocked(judge)).toMatch(/^You've built 20 kits in the last hour/);
     // Someone else, on another address, still gets a kit.
     expect(await liveKitBlocked(request({ "x-forwarded-for": "198.51.100.2" }))).toBeNull();
   });

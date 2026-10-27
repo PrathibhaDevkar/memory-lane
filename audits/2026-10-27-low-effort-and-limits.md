@@ -7,7 +7,7 @@ Prathibha, with Claude. Branch `feat/limits-and-oct-27-audit`, on top of Abil's 
 | Setting | Before | Now | Where |
 | --- | --- | --- | --- |
 | `CLAUDE_EFFORT` default | `medium` | `low` (PR #21, Abil) | `lib/agent/run.ts` |
-| `VISITOR_KITS_PER_HOUR` default | 3 | 30 | `lib/ratelimit.ts` (this PR) |
+| `VISITOR_KITS_PER_HOUR` default | 3 | 20 | `lib/ratelimit.ts` (this PR) |
 | `DAILY_LIVE_KITS` default | 100 | 1,000 | `lib/ratelimit.ts` (this PR) |
 
 All three can still be set in Vercel without a code change. The comparison with Claude on its own uses the same effort as a kit, and the same limits (a comparison counts as one live kit). The short traditions call was already at `low` with no thinking and is unchanged.
@@ -20,8 +20,8 @@ Also in this PR, found while checking edge cases:
 
 - 279 tests pass (7 more than #21), with `CLAUDE_EFFORT` unset, `medium` and `max` in the shell; typecheck, lint and the build pass.
 - New tests, effort (the default itself is #21's test): valid values with spaces or capitals; four mistyped values fall back to `low` and are logged; the main call sends `low`; the comparison follows a `CLAUDE_EFFORT` override.
-- New tests, limits: defaults 30 and 1,000; the 30th kit in an hour is allowed and the 31st refused with "You've built 30 kits in the last hour", while a second visitor still gets one; after the day's 1,000 every visitor is refused, even one under their own limit; requests with no address share one visitor count, so leaving the address out doesn't skip the limit.
-- Not tested live: the 31st kit against real Upstash Redis (it would take 30 live kits from one address and up to 330 Qloo calls). Upstash's window is covered by its own tests; ours cover how we use it.
+- New tests, limits: defaults 20 and 1,000; the 20th kit in an hour is allowed and the 21st refused with "You've built 20 kits in the last hour", while a second visitor still gets one; after the day's 1,000 every visitor is refused, even one under their own limit; requests with no address share one visitor count, so leaving the address out doesn't skip the limit.
+- Not tested live: the 21st kit against real Upstash Redis (it would take 20 live kits from one address and up to 220 Qloo calls). Upstash's window is covered by its own tests; ours cover how we use it.
 
 ## Live: `low` (new default, `CLAUDE_EFFORT` unset) against `medium`
 
@@ -49,9 +49,9 @@ Reruns of the two personas that failed:
 | Rosa (Taylor Swift) | 6 of 6 passed | 4 of 5 passed (1 empty kit) |
 | Mr. Okafor | 3 of 4 passed (2, 3 and 3 sections; once 1) | 3 of 3 passed (2 sections each time) |
 
-## Limits: why 30 and 1,000
+## Limits: why 20 and 1,000
 
-- **30 per visitor an hour:** judges may share one address (a hackathon venue, an office network), and each comparison counts as a kit, so a judge trying five people with a comparison each uses 10, and three judges on one network fit. Abil suggested 20; Prathibha chose 30 for that headroom.
+- **20 per visitor an hour:** each comparison counts as a kit, so a judge trying five people with a comparison each uses 10, and two judges on one network fit. Prathibha had proposed 30 for more headroom when judges share an address (a hackathon venue, an office network); the team chose Abil's 20, and `VISITOR_KITS_PER_HOUR` in Vercel raises it without a code change if that becomes a problem.
 - **1,000 a day for the whole site:** at about $0.0012–0.0014 a kit, every one of them used costs about $1.40 a day, about $28 to Nov 16, under the $40 monthly Console limit. The daily alert (`TOKEN_ALERT_DAILY_USD`, $1) would fire at about 700 kits, as an early warning.
 - **To watch:** at 1,000 kits a day Qloo would get up to about 11,000 calls (6–11 per kit, plus up to 8 per comparison). We don't know the hackathon key's daily limit; a Qloo failure becomes a gap, not an error.
 
