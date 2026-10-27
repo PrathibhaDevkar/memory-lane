@@ -19,8 +19,8 @@ import { screen } from "@/lib/qloo/filters";
 import type { QlooEntity } from "@/lib/qloo/types";
 import { ComparisonSchema, type CheckResult, type ComparedPick, type Comparison, type EraWindow, type Profile, type TraceStep } from "@/lib/types";
 
-// The care rules match the agent's (lib/agent/prompts.ts); only Qloo is missing. Static, like the
-// agent's prompt.
+// The care rules match the agent's (lib/agent/prompts.ts), word for word for the questions (a test
+// checks it); only Qloo is missing. Static, like the agent's prompt.
 export const AI_ALONE_SYSTEM = `You help a caregiver prepare a short reminiscence session for someone living with dementia. It supports caregivers' activities; it is not therapy and makes no medical claims, and you give no health or medication advice.
 
 From what you know, suggest for this person:
@@ -36,7 +36,7 @@ Match the support level:
 - late (needs a lot of help): 3 artists, at most 1 film or show, and at most 2 gentle comments about the music instead of questions.
 
 Every question or comment:
-- Invites a story and never tests memory: no asking them to remember or recall, no quizzes ("What year…", "Who sang…"), no statements about their past ("You loved…", "You used to…").
+- Invites a story and never tests memory. The code drops any card with "remember", "recall", "you loved", "you used to", "you always", "what year", "who sang" or "who played", so never use them; ask what they enjoy, or what comes to mind, instead.
 - Holds one idea, in plain adult language; nothing childlike.
 - Uses the name they like to be called, and draws gently on their former work and traditions when given, without assuming details.
 
