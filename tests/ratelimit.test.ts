@@ -60,17 +60,17 @@ describe("liveKitBlocked", () => {
     const { liveKitBlocked } = await load(REDIS);
     expect(await liveKitBlocked(request({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" }))).toBeNull();
     const [prefix, visitor] = limit.mock.calls[0];
-    expect(prefix).toBe("ml:visitor");
+    expect(prefix).toBe("ml:local:visitor");
     expect(visitor).toMatch(/^[0-9a-f]{16}$/);
     expect(visitor).not.toContain("203.0.113");
-    expect(limit.mock.calls[1]).toEqual(["ml:day", "all"]);
+    expect(limit.mock.calls[1]).toEqual(["ml:local:day", "all"]);
   });
 
   it("says which limit was reached", async () => {
     const { liveKitBlocked } = await load(REDIS);
-    limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:visitor" }));
+    limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:local:visitor" }));
     expect(await liveKitBlocked(request())).toBe("You've built 20 kits in the last hour. Try a sample kit, or come back a little later.");
-    limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:day" }));
+    limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:local:day" }));
     expect(await liveKitBlocked(request())).toMatch(/Today's live kits are used up/);
   });
 
@@ -79,7 +79,7 @@ describe("liveKitBlocked", () => {
     expect([defaults.VISITOR_KITS_PER_HOUR, defaults.DAILY_LIVE_KITS]).toEqual([20, 1000]);
     const custom = await load({ ...REDIS, VISITOR_KITS_PER_HOUR: "5", DAILY_LIVE_KITS: "40" });
     expect([custom.VISITOR_KITS_PER_HOUR, custom.DAILY_LIVE_KITS]).toEqual([5, 40]);
-    limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:visitor" }));
+    limit.mockImplementation(async (prefix: string) => ({ success: prefix !== "ml:local:visitor" }));
     expect(await custom.liveKitBlocked(request())).toMatch(/^You've built 5 kits/);
   });
 
@@ -90,7 +90,7 @@ describe("liveKitBlocked", () => {
     limit.mockImplementation(async (prefix: string, id: string) => {
       const n = (used.get(prefix + id) ?? 0) + 1;
       used.set(prefix + id, n);
-      return { success: n <= (prefix === "ml:visitor" ? 20 : 1000) };
+      return { success: n <= (prefix === "ml:local:visitor" ? 20 : 1000) };
     });
     const judge = request({ "x-forwarded-for": "198.51.100.1" });
     for (let i = 1; i <= 20; i++) expect(await liveKitBlocked(judge)).toBeNull();
@@ -102,7 +102,7 @@ describe("liveKitBlocked", () => {
   it("refuses everyone once the day's 1,000 kits are used, even a visitor under their own limit", async () => {
     const { liveKitBlocked } = await load(REDIS);
     let today = 0;
-    limit.mockImplementation(async (prefix: string) => ({ success: prefix === "ml:visitor" || ++today <= 1000 }));
+    limit.mockImplementation(async (prefix: string) => ({ success: prefix === "ml:local:visitor" || ++today <= 1000 }));
     for (let i = 0; i < 1000; i++) expect(await liveKitBlocked(request({ "x-forwarded-for": `10.0.${i >> 8}.${i & 255}` }))).toBeNull();
     expect(await liveKitBlocked(request({ "x-forwarded-for": "192.0.2.50" }))).toMatch(/Today's live kits are used up/);
   });
@@ -111,8 +111,17 @@ describe("liveKitBlocked", () => {
     const { liveKitBlocked } = await load(REDIS);
     await liveKitBlocked(request());
     await liveKitBlocked(request());
-    const [first, second] = limit.mock.calls.filter(([p]) => p === "ml:visitor").map(([, id]) => id);
+    const [first, second] = limit.mock.calls.filter(([p]) => p === "ml:local:visitor").map(([, id]) => id);
     expect(first).toMatch(/^[0-9a-f]{16}$/);
     expect(second).toBe(first);
+  });
+
+  it("keeps each environment's counts apart, so testing a preview never uses production's limits", async () => {
+    for (const [VERCEL_ENV, prefix] of [["preview", "ml:preview"], ["production", "ml:production"], ["", "ml:local"]]) {
+      limit.mockClear();
+      const { liveKitBlocked } = await load({ ...REDIS, VERCEL_ENV });
+      await liveKitBlocked(request());
+      expect(limit.mock.calls.map(([p]) => p)).toEqual([`${prefix}:visitor`, `${prefix}:day`]);
+    }
   });
 });

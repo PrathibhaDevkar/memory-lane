@@ -41,6 +41,10 @@ Claude cost of the whole audit: about $0.02. This test used 12 of the 20 live re
 
    **Fix:** a reply that is neither a name nor "none" now falls back to asking the main call to look an artist up, the path already used when the short call fails. Checked live on the fixed code: twice the reply wasn't a name, and the kits got Asha Bhosle and Mohammed Rafi instead of nothing. Those kits take 4 Claude calls instead of 2, still about $0.002. "none" still means no artist fits, and nothing is added.
 
+### Fixed in the follow-up (`fix/audit-follow-ups`)
+
+Findings 3 to 6 below are fixed in the follow-up branch; see "Follow-up checks" at the end. 7 to 9 stay open.
+
 ### Still open
 
 3. **Preview and Production share Redis with the same key names.** The example kit and comparison caches, the visitor and daily limits, and the daily cost totals and alerts mix between test builds and the live site. This is why production served a comparison saved by a preview smoke run. A bad preview build could put a bad example kit in front of judges for 6 hours, and preview tests count against production's 1,000 a day. Fix: put the environment in each key (for example `ml:production:…`).
@@ -66,3 +70,15 @@ Still open from the Oct 27 effort audit (Open items in CLAUDE.md):
   - "Yes" shows "Let's pause today's session for June" at once, with no Build button and no sideways scroll.
   - "No" brings the form back with "June" still typed.
   - The Margaret demo still shows the server's stop.
+
+## Follow-up checks (`fix/audit-follow-ups`)
+
+| Finding | Fix | Checked |
+| --- | --- | --- |
+| 3. Shared Redis | Every key now names its environment through `key()` in `lib/redis.ts`, e.g. `ml:production:visitor`, `ml:preview:visitor`, `ml:local:…`. Covers the example kit and comparison caches, the visitor and daily limits, and the daily usage totals. Old keys expire on their own; production's limits and daily totals start fresh once deployed | A test builds the limiter for preview, production and local and checks the keys differ. 6 rate-limit tests fail on the old code |
+| 4. Demo overflow | The saved Rosa kit says "Not a landmark: a Japanese restaurant." instead of the raw Qloo ID, and "10 places returned, 4 landmarks offered", the live kits' wording. The "screened out" lines also wrap any long word | In the browser at 375 px, Largest text, dark mode, with every fold open: the lines wrap and the page doesn't scroll sideways |
+| 5. Guessed gender | One rule in the agent's and the comparison's prompts: use their name or "they", never "he" or "she", since the form doesn't ask. The cached prefix grows by 25 tokens (6,422 of the 6,600 characters the budget test allows) | Live smoke check: 7 of 7 personas passed, $0.0011–0.0015 a kit, in line with this morning's run ([report](2026-10-27-claude-haiku-5-5-low-pronoun-rule.md)). Then 5 kits for Rosie, Ruth, June, Margo and Hank: 0 of 61 why lines, questions and ideas used he, she, her or his ("the sound of their early adult years") |
+| 6. Note and next kit disagree | "Next time: more like …" now names every song, film and show the next kit builds on (the same list), and never a place or dish, which don't seed a kit. The parts are separated by semicolons ("more like Louis Armstrong and Peggy Lee; leave out Ella Fitzgerald") | A new test with two songs, a place and a film. The existing stop-in-the-evening test now reads "leave out Louis Armstrong; an earlier time of day may suit better" |
+
+293 tests pass whether the shell's `CLAUDE_EFFORT` is unset, `medium` or `max`. Typecheck, lint, the token budget test and the build pass.
+

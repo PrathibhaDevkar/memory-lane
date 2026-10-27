@@ -61,10 +61,26 @@ describe("buildCareNote", () => {
     expect(note).not.toMatch(/Nat King Cole|Maxwell Street|pizza/);
   });
 
+  it("suggests more like everything the next kit builds on, and only that (seen live: the note named one of two)", () => {
+    const note = buildCareNote(
+      kit,
+      log([
+        { cardId: "a", kind: "song", title: "Louis Armstrong", reaction: "lit_up" },
+        { cardId: "b", kind: "place", title: "Maxwell Street Market", reaction: "lit_up" },
+        { cardId: "c", kind: "song", title: "Peggy Lee", reaction: "lit_up" },
+        { cardId: "d", kind: "film", title: "Roman Holiday (1953)", reaction: "lit_up" },
+      ]),
+    );
+    expect(note).toContain("Next time: more like Louis Armstrong, Peggy Lee and Roman Holiday.");
+    expect(note).toContain("Lit up with: Louis Armstrong, Maxwell Street Market, Peggy Lee and Roman Holiday (1953).");
+    // A place they lit up with is noted, but it doesn't seed the next kit, so it isn't in "more like".
+    expect(note).not.toMatch(/more like[^\n]*Maxwell/);
+  });
+
   it("records a stop, and suggests an earlier time if it happened in the evening", () => {
     const note = buildCareNote(kit, log([{ cardId: "a", kind: "song", title: "Louis Armstrong", reaction: "stopped" }], evening));
     expect(note).toContain("Stopped at: Louis Armstrong.");
-    expect(note).toContain("Next time: leave out Louis Armstrong and an earlier time of day may suit better.");
+    expect(note).toContain("Next time: leave out Louis Armstrong; an earlier time of day may suit better.");
     expect(note).toContain("an earlier time of day may suit better");
   });
 
