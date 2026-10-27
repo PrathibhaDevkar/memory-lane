@@ -10,14 +10,14 @@ const fake = vi.hoisted(() => ({
     return "OK";
   }),
 }));
-vi.mock("@/lib/redis", () => ({ redis: fake }));
+vi.mock("@/lib/redis", () => ({ key: (name: string) => `ml:local:${name}`, redis: fake }));
 
 const { EXAMPLE_KIT_HOURS, REUSED_COMPARISON_NOTE, REUSED_NOTE, isExampleProfile, reusedExampleComparison, reusedExampleKit, saveExampleComparison, saveExampleKit } =
   await import("@/lib/kit-cache");
 const { EXAMPLE_PROFILE } = await import("@/lib/example-profile");
 const { ComparisonSchema, KitSchema, ProfileSchema } = await import("@/lib/types");
 
-const KEY = "ml:example-kit:v1";
+const KEY = "ml:local:example-kit:v1";
 const example = ProfileSchema.parse(EXAMPLE_PROFILE);
 const live = { ...KitSchema.parse(rosa), provenance: { kind: "live" as const, generatedAt: "2026-10-19T18:40:12.000Z" } };
 const gap = { status: "gap" as const, items: [], gapReason: "Nothing suitable came back." };
@@ -69,7 +69,7 @@ describe("reusing the example profile's kit", () => {
 
   it("does nothing without Redis", async () => {
     vi.resetModules();
-    vi.doMock("@/lib/redis", () => ({ redis: null }));
+    vi.doMock("@/lib/redis", () => ({ key: (name: string) => `ml:local:${name}`, redis: null }));
     const local = await import("@/lib/kit-cache");
     await local.saveExampleKit(example, live);
     expect(await local.reusedExampleKit(example)).toBeNull();
@@ -79,7 +79,7 @@ describe("reusing the example profile's kit", () => {
 });
 
 describe("reusing the example profile's comparison", () => {
-  const COMPARISON_KEY = "ml:example-comparison:v1";
+  const COMPARISON_KEY = "ml:local:example-comparison:v1";
   const comparison = ComparisonSchema.parse({
     mode: "comparison",
     provenance: { kind: "live", generatedAt: "2026-10-26T12:00:00.000Z" },

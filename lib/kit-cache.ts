@@ -3,11 +3,11 @@
 // person is stored. Without Redis, every request builds a fresh kit.
 
 import { EXAMPLE_PROFILE } from "@/lib/example-profile";
-import { redis } from "@/lib/redis";
+import { key, redis } from "@/lib/redis";
 import { ComparisonSchema, KitSchema, ProfileSchema, type Comparison, type Kit, type Profile } from "@/lib/types";
 
-const KEY = "ml:example-kit:v1";
-const COMPARISON_KEY = "ml:example-comparison:v1";
+const KEY = key("example-kit:v1");
+const COMPARISON_KEY = key("example-comparison:v1");
 
 /** A positive whole number from the environment, or the fallback for blank or invalid values. */
 function count(value: string | undefined, fallback: number): number {

@@ -120,10 +120,14 @@ export function buildCareNote(kit: Kit, log: SessionLog): string {
   if (stopped) lines.push(sentence(`Stopped at: ${bare(stopped.title)}`));
 
   const next: string[] = [];
-  if (litUp.length) next.push(`more like ${litUp[0]}`);
+  // The same songs, films and shows the next kit builds on (buildOnNextTime), so the note and the
+  // "Next session" panel agree; places, dishes and ideas don't seed a kit.
+  const moreLike = buildOnNextTime(log).map((f) => f.text);
+  if (moreLike.length) next.push(`more like ${list(moreLike)}`);
   if (stopped && canLeaveOut(stopped.kind)) next.push(`leave out ${bare(stopped.title)}`);
   if (stopped && when === "evening") next.push("an earlier time of day may suit better");
-  if (next.length) lines.push(`Next time: ${list(next)}.`);
+  // Semicolons between the parts, since a part can be a list itself ("more like A, B and C").
+  if (next.length) lines.push(`Next time: ${next.join("; ")}.`);
   return lines.join("\n");
 }
 

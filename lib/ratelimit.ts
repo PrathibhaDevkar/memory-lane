@@ -5,7 +5,7 @@
 
 import { createHash } from "node:crypto";
 import { Ratelimit } from "@upstash/ratelimit";
-import { redis } from "@/lib/redis";
+import { key, redis } from "@/lib/redis";
 
 /** A positive whole number from the environment, or the fallback for blank or invalid values. */
 function count(value: string | undefined, fallback: number): number {
@@ -16,8 +16,8 @@ function count(value: string | undefined, fallback: number): number {
 export const VISITOR_KITS_PER_HOUR = count(process.env.VISITOR_KITS_PER_HOUR, 20);
 export const DAILY_LIVE_KITS = count(process.env.DAILY_LIVE_KITS, 1000);
 
-const perVisitor = redis && new Ratelimit({ redis, prefix: "ml:visitor", limiter: Ratelimit.slidingWindow(VISITOR_KITS_PER_HOUR, "1 h") });
-const perDay = redis && new Ratelimit({ redis, prefix: "ml:day", limiter: Ratelimit.fixedWindow(DAILY_LIVE_KITS, "1 d") });
+const perVisitor = redis && new Ratelimit({ redis, prefix: key("visitor"), limiter: Ratelimit.slidingWindow(VISITOR_KITS_PER_HOUR, "1 h") });
+const perDay = redis && new Ratelimit({ redis, prefix: key("day"), limiter: Ratelimit.fixedWindow(DAILY_LIVE_KITS, "1 d") });
 
 /** The smoke check's own requests: they skip the limits and always build a fresh kit. */
 export function isSmokeRequest(request: Request): boolean {

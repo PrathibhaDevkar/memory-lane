@@ -201,31 +201,31 @@
         "seed": "Frank Sinatra",
         "location": "Chicago"
       },
-      "outputSummary": "10 places returned; 4 pass the landmark allowlist (D4).",
+      "outputSummary": "10 places returned, 4 landmarks offered",
       "excluded": [
         {
           "title": "Benihana - Chicago (John Hancock)",
-          "reason": "Not a landmark (urn:tag:genre:place:restaurant:japanese)."
+          "reason": "Not a landmark: a Japanese restaurant."
         },
         {
           "title": "Giordano's",
-          "reason": "Not a landmark (urn:tag:genre:place:restaurant:pizza)."
+          "reason": "Not a landmark: a pizza restaurant."
         },
         {
           "title": "Credit Union 1 Arena",
-          "reason": "Not a landmark (urn:tag:genre:place:arena)."
+          "reason": "Not a landmark: an arena."
         },
         {
           "title": "Santa Baby Bar at Stolen Saddle",
-          "reason": "Not a landmark (urn:tag:genre:place:restaurant:bar)."
+          "reason": "Not a landmark: a bar."
         },
         {
           "title": "East Bank Club",
-          "reason": "Not a landmark (urn:tag:genre:place:fitness_center)."
+          "reason": "Not a landmark: a fitness center."
         },
         {
           "title": "Carlucci Rosemont",
-          "reason": "Not a landmark (urn:tag:genre:place:restaurant:italian)."
+          "reason": "Not a landmark: an Italian restaurant."
         }
       ],
       "ms": 0,

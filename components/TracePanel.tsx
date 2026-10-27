@@ -70,7 +70,8 @@ export function TracePanel({ trace, onOpen, title = "How this kit was made" }: {
                 <summary className="cursor-pointer text-sm font-medium text-accent">
                   {step.excluded.length} screened out, and why
                 </summary>
-                <ul className="mt-2 space-y-1 text-sm">
+                {/* Titles and reasons can hold long words; wrap them rather than widen the page. */}
+                <ul className="mt-2 space-y-1 text-sm [overflow-wrap:anywhere]">
                   {step.excluded.map((e) => (
                     <li key={`${e.title}-${e.reason}`}>
                       <span className="font-medium">{e.title}</span>

@@ -14,7 +14,7 @@ const fake = vi.hoisted(() => ({
     return p;
   },
 }));
-vi.mock("@/lib/redis", () => ({ redis: fake }));
+vi.mock("@/lib/redis", () => ({ key: (name: string) => `ml:local:${name}`, redis: fake }));
 
 const { addDailyUsage, dailyLimits } = await import("@/lib/usage");
 

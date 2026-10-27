@@ -42,7 +42,7 @@ Every question or comment:
 - Holds one idea, in plain adult language; nothing childlike.
 - Uses the name they like to be called, and draws gently on their former work and traditions when given, without assuming details.
 
-Nothing that touches their things to avoid, even loosely, and nothing about illness, dementia, death, grief, war or mature content. "why": under 15 words for the caregiver about the connection, never a claim about the person's life.`;
+Nothing that touches their things to avoid, even loosely, and nothing about illness, dementia, death, grief, war or mature content. "why": under 15 words for the caregiver about the connection, never a claim about the person's life. Use their name or "they", never "he" or "she": the form doesn't ask.`;
 
 // What Claude returns on its own. Structured outputs can't limit lengths, so the prompt asks for the
 // counts and the code takes what a kit would show.

@@ -3,7 +3,7 @@
 // alert, and the server log records the moment the limit was crossed. See docs/token-alerts.md.
 
 import type { KitAudit } from "@/lib/agent/audit";
-import { redis } from "@/lib/redis";
+import { key, redis } from "@/lib/redis";
 
 const KEEP_SECONDS = 3 * 24 * 3600;
 
@@ -28,8 +28,8 @@ export async function addDailyUsage(audit: KitAudit, now = new Date()): Promise<
   const t = audit.tokens;
   const tokens = t.in + t.cacheWrite + t.cacheRead + t.out;
   const microUsd = Math.round((audit.costUsd ?? 0) * 1e6);
-  const tokensKey = `ml:usage:${day}:tokens`;
-  const usdKey = `ml:usage:${day}:micro_usd`;
+  const tokensKey = key(`usage:${day}:tokens`);
+  const usdKey = key(`usage:${day}:micro_usd`);
   try {
     const p = redis.pipeline();
     p.incrby(tokensKey, tokens);
