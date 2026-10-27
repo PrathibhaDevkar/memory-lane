@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 import rosa from "@/fixtures/kits/rosa.json";
 import { EXAMPLE_PROFILE, IntakeForm } from "@/components/IntakeForm";
 import { SessionMode } from "@/components/SessionMode";
+import { SafetyStop } from "@/components/SafetyStop";
 import { SessionNote } from "@/components/SessionNote";
+import { SAFETY_STOP_MESSAGE } from "@/lib/care";
 import { avoidNextTime, buildCards, buildCareNote, buildOnNextTime, nextKitProfile, type SessionLog } from "@/lib/session";
 import { kitAsText, whatsappUrl } from "@/lib/share";
 import { KitSchema, type Kit } from "@/lib/types";
@@ -207,6 +209,29 @@ describe("screens", () => {
     expect(html).toContain("Copy note");
     expect(html).toContain("https://wa.me/?text=");
     expect(html).toContain("doesn&#x27;t keep a copy");
+  });
+
+  // Safety first (D9): "Yes" shows the stop at once, before any other answer, and offers no kit.
+  it("shows the safety stop as soon as Yes is chosen, with nothing else filled in", () => {
+    const empty = { ...EXAMPLE_PROFILE, displayName: "", hometown: "", favorites: [], thingsToAvoid: [], suddenChange: true };
+    const html = renderToStaticMarkup(<IntakeForm initial={empty} busy={false} onSubmit={() => {}} />);
+    expect(html).toContain("Let&#x27;s pause today&#x27;s session</h2>");
+    expect(html).toContain("Please tell their nurse or doctor now.");
+    expect(html).toContain('role="alert"');
+    expect(html).not.toContain("Build the session kit");
+    expect(html).not.toContain("What do they like to be called?");
+    // With a name already typed, the stop uses it.
+    const named = renderToStaticMarkup(<IntakeForm initial={{ ...EXAMPLE_PROFILE, suddenChange: true }} busy={false} onSubmit={() => {}} />);
+    expect(named).toContain("Let&#x27;s pause today&#x27;s session for Rosa</h2>");
+    // "No" keeps the whole form.
+    const no = renderToStaticMarkup(<IntakeForm initial={{ ...EXAMPLE_PROFILE, suddenChange: false }} busy={false} onSubmit={() => {}} />);
+    expect(no).toContain("Build the session kit");
+    expect(no).not.toContain('role="alert"');
+  });
+
+  it("the stop reads well with and without a name", () => {
+    expect(renderToStaticMarkup(<SafetyStop message={SAFETY_STOP_MESSAGE} />)).toContain("Let&#x27;s pause today&#x27;s session</h2>");
+    expect(renderToStaticMarkup(<SafetyStop name="Margaret" message={SAFETY_STOP_MESSAGE} />)).toContain("session for Margaret</h2>");
   });
 
   // Safety: a new session must answer the sudden-change question afresh.

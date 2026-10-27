@@ -293,6 +293,24 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
       expect(first).not.toContain("to_do");
     });
 
+    it("asks the main call to look one up when the reply isn't a name or none (seen live for Diwali)", async () => {
+      for (const text of [
+        "I'm not sure what you're asking for. \"Diwali\" is a festival, not a tradition tied to a recording artist. Could you clarify what you need?",
+        "Several cantors recorded holiday music in those years, and the best choice depends on which holidays matter most to the family.",
+      ]) {
+        const { client, sent } = fakeClient([reply(text), submit()]);
+        const kit = await buildLiveKit(elena, { client });
+        const first = JSON.stringify(sent[1].body.messages[0]);
+        expect(first).toContain("to_do");
+        expect(first).toContain("Catholic hymns");
+        expect(kit.trace.find((s) => s.label === "Claude, an artist for the traditions")?.outputSummary).toMatch(/wasn't an artist's name/);
+      }
+      // "none", even quoted, still means no artist fits: nothing is added.
+      const { client, sent } = fakeClient([reply('"None."'), submit()]);
+      await buildLiveKit(elena, { client });
+      expect(JSON.stringify(sent[1].body.messages[0])).not.toContain("to_do");
+    });
+
     it("falls back to asking Claude in the loop when the short call fails", async () => {
       const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
       const sent: Body[] = [];

@@ -122,7 +122,7 @@ export function MemoryLaneApp() {
             ← Back
           </button>
         </div>
-        <SafetyStop stop={state.stop} />
+        <SafetyStop name={state.stop.profile.displayName} message={state.stop.message} />
       </div>
     );
   }
