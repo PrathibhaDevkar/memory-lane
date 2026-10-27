@@ -6,13 +6,10 @@ Every live kit is audited, and the same API call returns its Claude token use, i
 
 | Where | What you see | When |
 | --- | --- | --- |
-| Response headers of `POST /api/kit` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, `X-Kit-Audit` (`pass` or `fail`), and `X-Token-Alert` when a limit is passed | Every live kit |
+| Response headers of `POST /api/kit` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, `X-Kit-Audit` (`pass` or `fail`), and `X-Token-Alert` when a limit is passed. When the page asks to watch the build, the same values come in the stream's last line, under `audit` | Every live kit |
 | Response headers of `POST /api/compare` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, and `X-Token-Alert` when a daily limit is passed | Every live comparison with Claude on its own |
 | Server log (Vercel → Logs) | `claude_turn` per Claude call; `kit_audit` per kit; `comparison_call` and `comparison_audit` per comparison; `token_alert` for a kit with alerts; `token_alert_daily` once, for the kit that crosses a daily limit; `model_not_approved` when Sonnet or Opus is set without approval | Live kits |
 | `npm run smoke` | An `audit` line and, if any, an `ALERT` line per persona. `--report` also writes `audits/<date>-<model>-<effort>.md`; `--compare` adds each persona's comparison, with its tokens and cost | Smoke checks |
-| Response headers of `POST /api/kit` | `X-Claude-Model`, `X-Claude-Calls`, `X-Claude-Tokens`, `X-Claude-Cost-USD`, `X-Kit-Audit` (`pass` or `fail`), and `X-Token-Alert` when a limit is passed. When the page asks to watch the build, the same values come in the stream's last line, under `audit` | Every live kit |
-| Server log (Vercel → Logs) | `claude_turn` per Claude call; `kit_audit` per kit; `token_alert` for a kit with alerts; `token_alert_daily` once, for the kit that crosses a daily limit; `model_not_approved` when Sonnet or Opus is set without approval | Live kits |
-| `npm run smoke` | An `audit` line and, if any, an `ALERT` line per persona. `--report` also writes `audits/<date>-<model>-<effort>.md` | Smoke checks |
 | Claude Console | Spend alerts at $10 and $25 and a $40 monthly spend limit on the `memory-lane` workspace | Set once in the Console |
 
 The logs and headers carry token counts, cost, model and quality signals only, never profile details. Saved and reused kits make no Claude call, so they carry no audit headers. A comparison counts in today's totals like a kit.
@@ -45,7 +42,7 @@ Prices used for cost (US$ per million tokens, list prices on Oct 19, 2026, from 
 | Alert | Likely cause | Do this |
 | --- | --- | --- |
 | Input over the kit limit | Extra Claude calls, or bigger lookup results | Open the kit's trace ("How this kit was made") and see which calls ran |
-| Output over the kit limit | Long thinking | Try `CLAUDE_EFFORT=low` in a smoke check and compare the kits side by side |
+| Output over the kit limit | Long thinking | Effort is already `low` (since Oct 27); read the trace for extra Claude calls, and see whether one persona or question keeps causing it |
 | Calls over the kit limit | Claude fixing a problem: usually the wrong match for a favorite (modern favorites and traditions are handled in code) | Read the trace; if one cause repeats, handle it in `lookUpFirst` (`lib/agent/run.ts`) |
 | Cost over the kit limit | A model other than Haiku, or a runaway kit | Check `X-Claude-Model` and `CLAUDE_MODEL_APPROVAL` |
 | Daily tokens or cost over the limit | Heavy use | Check the visitor and daily kit limits (`VISITOR_KITS_PER_HOUR`, `DAILY_LIVE_KITS`). Kill switch: `KIT_SOURCE=fixture` and redeploy |
@@ -61,10 +58,10 @@ Haiku 5.5 is the default. Sonnet 5.5 or Opus 5.5 is used only when both of us ap
 4. **Approve and record.** Both of you write your names and the date in the candidate report's "Approval" line and commit it. In Vercel set `CLAUDE_MODEL=claude-sonnet-5-5` and `CLAUDE_MODEL_APPROVAL="claude-sonnet-5-5 approved <date> by Abil and Prathibha, audits/<report>.md"`, then redeploy.
 5. **Going back.** Remove `CLAUDE_MODEL` (or set it to `claude-haiku-5-5`) and redeploy.
 
-## Lowering effort: side by side first
+## Changing effort: side by side first
 
-Output, mostly thinking, is 80–90% of a one-call kit's cost on Haiku, and `CLAUDE_EFFORT` is the main control over it. It stays `medium` until a side-by-side check shows `low` gives kits as good:
+Output, mostly thinking, is 80–90% of a one-call kit's cost on Haiku, and `CLAUDE_EFFORT` is the main control over it. It has been `low` since Oct 27: in Prathibha's Oct 21 side-by-side ([low](../audits/2026-10-21-claude-haiku-5-5-low.md), [medium](../audits/2026-10-21-claude-haiku-5-5-medium.md)) all six personas passed at both levels with no questions dropped, and `low` was about 24% faster and 20% cheaper. Change it again only after the same check:
 
-1. With the app running at the default (`npm run dev:agent`), run `npm run smoke -- rosa walt june swift okafor elena --report`. It writes `audits/<date>-claude-haiku-5-5-medium.md`.
-2. Restart with `CLAUDE_EFFORT=low npm run dev:agent` and run the same command. It writes `audits/<date>-claude-haiku-5-5-low.md`.
-3. Compare output tokens and cost per kit, and read the kits side by side: era of the picks, questions that invite stories, nothing near an avoid list, sensible gaps. Switch only if `low` holds up on all six, and record the decision in CLAUDE.md's work log with both reports.
+1. With the app running at the current default (`npm run dev:agent`), run `npm run smoke -- rosa walt june swift okafor elena --report`. It writes `audits/<date>-claude-haiku-5-5-low.md`.
+2. Restart with the level you're considering (for example `CLAUDE_EFFORT=medium npm run dev:agent`) and run the same command. It writes `audits/<date>-claude-haiku-5-5-<effort>.md`.
+3. Compare output tokens and cost per kit, and read the kits side by side: era of the picks, questions that invite stories, nothing near an avoid list, sensible gaps. Switch only if the new level holds up on all six, and record the decision in CLAUDE.md's work log with both reports.

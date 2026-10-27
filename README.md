@@ -87,7 +87,7 @@ npm run dev                  # http://localhost:3000, saved sample kit
 npm run dev:agent            # the live agent (KIT_SOURCE=agent)
 ```
 
-Settings are listed in [`.env.example`](.env.example): `CLAUDE_MODEL` (default `claude-haiku-5-5`) and `CLAUDE_EFFORT` (default `medium`). A value already set in your shell wins over `.env.local`.
+Settings are listed in [`.env.example`](.env.example): `CLAUDE_MODEL` (default `claude-haiku-5-5`) and `CLAUDE_EFFORT` (default `low`). A value already set in your shell wins over `.env.local`.
 
 **Model rule:** Claude Haiku 5.5 is the default. Sonnet 5.5 or Opus 5.5 is used only after both of us approve it on a smoke-check audit (`npm run smoke -- --report`), recorded in `CLAUDE_MODEL_APPROVAL`; without that the app falls back to Haiku. Every live kit is audited (tokens, cost, quality bar), and its usage and any token alerts come back in the `/api/kit` response headers; see [docs/token-alerts.md](docs/token-alerts.md).
 

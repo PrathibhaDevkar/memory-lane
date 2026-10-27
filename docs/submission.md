@@ -82,9 +82,9 @@ When the caregiver gives traditions, a short extra Claude call names an artist f
 
 ## How we built it
 
-Next.js 16 on Vercel, the Claude API (Claude Haiku 5.5) with tool use, and the Qloo Hackathon API. Rules that must never be skipped live in code rather than in the prompt: the year window, the hometown, the safety filter and the safety check. Qloo calls are capped per kit, queued two at a time, cached and retried. The agent has a call limit and a time budget, so it always ends. More than 200 automated tests cover the filters (against real Qloo responses), the agent loop, the safety check, the question rules and the screens. **[Re-count before submitting: 271 on Oct 26.]**
+Next.js 16 on Vercel, the Claude API (Claude Haiku 5.5) with tool use, and the Qloo Hackathon API. Rules that must never be skipped live in code rather than in the prompt: the year window, the hometown, the safety filter and the safety check. Qloo calls are capped per kit, queued two at a time, cached and retried. The agent has a call limit and a time budget, so it always ends. More than 200 automated tests cover the filters (against real Qloo responses), the agent loop, the safety check, the question rules and the screens. **[Re-count before submitting: 272 on Oct 27.]**
 
-Every live kit is audited and its token use measured. In the Oct 20 live check of six personas, a kit cost $0.0014–0.0018 in Claude tokens and took 16–21 seconds. Cheap kits are what let the demo stay free for judges.
+Every live kit is audited and its token use measured. In the Oct 21 side-by-side of six personas, a kit at `low` effort, now the default, cost $0.0011–0.0015 in Claude tokens and took 8–13 seconds, against $0.0015–0.0017 and 12–15 seconds at `medium`, and every kit met the quality bar at both levels. Cheap kits are what let the demo stay free for judges.
 
 ## Challenges we ran into
 
@@ -123,7 +123,7 @@ From individual caregivers to care homes: saved resident profiles (with consent 
 1. Open **https://memory-lane-two-umber.vercel.app**. No sign-in.
 2. Click **Try a demo → Rosa** for a full kit; open **"How this kit was made"** at the bottom to see the Qloo lookups and what was screened out. Click **Start session**, mark a few reactions, tap **Stop**, and read the session note.
 3. Click **Try a demo → Margaret** to see the safety check: no kit, a prompt to contact a nurse or doctor.
-4. To build your own kit, fill in the form (or **Fill in an example (Rosa)**) and click **Build the session kit**. A live kit takes about 15 to 20 seconds. **[Only once live kits are on in production; until then the form returns the sample kit.]**
+4. To build your own kit, fill in the form (or **Fill in an example (Rosa)**) and click **Build the session kit**. A live kit takes about 10 to 20 seconds. **[Only once live kits are on in production; until then the form returns the sample kit.]**
 5. Under any kit, click **Compare with Claude on its own** to see what Claude suggests without Qloo, and how its picks and questions hold up against Qloo and the question rules. A pick Qloo doesn't list shows as "can't be checked": not a mistake, just something Qloo can't confirm. **[Only once live kits are on in production.]**
 
 All personas are fictional. Please don't enter details about a real person.
