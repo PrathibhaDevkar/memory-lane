@@ -57,7 +57,9 @@ export function agentConfig() {
   const approved = requested.startsWith("claude-haiku") || approval.includes(requested);
   if (!approved) console.warn(JSON.stringify({ event: "model_not_approved", requested, using: DEFAULT_MODEL }));
   const model = approved ? requested : DEFAULT_MODEL;
-  const effort = (process.env.CLAUDE_EFFORT || "medium") as Effort;
+  // Low since Oct 27: the Oct 21 side-by-side (CLAUDE.md work log) passed all six personas at low and
+  // medium, with low about 24% faster and 20% cheaper. Change it only after another side-by-side check.
+  const effort = (process.env.CLAUDE_EFFORT || "low") as Effort;
   return { model, effort };
 }
 

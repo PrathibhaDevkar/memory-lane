@@ -96,7 +96,7 @@ All are listed in `.env.example`. A value already set in your shell wins over `.
 | `QLOO_API_KEY`, `ANTHROPIC_API_KEY` | none | API keys |
 | `KIT_SOURCE` | `fixture` | `agent` for live kits (`npm run dev:agent` sets it) |
 | `CLAUDE_MODEL` | `claude-haiku-5-5` | Sonnet or Opus only with `CLAUDE_MODEL_APPROVAL` naming the model |
-| `CLAUDE_EFFORT` | `medium` | Thinking depth; lower only after a side-by-side check |
+| `CLAUDE_EFFORT` | `low` | Thinking depth: `low` since Oct 27, after the Oct 21 side-by-side (Measurements); change it only after another side-by-side check |
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | none | Upstash Redis, set by Vercel's Upstash integration (or the `UPSTASH_REDIS_REST_*` pair) |
 | `VISITOR_KITS_PER_HOUR`, `DAILY_LIVE_KITS` | 3, 100 | Live-kit limits (to revisit, see Open items) |
 | `EXAMPLE_KIT_HOURS` | 6 | How long the example profile's kit is reused |
@@ -173,7 +173,8 @@ Every step so far, oldest first. Commit IDs are on `feat/phase2-real-data`.
 | Oct 26 | Phase 4 plan and Devpost facts (Abil with Claude) | The plan to go from working to winning recorded in docs/plan.md §11.1: three tracks (a site judges can use; making the agent and Qloo visible; evidence and story), who does what, and the PRs for each. The status table and schedule brought up to date. In docs/submission.md the placeholders that now have measured answers are filled from the Oct 19 and Oct 20 live checks: cost and time per kit, the token-cut story, the Taylor Swift path, test count. "Why it's agentic" now describes how kits are built today (usual lookups in code, then one Claude call that can still call tools). Features still in review are bracketed | `4679521`, PR #17 |
 | Oct 26 | PRs #13 to #17 reviewed and merged (Prathibha) | All five checked together in one local merge with #12 (270 tests, typecheck, lint and the build passed), then approved and squash-merged in order; she resolved the conflicts between them as she went, kept every work-log row, and retargeted #16 once its contract (#15) was in. Her note on #16: the comparison still has to run live, with its report committed (Open items) | `bf2ee33` to `4679521` |
 | Oct 26 | Work log tidied after the merges (Abil with Claude) | The five rows above point at their merge commits, oldest first; the three copies of the `components/` row the merges left are one again; the plan and the Devpost draft no longer call merged features "in review" (test count 270) | `6bf29b8`, PR #18 |
-| Oct 26 | The comparison keeps the agent's question rule (Abil with Claude) | #12 named, in the agent's prompt, the exact words the question check drops. "Compare with Claude on its own" still gave Claude the older wording, so the two no longer had the same care rules, and the questions row would have favored Memory Lane for a reason that has nothing to do with Qloo. The comparison's prompt now has #12's sentence word for word, and a new test fails if the agent's question rules and the comparison's drift apart (it fails on the old wording). The agent's own prompt is unchanged. 271 tests | This commit |
+| Oct 26 | The comparison keeps the agent's question rule (Abil with Claude) | #12 named, in the agent's prompt, the exact words the question check drops. "Compare with Claude on its own" still gave Claude the older wording, so the two no longer had the same care rules, and the questions row would have favored Memory Lane for a reason that has nothing to do with Qloo. The comparison's prompt now has #12's sentence word for word, and a new test fails if the agent's question rules and the comparison's drift apart (it fails on the old wording). The agent's own prompt is unchanged. 271 tests | `f332624`, PR #19 |
+| Oct 27 | Low effort by default (Abil with Claude, on Prathibha's side-by-side) | Prathibha proposed it in PR #12 and Abil agreed on Oct 27: her Oct 21 side-by-side passed all six personas at `low` and `medium` with no questions dropped, and `low` was about 24% faster and 20% cheaper (Measurements). `agentConfig()` now defaults to `low` (the comparison follows it, so both sides still match); `CLAUDE_EFFORT` still overrides it. A test covers the default. The docs follow: settings, README, `.env.example`, docs/token-alerts.md (whose "Where alerts show up" table also lost the duplicate rows the merges left), the plan and the Devpost numbers. Not yet run live at `low` on today's code (Open items). If Vercel sets `CLAUDE_EFFORT`, change it there too | This commit |
 
 ## Measurements
 
@@ -229,14 +230,24 @@ A kit that starts with a cold cache writes the prefix at 1.25×: about 2,550 tok
 | Mr. Okafor | 1 | 0.001763 | 19.8 |
 | Elena (traditions) | 1 + short | 0.001568 | 21.4 |
 
+**Measured live (Oct 21, Haiku 5.5, `medium` against `low`, 6 personas; Prathibha, after the firmer question rule in PR #12):** all passed at both levels with no questions dropped. The whole run cost $0.0093 at `medium` and $0.0076 at `low`; output was 2,441–2,844 tokens a kit at `medium` and 1,665–2,616 at `low`. `low` is the default since Oct 27. Reports: [medium](audits/2026-10-21-claude-haiku-5-5-medium.md), [low](audits/2026-10-21-claude-haiku-5-5-low.md).
+
+| Kit | `medium`: cost (US$), seconds | `low`: cost (US$), seconds |
+| --- | --- | --- |
+| Rosa | 0.001483, 11.7 | 0.001055, 7.8 |
+| Walt | 0.001521, 12.5 | 0.001180, 8.8 |
+| June | 0.001493, 12.1 | 0.001158, 8.2 |
+| Rosa (Taylor Swift) | 0.001475, 11.6 | 0.001315, 10.4 |
+| Mr. Okafor | 0.001624, 14.1 | 0.001510, 12.7 |
+| Elena (traditions) | 0.001670, 14.7 | 0.001403, 12.6 |
+
 ## Open items
 
-- Effort: decide together whether to switch the default to `low`. The Oct 21 side-by-side (work log) found `low` about 24% faster and cheaper with the firmer question rule, with every persona passing and no questions dropped at either level.
 - Still open from the first live audit: questions and comments can name an artist who isn't in the kit; `get_music` has no year filter, so a seed in the right era can still bring a later artist (Femi Kuti for Mr. Okafor). The traditions calls and the lost tradition artist are fixed by the second token cut.
 - Genre tags: Prathibha's idea from a commit comment on the second token cut, to follow as a small PR on top of it (her review of PR #7).
 - Vercel (Prathibha): keys, `KIT_SOURCE=agent`, `SMOKE_TOKEN`, Upstash for Redis, then promote again. Production was promoted on Oct 21 with Phase 3 and analytics on, still on sample kits.
 - Visitor limit: revisit `VISITOR_KITS_PER_HOUR` after the live Claude phase, since judges must have access without restriction.
 - Testers for Oct 24–25 (tester script in docs/research.md §5).
-- Run the comparison with Claude on its own live (`npm run smoke -- rosa walt june --compare --report`) and commit the report: it has only run with stand-ins so far, so its real cost (one Claude call with thinking, plus up to 8 Qloo lookups) and how often Claude's picks fail the checks are not known yet. It counts against the same limits as a live kit.
+- Run the six personas live at the new default (`low`) with the comparison (`npm run smoke -- rosa walt june swift okafor elena --compare --report`) and commit the report: the comparison has only run with stand-ins so far, so its real cost (one Claude call with thinking, plus up to 8 Qloo lookups) and how often Claude's picks fail the checks are not known yet, and it's the first live run at `low` since #13–#19. A comparison counts against the same limits as a live kit.
 - Before submission: merge PR #2 (`feat/phase2-real-data` → `main`) when both agree.
 - `docs/team-workspace-link` duplicates `0e80731`; delete it or keep it, once both agree.
