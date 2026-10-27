@@ -141,6 +141,13 @@ describe("model rule: Haiku by default, Sonnet or Opus only with a recorded appr
     expect(agentConfig().model).toBe("claude-haiku-5-5");
   });
 
+  it("thinks at low effort unless CLAUDE_EFFORT says otherwise", () => {
+    vi.stubEnv("CLAUDE_EFFORT", "");
+    expect(agentConfig().effort).toBe("low");
+    vi.stubEnv("CLAUDE_EFFORT", "medium");
+    expect(agentConfig().effort).toBe("medium");
+  });
+
   it("falls back to Haiku, and says so in the log, when Sonnet or Opus is set without approval", () => {
     const warn = quiet();
     vi.stubEnv("CLAUDE_MODEL", "claude-opus-5-5");

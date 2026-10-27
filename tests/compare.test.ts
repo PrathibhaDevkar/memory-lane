@@ -74,6 +74,7 @@ const claude = (reply: Partial<{ parsed_output: AiAlone | null; stop_reason: str
 
 beforeEach(() => {
   vi.stubEnv("QLOO_API_KEY", "test-key");
+  vi.stubEnv("CLAUDE_EFFORT", ""); // the default, whatever the shell has set
   clearQlooCache();
   queries = [];
 });
@@ -128,10 +129,10 @@ describe("buildComparison", () => {
 
     // Same model and effort as the agent, asked for a structured answer.
     const [request] = parse.mock.calls[0] as unknown as [Record<string, unknown>];
-    expect(request).toMatchObject({ model: "claude-haiku-5-5", output_config: { effort: "medium" } });
+    expect(request).toMatchObject({ model: "claude-haiku-5-5", output_config: { effort: "low" } });
     expect(request).not.toHaveProperty("tools");
     expect(JSON.stringify(request.messages)).toContain("1952–1972");
-    expect(used).toMatchObject({ model: "claude-haiku-5-5", effort: "medium", tokens: { in: 900, out: 1200 } });
+    expect(used).toMatchObject({ model: "claude-haiku-5-5", effort: "low", tokens: { in: 900, out: 1200 } });
     expect(used.costUsd).toBeGreaterThan(0);
   });
 
