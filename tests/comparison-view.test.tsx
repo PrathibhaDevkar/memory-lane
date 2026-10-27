@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import rosa from "@/fixtures/kits/rosa.json";
 import { CompareSection } from "@/components/CompareSection";
 import { ComparisonView } from "@/components/ComparisonView";
-import { comparisonRows, failureReason, outOf, pickChecks } from "@/lib/compare-summary";
+import { comparisonRows, failureReason, outOf, pickChecks, UNCHECKED_NOTE } from "@/lib/compare-summary";
 import { ComparisonSchema, KitSchema, type ComparedPick, type Comparison } from "@/lib/types";
 
 // What a caregiver or judge sees next to Rosa's saved kit.
@@ -21,10 +21,11 @@ const comparison: Comparison = ComparisonSchema.parse({
   model: "claude-haiku-5-5",
   picks: [
     pick({ section: "music", title: "Frank Sinatra" }),
-    pick({ section: "music", title: "The Crooners Club Band", inQloo: "no" }),
+    // A real highlife musician Qloo didn't list in the first live run: unchecked, not wrong.
+    pick({ section: "music", title: "Victor Olaiya", inQloo: "no" }),
     pick({ section: "music", title: "Dean Martin", inQloo: "unknown" }),
     pick({ section: "screen", title: "The Longest Day", year: 1962, qlooYear: 1962, inEra: "yes", screenedOut: "War film or series." }),
-    pick({ section: "screen", title: "Field of Dreams", year: 1987, qlooYear: 1989, inEra: "no" }),
+    pick({ section: "screen", title: "Casablanca", year: 1942, qlooYear: 1942, inEra: "no" }),
     pick({ section: "place", title: "Riverview Park", inQloo: "no" }),
     pick({ section: "dish", title: "Italian beef", inQloo: "unknown" }),
   ],
@@ -69,14 +70,38 @@ describe("pickChecks", () => {
 
   it("says what was found, and what would be left out", () => {
     expect(texts(comparison.picks[0])).toEqual(["true: In Qloo"]);
-    expect(texts(comparison.picks[1])).toEqual(["false: Not found in Qloo by this name"]);
+    expect(texts(comparison.picks[1])).toEqual(["null: Not in Qloo under this name, so it can't be checked"]);
     expect(texts(comparison.picks[2])).toEqual(["null: Couldn't check Qloo this time"]);
     expect(texts(comparison.picks[3])).toEqual(["true: In Qloo", "true: Released 1962, in their years", "false: Would be left out: War film or series"]);
-    expect(texts(comparison.picks[4])).toEqual(["true: In Qloo", "false: Released 1989, outside 1952–1972", "false: Claude said 1987"]);
+    // Claude's own year and Qloo's agree, and they're outside the window: a checked miss.
+    expect(texts(comparison.picks[4])).toEqual(["true: In Qloo", "false: Released 1942, outside 1952–1972"]);
+  });
+
+  it("treats a year apart as the same film, and another film with the title as unchecked", () => {
+    expect(texts(pick({ section: "screen", title: "Roman Holiday", year: 1952, qlooYear: 1953, inEra: "yes" }))).toEqual([
+      "true: In Qloo",
+      "true: Released 1953, in their years",
+      "null: Claude said 1952",
+    ]);
+    expect(texts(pick({ section: "screen", title: "The Old Mill", year: 1954, inQloo: "no", qlooYear: 1995 }))).toEqual([
+      "null: Qloo has this title from 1995, not 1954, so it can't be checked",
+    ]);
+  });
+
+  it("never counts a pick Qloo can't confirm against Claude", () => {
+    for (const section of ["music", "screen", "place", "dish"] as const) {
+      for (const inQloo of ["no", "unknown"] as const) {
+        for (const extra of [{}, { year: 1954, qlooYear: 1995 }]) {
+          const [first, ...rest] = pickChecks(pick({ section, title: "Anything", inQloo, ...extra }), era);
+          expect(first.ok).toBeNull();
+          expect(rest.filter((c) => c.ok === false)).toEqual([]);
+        }
+      }
+    }
   });
 
   it("claims only what was checked for places and dishes", () => {
-    expect(texts(comparison.picks[5])).toEqual(["false: No place by this name in Qloo"]);
+    expect(texts(comparison.picks[5])).toEqual(["null: No place by this name in Qloo, so it can't be checked"]);
     expect(texts(pick({ section: "place", title: "Wrigley Field" }))).toEqual(["true: A place by this name is in Qloo"]);
     expect(texts(comparison.picks[6])).toEqual(["null: Not checked: dishes can't be looked up in Qloo"]);
   });
@@ -105,12 +130,26 @@ describe("ComparisonView", () => {
 
   it("lists Claude's picks and questions with what the checks found, labeled for comparison only", () => {
     expect(html).toContain("For comparison only: these picks aren&#x27;t used in sessions.");
-    expect(html).toContain("Field of Dreams");
-    expect(html).toContain("Released 1989, outside 1952–1972");
+    expect(html).toContain("Casablanca");
+    expect(html).toContain("Released 1942, outside 1952–1972");
     expect(html).toContain("Would be dropped: Asks them to remember, which can feel like a test");
     expect(html).toContain("How the comparison was made");
     // No media links: these picks are never offered to play.
     expect(html).not.toContain("Search on");
+  });
+
+  it("says under the summary that a pick Qloo doesn't list isn't wrong, just unchecked", () => {
+    expect(UNCHECKED_NOTE).toMatch(/isn't necessarily wrong/);
+    expect(html).toContain("Qloo may not list it, or lists it under another name or year");
+  });
+
+  it("never accuses Claude of making things up", () => {
+    // "Not found in Qloo" means unchecked (lib/compare.ts). Words like these would claim more than
+    // any check did, here or in a demo (docs/submission.md, Claims we can make).
+    const overclaim = /made[ -]up|invent|hallucinat|fabricat|fake|\bwrong\b(?! dates)/i;
+    const shown = html.replace("isn&#x27;t necessarily wrong", "");
+    expect(shown).not.toMatch(overclaim);
+    for (const p of comparison.picks) for (const c of pickChecks(p, era)) expect(c.text).not.toMatch(overclaim);
   });
 
   it("says when a comparison is reused", () => {
