@@ -23,7 +23,7 @@ import { eraWindow } from "@/lib/era";
 import { progressStep, type ProgressEvent } from "@/lib/kit-stream";
 import type { EraWindow, Kit, Profile } from "@/lib/types";
 import { lookUpTradition, RunContext, runTool, TOOLS, type TraditionMusic } from "@/lib/qloo/tools";
-import { buildKit } from "./kit";
+import { buildKit, thinKit } from "./kit";
 import { SUBMIT_KIT, SYSTEM_PROMPT, type Submission } from "./prompts";
 
 // One call is the usual kit; the rest leave room to fix a problem and still finish.
@@ -42,6 +42,9 @@ const ALL_TOOLS = [...TOOLS, SUBMIT_KIT];
 export const FINISH_NOW = "That's all the lookups for this kit. Call submit_kit now with what you have, and use gaps for anything missing.";
 const LOOKUPS_CLOSED = JSON.stringify({ error: "Lookups are closed for this kit. Call submit_kit with what you have." });
 const OUT_OF_TIME = "The agent ran out of time before finishing.";
+/** Sent back once when a submitted kit is too thin (thinKit), so Claude can redo it from the same results. */
+export const thinKitNote = (problems: string[]) =>
+  `This kit is too thin to show: ${problems.join("; ")}. Call submit_kit again with a full kit chosen from the results you already have, following the support level. Use gaps only for sections with nothing suitable.`;
 
 const EFFORTS = ["low", "medium", "high", "xhigh", "max"] as const;
 type Effort = (typeof EFFORTS)[number];
@@ -278,6 +281,7 @@ export async function buildLiveKit(
   ];
 
   let askedToFinish = false;
+  let askedAgain = false;
   for (let turn = 1; turn <= MAX_TURNS; turn++) {
     const left = deadline - Date.now();
     if (left < MIN_TURN_MS) return buildKit(ctx, null, OUT_OF_TIME);
@@ -339,7 +343,26 @@ export async function buildLiveKit(
     }
 
     const submit = toolUses.find((t) => t.name === "submit_kit");
-    if (submit) return buildKit(ctx, submit.input as Submission);
+    if (submit) {
+      const kit = buildKit(ctx, submit.input as Submission);
+      // A kit too thin to show gets one more try, while there's a turn and time for it.
+      const problems = askedAgain || toolUses.length > 1 || turn === MAX_TURNS || deadline - Date.now() < LAST_TURN_MS ? [] : thinKit(ctx, kit);
+      if (!problems.length) return kit;
+      askedAgain = true;
+      ctx.trace.push({
+        id: ctx.nextId(),
+        kind: "validator",
+        label: "kit too thin",
+        input: {},
+        outputSummary: `Asked Claude once more: ${problems.join("; ")}.`,
+        excluded: [],
+        ms: 0,
+        status: "gap",
+      });
+      messages.push({ role: "assistant", content: response.content });
+      messages.push({ role: "user", content: [{ type: "tool_result", tool_use_id: submit.id, content: thinKitNote(problems), is_error: true }] });
+      continue;
+    }
 
     // Keep the full response (including thinking blocks) unchanged in the history.
     messages.push({ role: "assistant", content: response.content });
