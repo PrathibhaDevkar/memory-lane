@@ -131,6 +131,39 @@ describe("support levels and activity ideas", () => {
   });
 });
 
+describe("questions name only artists in the kit (first live audit: Femi Kuti for Mr. Okafor)", () => {
+  const kitWith = (prompts: string[], extra: [string, string][] = []) => {
+    const ctx = ctxWithSeen();
+    for (const [id, name] of [["NAT", "Nat King Cole"], ["QUEEN", "Queen"], ["YES", "Yes"], ["SINATRA", "Frank Sinatra"], ...extra]) ctx.seen.set(id, { kind: "artist", name });
+    return buildKit(ctx, { ...empty, music: [{ id: "ELLA", why: "x" }], prompts });
+  };
+
+  it("drops a card naming an artist Qloo offered but the kit leaves out, and says why", () => {
+    const kit = kitWith(["Would you like Ella Fitzgerald or Nat King Cole next?", "What comes to mind when you hear Ella Fitzgerald?"]);
+    expect(kit.prompts).toEqual(["What comes to mind when you hear Ella Fitzgerald?"]);
+    const check = kit.trace.find((t) => t.label === "grounding + question check")!;
+    expect(check.excluded).toContainEqual({ title: "Would you like Ella Fitzgerald or Nat King Cole next?", reason: "Names Nat King Cole, who isn't in the kit." });
+    expect(check.outputSummary).toContain("1 questions kept");
+  });
+
+  it("allows the person's own favorites and ordinary words", () => {
+    const kit = kitWith([
+      "What do you enjoy most about Frank Sinatra's voice?", // Rosa's favorite, even when not in the kit
+      "Which song would you crown the queen of the dance floor?", // "Queen" the band only as written
+      "Yes or no: would you like another song?", // too short a name to check
+    ]);
+    expect(kit.prompts).toHaveLength(3);
+  });
+
+  it("treats a name inside one the kit has as in the kit", () => {
+    const ctx = ctxWithSeen();
+    ctx.seen.set("BOTH", { kind: "artist", name: "Bing Crosby and The Andrews Sisters" });
+    ctx.seen.set("BING", { kind: "artist", name: "Bing Crosby" });
+    const kit = buildKit(ctx, { ...empty, music: [{ id: "BOTH", why: "x" }], prompts: ["What comes to mind when you hear Bing Crosby sing?"] });
+    expect(kit.prompts).toHaveLength(1);
+  });
+});
+
 describe("model rule: Haiku by default, Sonnet or Opus only with a recorded approval", () => {
   afterEach(() => vi.unstubAllEnvs());
   const quiet = () => vi.spyOn(console, "warn").mockImplementation(() => {});
