@@ -22,15 +22,16 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "Request body must be JSON." }, { status: 400 });
   }
+  // D9: after a sudden change there is no kit to compare, and no Qloo or Claude call is made. Checked
+  // before the rest of the profile, as in /api/kit.
+  if (typeof body === "object" && body !== null && (body as { suddenChange?: unknown }).suddenChange === true) {
+    return Response.json({ error: "There's no kit after a sudden change, so there's nothing to compare." }, { status: 400 });
+  }
   const parsed = ProfileSchema.safeParse(body);
   if (!parsed.success) {
     return Response.json({ error: "Invalid profile.", issues: z.flattenError(parsed.error).fieldErrors }, { status: 400 });
   }
   const profile = parsed.data;
-  // D9: after a sudden change there is no kit to compare, and no Qloo or Claude call is made.
-  if (profile.suddenChange) {
-    return Response.json({ error: "There's no kit after a sudden change, so there's nothing to compare." }, { status: 400 });
-  }
   if (kitSource() !== "agent") return Response.json({ error: NEEDS_LIVE, reason: "not_live" }, { status: 503 });
 
   if (!isSmokeRequest(request)) {

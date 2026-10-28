@@ -16,6 +16,8 @@ import { addDailyUsage } from "@/lib/usage";
 export const maxDuration = 120;
 
 // Next.js allows only handlers and segment config as exports from a route file.
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
 const LIVE_KITS_PAUSED = "Live kits are paused for now. The sample kits show what a full kit looks like.";
 
 export async function POST(request: Request) {
@@ -26,6 +28,16 @@ export async function POST(request: Request) {
     return Response.json({ error: "Request body must be JSON." }, { status: 400 });
   }
 
+  // D9: a sudden change is reported for medical evaluation, never treated as a reason for an
+  // activity. Checked before anything else, the rest of the form included: no kit, no Qloo or Claude
+  // call, and no analytics event (it would say something about the person's health). The stop keeps
+  // whatever answers check out, so it can use the name.
+  if (isRecord(body) && body.suddenChange === true) {
+    const answers = ProfileSchema.partial().safeParse(body);
+    const stop: SafetyStop = { mode: "safety_stop", message: SAFETY_STOP_MESSAGE, profile: answers.success ? answers.data : { suddenChange: true } };
+    return Response.json(stop);
+  }
+
   const parsed = ProfileSchema.safeParse(body);
   if (!parsed.success) {
     // Field-level messages so the intake form can point at what to fix.
@@ -33,14 +45,6 @@ export async function POST(request: Request) {
       { error: "Invalid profile.", issues: z.flattenError(parsed.error).fieldErrors },
       { status: 400 },
     );
-  }
-
-  // D9: a sudden change is reported for medical evaluation, never treated as a reason for an
-  // activity. Checked before anything else: no kit, no Qloo or Claude call, and no analytics event
-  // (it would say something about the person's health).
-  if (parsed.data.suddenChange) {
-    const stop: SafetyStop = { mode: "safety_stop", message: SAFETY_STOP_MESSAGE, profile: parsed.data };
-    return Response.json(stop);
   }
 
   switch (kitSource()) {

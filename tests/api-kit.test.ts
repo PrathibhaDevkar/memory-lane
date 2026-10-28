@@ -72,6 +72,24 @@ describe("POST /api/kit: sudden-change safety stop (D9)", () => {
     buildLiveKit.mockReset();
   });
 
+  it("gives the safety stop before checking the rest of the profile (D9)", async () => {
+    vi.stubEnv("KIT_SOURCE", "agent");
+    // Only the safety answer: the stop, not a list of missing fields.
+    const bare = await post(JSON.stringify({ suddenChange: true }));
+    expect(bare.status).toBe(200);
+    expect(SafetyStopSchema.parse(await bare.json())).toMatchObject({ mode: "safety_stop", profile: { suddenChange: true } });
+    // The name comes back when it checks out, so the stop can use it.
+    const named = SafetyStopSchema.parse(await (await post(JSON.stringify({ suddenChange: true, displayName: "June" }))).json());
+    expect(named.profile.displayName).toBe("June");
+    // An answer that doesn't check out never blocks the stop; the stop just leaves the answers out.
+    const odd = SafetyStopSchema.parse(await (await post(JSON.stringify({ suddenChange: true, displayName: "x".repeat(500), birthYear: "soon" }))).json());
+    expect(odd.profile).toEqual({ suddenChange: true });
+    expect(buildLiveKit).not.toHaveBeenCalled();
+    expect(liveKitBlocked).not.toHaveBeenCalled();
+    // "No" with missing answers is still a form error, as before.
+    expect((await post(JSON.stringify({ suddenChange: false }))).status).toBe(400);
+  });
+
   it("returns a safety stop and never runs the agent, even in live mode", async () => {
     vi.stubEnv("KIT_SOURCE", "agent");
     const res = await post(JSON.stringify({ ...walt, suddenChange: true }));
