@@ -138,7 +138,8 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
 
       <div className="mt-6 flex flex-1 flex-col justify-center rounded-2xl border border-line bg-card p-6 sm:p-10">
         <p className="font-semibold text-muted">{CARD_LABEL[card.kind]}</p>
-        <h2 id="card-title" ref={headingRef} tabIndex={-1} className="mt-2 font-serif text-4xl font-semibold leading-tight outline-none sm:text-5xl">
+        {/* A long name ("Fitzgerald") can't fit a 320px screen at Largest text; break it rather than push the page sideways. */}
+        <h2 id="card-title" ref={headingRef} tabIndex={-1} className="mt-2 font-serif text-4xl font-semibold leading-tight outline-none [overflow-wrap:anywhere] sm:text-5xl">
           {card.title}
         </h2>
         {card.detail && <p className="mt-4 text-lg text-muted">{card.detail}</p>}
@@ -162,7 +163,9 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
         <p id="reaction-hint" className="mb-3 text-muted">
           How did that land? If they seem upset or tired, pause or tap Stop.
         </p>
-        <div role="group" aria-describedby="reaction-hint" className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        {/* As many to a row as fit at 7rem each, so larger text gets fewer, wider buttons ("Not interested"
+            spilled out of its button on a tablet at Large text). Stop always has its own row. */}
+        <div role="group" aria-describedby="reaction-hint" className="flex flex-wrap gap-3">
           {REACTIONS.map((r) => (
             <button
               key={r.value}
@@ -170,8 +173,8 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
               onClick={() => react(r.value)}
               className={
                 r.value === "stopped"
-                  ? "col-span-2 min-h-16 rounded-xl border-2 border-error bg-card px-3 py-4 text-lg font-semibold text-error sm:col-span-1"
-                  : "min-h-16 rounded-xl border-2 border-control bg-card px-3 py-4 text-lg font-semibold hover:bg-accent-soft"
+                  ? "min-h-16 basis-full rounded-xl border-2 border-error bg-card px-3 py-4 text-lg font-semibold text-error"
+                  : "min-h-16 flex-[1_1_7rem] rounded-xl border-2 border-control bg-card px-3 py-4 text-lg font-semibold hover:bg-accent-soft"
               }
             >
               {r.label}

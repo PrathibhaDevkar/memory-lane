@@ -25,4 +25,8 @@ describe("analytics note", () => {
     expect(ANALYTICS_DOC_URL).toMatch(/\/docs\/analytics\.md$/);
     expect(existsSync("docs/analytics.md")).toBe(true);
   });
+
+  it("links to the doc on main, which production is built from, so the list matches the site", () => {
+    expect(ANALYTICS_DOC_URL).toContain("/blob/main/");
+  });
 });
