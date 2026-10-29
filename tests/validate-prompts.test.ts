@@ -23,6 +23,11 @@ describe("promptProblem (D10: care-practice question rules)", () => {
     ["What was your favorite song? Who did you dance with?", /two questions/i],
     ["Was that yummy pizza your favorite?", /adult/i],
     ["Sinatra was very popular.", /not a question/i],
+    // Seen live in the Oct 27 comparison, and kept by the old check.
+    ["Rosa, what is your favorite memory of a Chicago neighborhood gathering?", /remember/],
+    ["Mr. Okafor, what stands out to you about the jollof rice your family used to share at gatherings?", /states something/i],
+    ["What memories come to mind with this song?", /remember/],
+    ["What songs did you all used to sing at church?", /states something/i],
   ])("rejects %s", (p, reason) => {
     expect(promptProblem(p)).toMatch(reason);
   });

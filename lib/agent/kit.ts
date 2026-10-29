@@ -173,3 +173,29 @@ export function buildKit(ctx: RunContext, submitted: Submission | null, failure?
     trace: ctx.trace,
   };
 }
+
+/**
+ * What makes a submitted kit too thin to show, when Qloo gave Claude enough to do better: no music
+ * though artists were offered, fewer than 2 sections though there was material for more, or fewer
+ * questions than the level needs. Seen live once in 30 kits (one modern artist, no questions).
+ * Empty when the kit is fine, or when Qloo found little (an honest gap is better than a retry).
+ */
+export function thinKit(ctx: RunContext, kit: Kit): string[] {
+  const offered = new Set<Section>();
+  for (const s of ctx.seen.values()) {
+    if (s.kind === "artist") offered.add("music");
+    if (s.kind === "movie" || s.kind === "tv") offered.add("screen");
+    if (s.kind === "place") offered.add("place");
+    if (s.kind === "dish") offered.add("dish");
+  }
+  const filled = (["music", "screen", "dish", "place"] as const).filter((x) => kit[x].status === "ok");
+  const problems: string[] = [];
+  if (kit.music.status !== "ok" && offered.has("music")) problems.push("no music, though artists were offered");
+  if (filled.length < 2 && offered.size >= 2) problems.push(`only ${filled.length} of the 4 sections filled, though results came back for ${offered.size}`);
+  const level = ctx.profile.supportLevel;
+  const { open } = validatePrompts(kit.prompts, level);
+  if (level === "early" && open < KIT_LIMITS.early.minOpenPrompts) problems.push(`${open} open question${open === 1 ? "" : "s"}; this level needs ${KIT_LIMITS.early.minOpenPrompts} to ${KIT_LIMITS.early.prompts}`);
+  if (level === "middle" && kit.prompts.length === 0) problems.push("no questions; this level needs up to 3");
+  return problems;
+}
+
