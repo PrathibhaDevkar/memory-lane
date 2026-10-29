@@ -37,6 +37,28 @@ const words = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
 const humanize = (slug: string) => slug.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const tidy = (why: string) => why.trim().slice(0, 240);
 
+const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Whether a card names this artist: as written, as whole words, with or without a leading "The". */
+function names(text: string, artist: string): boolean {
+  const bare = artist.replace(/^The /, "");
+  return [artist, bare].some((n) => new RegExp(`(^|[^\\p{L}\\p{N}])${escape(n)}($|[^\\p{L}\\p{N}])`, "u").test(text));
+}
+
+/** Artists Qloo offered in this run that the kit leaves out, apart from the person's favorites. */
+function notInKit(ctx: RunContext, music: MediaItem[]): string[] {
+  const inKit = new Set(music.map((m) => m.title));
+  const favorites = ctx.profile.favorites.map((f) => f.text.toLowerCase());
+  const out = new Set<string>();
+  for (const s of ctx.seen.values()) {
+    // Very short names ("Yes", "Low") read as ordinary words, so they aren't checked.
+    // A name inside one the kit has ("Bing Crosby" in "Bing Crosby and The Andrews Sisters") is fine too.
+    const partOfKit = [...inKit].some((t) => t.includes(s.name));
+    if (s.kind === "artist" && s.name.length >= 4 && !partOfKit && !favorites.includes(s.name.toLowerCase())) out.add(s.name);
+  }
+  return [...out];
+}
+
 export function buildKit(ctx: RunContext, submitted: Submission | null, failure?: string): Kit {
   const started = Date.now();
   // Claude answers with the short handles it was shown; map them back to Qloo IDs.
@@ -105,7 +127,18 @@ export function buildKit(ctx: RunContext, submitted: Submission | null, failure?
       place.push({ source: "qloo", qlooId: p.id, name: s.name, genre: s.genre, whyPicked: `${tidy(p.why)} A place to talk about, not a visit suggestion.` });
   }
 
-  const prompts = validatePrompts(sub?.prompts ?? [], level);
+  // A card that names an artist Qloo offered but the kit doesn't include sends the caregiver looking
+  // for music that isn't there (Femi Kuti for Mr. Okafor, first live audit). The person's own
+  // favorites may always be named.
+  const checked = validatePrompts(sub?.prompts ?? [], level);
+  const elsewhere = notInKit(ctx, music);
+  const offList = checked.kept.flatMap((text) => {
+    const name = elsewhere.find((n) => names(text, n));
+    return name ? [{ title: text, reason: `Names ${name}, who isn't in the kit.` }] : [];
+  });
+  const prompts = offList.length
+    ? { ...validatePrompts(checked.kept.filter((t) => !offList.some((d) => d.title === t)), level), dropped: [...checked.dropped, ...offList] }
+    : checked;
   const ideas = checkIdeas(sub?.activity_ideas ?? [], level);
 
   ctx.trace.push({
