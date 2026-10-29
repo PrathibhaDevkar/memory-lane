@@ -1,6 +1,6 @@
 # Memory Lane: Plan
 
-> **Living document** · last updated 2026-10-15 · deadline Oct 30, 2026, 11:45 pm ET ([official rules](https://qloo.devpost.com/rules))
+> **Living document** · last updated 2026-10-29 · deadline Oct 30, 2026, 11:45 pm ET ([official rules](https://qloo.devpost.com/rules))
 > One place for what we're building, why, the decisions, the design and the schedule. The Qloo test evidence behind the decisions is in [research.md](research.md).
 > Diagrams are Mermaid: GitHub renders them inline, and they can be copied into slides.
 
@@ -112,41 +112,46 @@ For public claims in the submission, cite public sources (for example the Alzhei
 ## 5. Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Browser["Browser (caregiver)"]
-        I["Intake form<br/>app/page.tsx"]
-        K["Kit page<br/>+ trace panel"]
+        direction LR
+        I["Intake form"] --> PR["Live progress<br/>each lookup as it happens"] --> K["Kit<br/>+ How this kit was made"]
+        K --> SM["Session mode<br/>→ session note → next kit"]
+        K --> CMP["Compare with<br/>Claude on its own"]
     end
 
     subgraph Vercel["Vercel: Next.js server (keys never leave here)"]
-        API["POST /api/kit<br/>app/api/kit/route.ts"]
-        AG["Agent loop<br/>lib/agent/"]
-        V["Validators<br/>prompts · safety"]
-        Q["Qloo client + tools<br/>lib/qloo/"]
-        C[("Response cache<br/>in-memory, per instance")]
+        direction LR
+        API["POST /api/kit<br/>safety first · validate<br/>limits · audit"]
+        AG["Agent · lib/agent/<br/>lookups in code → Claude →<br/>grounding, question rules, thin-kit check"]
+        Q["Qloo tools + filters · lib/qloo/<br/>avoid list · content · artists' years<br/>2 calls at a time · in-memory cache"]
+        CAPI["POST /api/compare<br/>Claude alone, then each<br/>pick checked in Qloo"]
+        API --> AG --> Q
+        CAPI --> Q
     end
 
-    RD[("Upstash Redis<br/>rate limit · feedback")]
-
-    CL["Claude API<br/>tool use"]
-    QL["Qloo Hackathon API<br/>/search · /v2/insights"]
+    subgraph Outside["Outside services"]
+        direction LR
+        CL["Claude API<br/>Haiku 5.5, tool use"]
+        QL["Qloo Hackathon API<br/>/search · /v2/insights"]
+        RD[("Upstash Redis<br/>limits · daily token totals<br/>example kit reused")]
+        PH["PostHog<br/>cookieless"]
+    end
 
     I -- "Profile JSON" --> API
-    API --> AG
-    AG <-- "messages + tool calls" --> CL
-    AG -- "tool_use" --> Q
-    Q <--> C
-    Q <-- "X-Api-Key header" --> QL
-    AG --> V
-    V --> API
-    API -- "Kit + Trace JSON" --> K
+    API -- "progress lines, then Kit + Trace" --> PR
+    CMP -- "Profile JSON" --> CAPI
+    AG <--> CL
+    CAPI <--> CL
+    Q <--> QL
     API <--> RD
+    API -. "kit_built" .-> PH
 ```
 
 - **All API calls are server-side.** The browser only sees the finished kit.
 - **Rules live in code, not in the prompt.** Claude decides *what to ask Qloo*; the tools enforce D1, D3 and D7 whatever Claude asks for.
 - **Qloo drives the picks.** An item enters the kit only if a Qloo tool returned its ID in this request.
-- **Judges are never blocked.** Saved demo kits have no limit and cost nothing; live kits get a generous abuse limit only.
+- **Judges are never blocked.** Saved demo kits and the safety stop have no limit and cost nothing; live kits and comparisons allow 20 per visitor an hour and 1,000 a day.
 
 ---
 
@@ -158,31 +163,47 @@ sequenceDiagram
     actor CG as Caregiver
     participant UI as Intake / Kit page
     participant API as /api/kit
-    participant AG as Agent loop
-    participant CL as Claude
-    participant T as Qloo tools
+    participant AG as Agent (run.ts)
+    participant T as Qloo tools + filters
     participant QL as Qloo API
+    participant CL as Claude
 
-    CG->>UI: birth year, hometown, favorites, things to avoid
-    UI->>API: POST Profile
-    API->>API: validate Profile (zod), compute era window = born+10 … born+30
-    API->>AG: run(profile, window)
-    AG->>CL: system prompt + profile + tool list
-    loop until Claude submits the kit (max 6 turns, usually 3)
-        CL-->>AG: one or more tool_use blocks
-        AG->>T: run this turn's tool calls together
-        T->>QL: GET /search or /v2/insights (at most 2 at a time)
-        QL-->>T: entities
-        T->>T: apply D1 / D3 / D7, record excluded items
-        T-->>AG: clean entities + trace step
-        AG->>CL: all tool results in one message
+    CG->>UI: safety answer, name, support level, birth year, hometown, favorites, things to avoid
+    UI->>API: POST Profile (asks for progress lines)
+    alt sudden change = yes
+        API-->>UI: safety stop: no Qloo call, no Claude call
+    else
+        API->>API: validate Profile (zod), era window = born+10 … born+30
+        API->>API: saved kit (KIT_SOURCE=fixture) or reused example kit? return it
+        API->>API: visitor and daily limits (Redis)
+        API->>AG: buildLiveKit(profile, era window)
+        par lookups in code first
+            AG->>T: resolve favorites, then music, films, TV, places, dishes
+            T->>QL: /search, /v2/insights (2 at a time, cached, retried)
+            QL-->>T: entities
+            T->>T: avoid list, content filter, artists' years, landmarks
+            T-->>UI: a progress line per lookup
+        and traditions (only if given)
+            AG->>CL: short call: name one artist
+        end
+        AG->>CL: system prompt + tools (cached) + all lookups
+        opt a lookup matched the wrong thing
+            CL-->>AG: tool_use
+            AG->>T: run it, filters applied
+            T-->>AG: results
+            AG->>CL: results
+        end
+        CL-->>AG: submit_kit (short labels, reasons, questions)
+        AG->>AG: keep only grounded picks, drop questions that break the rules
+        opt kit too thin (once, with time left)
+            AG->>CL: send it back as an error
+            CL-->>AG: submit_kit again
+        end
+        AG-->>API: Kit + Trace
+        API->>API: audit tokens and cost, add to today's totals (Redis)
+        API-->>UI: Kit + Trace + audit (last progress line)
+        UI-->>CG: kit cards, links out, trace panel
     end
-    CL-->>AG: submit_kit (IDs + reasons + questions)
-    AG->>AG: keep only picks a tool returned (grounding)
-    AG->>AG: drop questions that break the rules
-    AG-->>API: Kit + Trace
-    API-->>UI: 200 JSON
-    UI-->>CG: kit cards, links out, trace panel
 ```
 
 ---
@@ -194,10 +215,10 @@ sequenceDiagram
 | Tool | Qloo call | What the code enforces |
 |---|---|---|
 | `resolve_favorite(name, kind)` | `/search`, 3 candidates | Returns IDs, types and years so Claude can pick the right match |
-| `get_music(seed_ids)` | insights, artists, `take=25` | D7 (no age signal). Avoid list only (artists carry no rating or themes). Top 10 offered |
-| `get_screen(seed_ids, kind)` | insights, film or TV, year window from the profile, `take=25` | D1, D3 and the avoid list. Top 8 offered, with a short "about" |
-| `get_places(seed_ids)` | insights, places in the profile's hometown, `take=50` | D4 landmark ranking (historic places first, then markets/sculptures/parks, then museums; no water parks or rides). Top 8 |
-| `get_dish(seed_ids)` | insights, restaurants in the hometown, `take=50` | Keeps restaurants that list specialty dishes, minus noisy entries (`1_2_rack_ribs`, `gino_s_house_salad`). No dish → a gap, never an unrelated cuisine |
+| `get_music(seed_ids)` | insights, artists, `take=25` | D7 (no age signal). Avoid list, then artists whose description shows they began after the person's years are dropped (artists carry no rating or themes). Top 8 offered |
+| `get_screen(seed_ids, kind)` | insights, film or TV, year window from the profile, `take=25` | D1, D3 and the avoid list. Top 6 offered, with a short "about" |
+| `get_places(seed_ids)` | insights, places in the profile's hometown, `take=50` | D4 landmark ranking (historic places first, then markets/sculptures/parks, then museums; no water parks or rides). Top 6 |
+| `get_dish(seed_ids)` | insights, restaurants in the hometown, `take=50` | Keeps restaurants that list specialty dishes, minus noisy entries (`1_2_rack_ribs`, `gino_s_house_salad`). Up to 6 restaurants with up to 3 dishes each. No dish → a gap, never an unrelated cuisine |
 | `submit_kit(...)` | none | Strict schema: picks by ID, a short reason each, questions, gaps |
 
 Seeds must be IDs an earlier tool returned; a run makes at most **14 Qloo calls**; the Qloo client keeps **at most 2 calls in flight** and retries a 429 or 5xx (Qloo rate-limits bursts).
@@ -206,31 +227,33 @@ Seeds must be IDs an earlier tool returned; a run makes at most **14 Qloo calls*
 
 ```mermaid
 flowchart TD
-    S([Start: Profile + era window]) --> P[System prompt + profile]
-    P --> CALL[Call Claude with tools]
+    S([Start: Profile + era window]) --> LF["Lookups in code: resolve favorites,<br/>then music, films, TV, places, dishes<br/>filters applied, gaps logged"]
+    S --> TRD["Traditions only: short Claude call<br/>names an artist, code looks it up"]
+    LF --> P[System prompt + tools, cached<br/>+ the person + all lookups]
+    TRD --> P
+    P --> TIME{Time left?}
+    TIME -- "under 5 s" --> OOT[Kit of gaps: out of time]
+    TIME -- "turn 4, or under 40 s" --> FIN[Last turn: ask for submit_kit,<br/>further lookups refused]
+    TIME -- yes --> CALL
+    FIN --> CALL[Call Claude: Haiku 5.5, low effort]
     CALL --> R{Response?}
-    R -- tool_use --> EX[Run this turn's tool calls<br/>together, 2 Qloo calls at a time]
-    EX --> OK{Qloo OK?}
-    OK -- yes --> F[Apply D1/D3/D7 filters<br/>log exclusions to trace]
-    OK -- "no (4xx/5xx/timeout)" --> GAP[Return the error as a tool result<br/>log a gap - D6]
-    F --> TR[All results in one message]
-    GAP --> TR
-    TR --> LIM{Turn < 6 and<br/>time < 90 s?}
-    LIM -- yes --> CALL
-    LIM -- no --> FORCE[Last call: only submit_kit offered]
-    FORCE --> R
-    R -- submit_kit --> G[Grounding:<br/>every pick ID returned by a tool?]
-    R -- "refusal / no submit by turn 6" --> FAILK[Kit of gaps with the reason]
-    G -- no --> DROP[Drop the pick, log it]
-    G -- yes --> VAL
-    DROP --> VAL[Question check]
-    VAL -- breaks a rule --> RM[Drop the question, log the reason]
-    VAL -- ok --> OUT([Kit + Trace])
-    RM --> OUT
-    FAILK --> OUT
+    R -- "refusal or out of room" --> GAPK[Kit of gaps with the reason]
+    R -- "tool_use: a lookup" --> EX[Run this turn's tools together,<br/>2 Qloo calls at a time, filters applied]
+    EX --> RES[All results in one message]
+    RES --> TIME
+    R -- "no tool call" --> ASK[Ask for submit_kit] --> TIME
+    R -- submit_kit --> G[Grounding: keep picks a tool returned]
+    G --> VAL[Question rules · names only<br/>artists in the kit or favorites]
+    VAL --> THIN{Too thin to show?<br/>once, not the last turn}
+    THIN -- yes --> BACK[Send back as an error:<br/>what's missing] --> TIME
+    THIN -- no --> OUT([Kit + Trace])
+    GAPK --> OUT
+    OOT --> OUT
 ```
 
-**Expected path:** the usual lookups run in code first (one `/search` per favorite, then music, films, TV, places and dishes seeded with the top match), then 1 Claude turn (pick and submit); 2 only when Claude fixes a wrong match. The modern-favorite hop runs in code too: when only artists seed music (Qloo gives artists no year), a second list seeded with the top in-era film (`music_from_film`) is ready if the favorite turns out to be modern. Traditions add one short Claude call alongside the lookups (no tools, no thinking: just an artist's name), which the code looks up in Qloo (`tradition_music`). 6–11 Qloo calls per kit. Claude reads short handles (`a1`, `m2`) instead of Qloo's IDs, the tools and system prompt are cached, the example profile's live kit is reused for a few hours, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-haiku-5-5`; Sonnet or Opus only with an approval recorded in `CLAUDE_MODEL_APPROVAL`, see CLAUDE.md) at `CLAUDE_EFFORT` (default `medium`), with server-side fallback on refusals for Sonnet and Opus (Haiku has none). Every live kit is audited and returns its token use and alerts in response headers ([token-alerts.md](token-alerts.md)). Names and years in the kit always come from Qloo, never from Claude's text.
+**Limits:** at most 4 Claude calls, 14 Qloo calls and 100 seconds per kit (the route allows 120). A submitted kit too thin to show (no music though artists were offered, fewer than 2 sections though results came back for more, or too few questions for the level) goes back to Claude once, only with a turn and 40 seconds left.
+
+**Expected path:** the usual lookups run in code first (one `/search` per favorite, then music, films, TV, places and dishes seeded with the top match), then 1 Claude turn (pick and submit); 2 only when Claude fixes a wrong match. The modern-favorite hop runs in code too: when only artists seed music (Qloo gives artists no year), a second list seeded with the top in-era film (`music_from_film`) is ready if the favorite turns out to be modern. Traditions add one short Claude call alongside the lookups (no tools, no thinking: just an artist's name), which the code looks up in Qloo (`tradition_music`). 6–11 Qloo calls per kit. Claude reads short handles (`a1`, `m2`) instead of Qloo's IDs, the tools and system prompt are cached, the example profile's live kit is reused for a few hours, and each call's token use goes into the trace and the server log. **Model:** `CLAUDE_MODEL` (default `claude-haiku-5-5`; Sonnet or Opus only with an approval recorded in `CLAUDE_MODEL_APPROVAL`, see CLAUDE.md) at `CLAUDE_EFFORT` (default `low` since Oct 27), with server-side fallback on refusals for Sonnet and Opus (Haiku has none). Every live kit is audited and returns its token use and alerts in response headers ([token-alerts.md](token-alerts.md)). Names and years in the kit always come from Qloo, never from Claude's text.
 
 ---
 
@@ -238,22 +261,29 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    RAW[Qloo entities] --> A{Matches caregiver's<br/>things to avoid?}
-    A -- yes --> X1[Excluded: caregiver avoid-list]
-    A -- no --> B{Explicit / mature?<br/>title words, content tags}
-    B -- yes --> X2[Excluded: mature content]
-    B -- no --> C{Sensitive theme?<br/>dementia, illness, death,<br/>war, trauma}
-    C -- yes --> X3[Excluded: sensitive theme]
-    C -- no --> KEEP[Kept → tool_result]
-    X1 & X2 & X3 --> TRACE[(Trace: excluded + reason)]
+    SC{"Sudden change?<br/>checked first"} -- yes --> STOP[Safety stop:<br/>no Qloo, no Claude]
+    SC -- no --> RAW[Qloo entities]
+    RAW --> A{"On the caregiver's<br/>things to avoid?"}
+    A -- yes --> X1[Excluded: avoid list]
+    A -- no --> B{"Films and TV:<br/>mature rating, War genre,<br/>or a sensitive theme?"}
+    B -- yes --> X2[Excluded: mature content<br/>or sensitive theme]
+    B -- no --> Y{"Artists: began after<br/>the person's years?"}
+    Y -- yes --> X3[Excluded: came along<br/>after their years]
+    Y -- no --> KEEP[Kept → offered to Claude]
+    KEEP --> GR{"Claude's picks:<br/>grounded? questions<br/>follow the rules?"}
+    GR -- no --> X4[Removed from the kit]
+    GR -- yes --> KIT([In the kit])
+    X1 & X2 & X3 & X4 --> TRACE[(Trace: excluded + reason)]
 ```
 
 | Gate | Where | How |
 |---|---|---|
 | Content filter (D3) | `lib/qloo/filters.ts` | Rating blocklist; War genre; phrases in the theme summary ("dementia", "alzheimer", "cognitive decline", "memory decline", "memory loss", "genocide", "holocaust", "nazi", "totalitarian", "suicide", "drug use", "addiction", "terminal illness", "cancer", "deathbed", "grief", "sexual abuse", "rape"); profanity in titles. On all saved responses: 43 of 193 titles excluded, all 8 known offenders caught, every classic tested kept |
+| Safety check first | `app/api/kit/route.ts`, `app/api/compare/route.ts` | `suddenChange: true` is checked before the rest of the profile: the safety stop, with no Qloo or Claude call; the comparison refuses it |
+| Artists' years | `lib/qloo/filters.ts` (`withinTheirYears`) | Qloo gives artists no year, so their description is read for when they began (formed, debut, born); an artist who began more than 5 years after the person's window is dropped. With no year to read, the artist is kept |
 | Caregiver's avoid list | `lib/qloo/filters.ts` | Whole-word match, singular or plural ("hospitals" ~ "Hospital"), on names, genres, keywords and descriptions |
 | Grounding | `lib/agent/kit.ts` | Every pick's ID (or dish tag) was returned by a tool in this run, as the right kind of thing; the dish name may only use the dish's own words |
-| Questions | `lib/agent/validate-prompts.ts` | D10: no remembering or recalling, no quiz forms, no statements about the person's past, one question per card, adult words; per-level limits (early ≤ 5 with ≥ 3 open, middle ≤ 3, late ≤ 2 and short comments allowed) |
+| Questions | `lib/agent/validate-prompts.ts` | D10: no remembering or recalling, no quiz forms, no statements about the person's past, one question per card, adult words; per-level limits (early ≤ 5 with ≥ 3 open, middle ≤ 3, late ≤ 2 and short comments allowed). In `lib/agent/kit.ts`, a card naming an artist Qloo offered but the kit left out is dropped (the person's own favorites are allowed) |
 | No invented data (D6) | `lib/agent/kit.ts` | An empty section is a gap with a reason |
 | Media | Kit page | Search links only; the schema rejects other hosts and embeds |
 | Claims | Copy review | No "therapy", "treatment" or "improves memory" anywhere |
@@ -268,25 +298,45 @@ zod schemas are the single source of truth: TypeScript types are inferred from t
 ```mermaid
 classDiagram
     class Profile {
+        +boolean suddenChange
         +string displayName
+        +SupportLevel supportLevel
         +number birthYear
         +string hometown
         +Favorite[] favorites
         +string[] thingsToAvoid
+        +string formerWork?
+        +string firstLanguage?
+        +string traditions?
     }
     class Favorite {
         +string text
         +FavoriteKind kind
     }
     class Kit {
+        +Mode mode
+        +Provenance provenance
+        +Profile profile
         +EraWindow era
         +KitSection~MediaItem~ music
         +KitSection~MediaItem~ screen
         +KitSection~DishItem~ dish
         +KitSection~PlaceItem~ place
         +string[] prompts
+        +ActivityIdea[] activityIdeas
         +TraceStep[] trace
-        +Mode mode
+    }
+    class SafetyStop {
+        +safety_stop mode
+        +string message
+        +Partial~Profile~ profile
+    }
+    class Comparison {
+        +comparison mode
+        +string model
+        +ComparedPick[] picks
+        +ComparedQuestion[] questions
+        +TraceStep[] trace
     }
     class KitSection~T~ {
         +Status status
@@ -316,10 +366,13 @@ classDiagram
         +string reason
     }
     Profile "1" --> "1..3" Favorite
+    Kit --> Profile
     Kit "1" --> "*" TraceStep
     Kit --> KitSection
     KitSection --> MediaItem
     TraceStep --> Excluded
+    SafetyStop --> Profile
+    Comparison --> TraceStep
 ```
 
 > **Key:** `favorites` 1–3; `thingsToAvoid` required ("none" allowed). `FavoriteKind` = `artist | movie | tv | other`. `Mode` = `memory_lane | llm_only`. `Status` = `ok | gap`. `StepKind` = `llm | tool | filter | validator`. `Source` = `qloo | llm`; a Qloo ID is required when `source` is `qloo`. `DishItem` = `{ source, name, qlooTagId?, fromPlace?, caveat }`. `PlaceItem` = `{ source, qlooId?, name, genre?, whyPicked }`. `Provenance` = `live | cached | fixture`, shown in the UI. Planned additions: §12.1.
@@ -373,13 +426,13 @@ Planned files are listed in §12.
 |---|---|---|
 | 0 | Can Qloo match an era? | ✅ Done (GO) |
 | 1 | Scaffold, contract, form → kit, deployed | ✅ Live at [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) |
-| 2 | Live agent: Qloo tools, filters, Claude loop | ✅ Checked live on Oct 19 and Oct 20 (Haiku 5.5, all six personas passed; [audit](../audits/2026-10-19-claude-haiku-5-5-medium.md)), with two token cuts since. Production still serves sample kits until keys and Redis are set in Vercel |
-| 3 | Care-practice features, session mode, trace, comparison | ✅ Built Oct 15–26: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret), larger text and analytics, and the comparison with Claude on its own. Next: more demo kits once live runs work (§12) |
-| 4 | Ship: from working to winning, then submit | 🟡 Started Oct 26; the plan is in §11.1 |
+| 2 | Live agent: Qloo tools, filters, Claude loop | ✅ Checked live on Oct 19 and Oct 20 (Haiku 5.5, all six personas passed; [audit](../audits/2026-10-19-claude-haiku-5-5-medium.md)), with two token cuts since. Live kits in production since Oct 27 ([production audit](../audits/2026-10-27-production-audit.md)) |
+| 3 | Care-practice features, session mode, trace, comparison | ✅ Built Oct 15–26: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret), larger text and analytics, and the comparison with Claude on its own. Fixes from the production audit merged Oct 29 (#24–#31; [end-to-end check](../audits/2026-10-29-end-to-end-after-merges.md)) |
+| 4 | Ship: from working to winning, then submit | 🟡 Live kits in production, the comparison, the README and the Devpost text done by Oct 29; `main` deploys production since PR #2 merged on Oct 29. Not done: the tester study and more saved demo kits. The plan is in §11.1 |
 
 ```mermaid
 gantt
-    title Memory Lane: schedule (updated Oct 26)
+    title Memory Lane: schedule (updated Oct 29)
     dateFormat  YYYY-MM-DD
     axisFormat  %b %d
 
@@ -392,7 +445,7 @@ gantt
     Contract, safety stop, intake, rules :done,    a1, 2026-10-15, 1d
     Limits, token cut, smoke             :done,    a3, 2026-10-18, 2d
     Live run of all personas             :done,    a2, 2026-10-19, 2d
-    GATE live kits on production         :milestone, g2, 2026-10-27, 0d
+    GATE live kits on production         :done, milestone, g2, 2026-10-27, 0d
 
     section Phase 3: Product
     Trace panel                          :done,    b2, 2026-10-15, 1d
@@ -402,10 +455,11 @@ gantt
 
     section Phase 4: Ship
     Progress, comparison, next kit (PRs) :done,    c0, 2026-10-26, 1d
-    Live kits in production, demo kits   :         c1, 2026-10-27, 1d
+    Live kits in production, audit       :done,    c1, 2026-10-27, 1d
     Tester study                         :         c4, 2026-10-27, 2d
-    README, description, video           :         c2, 2026-10-27, 2d
-    Stranger test, final checks          :         c3, 2026-10-28, 1d
+    Fixes, README, description           :done,    c2, 2026-10-28, 2d
+    End-to-end check, main merged        :done,    c3, 2026-10-29, 1d
+    Video                                :         c5, 2026-10-29, 1d
     SUBMIT                               :milestone, sub, 2026-10-29, 0d
 ```
 
@@ -419,15 +473,15 @@ Judges score four things equally, and use of Qloo also breaks ties (§2.3). On O
 3. **No proof that Qloo beats a chatbot.** §2.2 says differentiation "must be proven", and nothing showed it.
 4. **The submission isn't finished:** no tester results, placeholders in the Devpost text, no video.
 
-| Track | What | Who | Status (Oct 26) |
+| Track | What | Who | Status (Oct 29) |
 |---|---|---|---|
-| **1. A site judges can use** | **Done Oct 27:** `low` effort is the default (Prathibha's side-by-side in PR #12: about 24% faster and 20% cheaper, same quality). Live kits in production: keys, `KIT_SOURCE=agent`, Upstash Redis, `SMOKE_TOKEN`, then promote. Limits judges won't hit (done Oct 27): 20 kits per visitor an hour and 1,000 a day, under $2 a day even if every one is used ($0.0014–0.0018 a kit on Oct 20). Save 3–4 more demo kits from live runs (the Taylor Swift case, Elena, Mr. Okafor, June): they open instantly and are never limited | Prathibha (Vercel and keys); decisions by both | Low effort and the limits done Oct 27; the rest waits on Vercel |
-| **2. Make the agent and Qloo visible** | **Watch it work:** each Qloo lookup and Claude's turn shown as they happen while a kit builds ([PR #13](https://github.com/PrathibhaDevkar/memory-lane/pull/13)). **Compare with Claude on its own:** the same person and care rules without Qloo, each pick checked against Qloo and each question against the rules, side by side with the kit ([PR #15](https://github.com/PrathibhaDevkar/memory-lane/pull/15) contract, [PR #16](https://github.com/PrathibhaDevkar/memory-lane/pull/16)); it also gives the tester study its AI-only list. **The next kit builds on what lit up,** and **Read aloud** on session cards with on-device voices only ([PR #14](https://github.com/PrathibhaDevkar/memory-lane/pull/14)) | Abil with Claude; Prathibha reviews, and runs the live smoke check for anything that changes the agent | Merged Oct 26; the comparison still needs a live run |
-| **3. Evidence and story** | Tester study: 3 adults aged 60+ on the blind comparison (research §5), reported exactly as it happened. Devpost placeholders filled with measured facts ([submission.md](submission.md)), README screenshots, a video under 3 minutes. Final checks: a stranger test, production as an anonymous visitor, the license shown in the repo's About section, then submit on Thursday Oct 29 | Both | Measured facts filled in; the rest waits on Tracks 1 and 2 |
+| **1. A site judges can use** | **Done Oct 27:** `low` effort is the default (Prathibha's side-by-side in PR #12: about 24% faster and 20% cheaper, same quality). Live kits in production: keys, `KIT_SOURCE=agent`, Upstash Redis, `SMOKE_TOKEN`, then promote. Limits judges won't hit (done Oct 27): 20 kits per visitor an hour and 1,000 a day, under $2 a day even if every one is used ($0.0014–0.0018 a kit on Oct 20). Save 3–4 more demo kits from live runs (the Taylor Swift case, Elena, Mr. Okafor, June): they open instantly and are never limited | Prathibha (Vercel and keys); decisions by both | Done Oct 27: live kits in production, low effort, the limits. More saved demo kits not added (Rosa and Margaret only) |
+| **2. Make the agent and Qloo visible** | **Watch it work:** each Qloo lookup and Claude's turn shown as they happen while a kit builds ([PR #13](https://github.com/PrathibhaDevkar/memory-lane/pull/13)). **Compare with Claude on its own:** the same person and care rules without Qloo, each pick checked against Qloo and each question against the rules, side by side with the kit ([PR #15](https://github.com/PrathibhaDevkar/memory-lane/pull/15) contract, [PR #16](https://github.com/PrathibhaDevkar/memory-lane/pull/16)); it also gives the tester study its AI-only list. **The next kit builds on what lit up,** and **Read aloud** on session cards with on-device voices only ([PR #14](https://github.com/PrathibhaDevkar/memory-lane/pull/14)) | Abil with Claude; Prathibha reviews, and runs the live smoke check for anything that changes the agent | Merged Oct 26; live comparisons checked Oct 27 and Oct 29 |
+| **3. Evidence and story** | Tester study: 3 adults aged 60+ on the blind comparison (research §5), reported exactly as it happened. Devpost placeholders filled with measured facts ([submission.md](submission.md)), README screenshots, a video under 3 minutes. Final checks: a stranger test, production as an anonymous visitor, the license shown in the repo's About section, then submit on Thursday Oct 29 | Both | Devpost text and README done with measured facts; production checked as an anonymous visitor (Oct 27, Oct 29); license shown in About. Tester study not run |
 
 **Left for "What's next":** group sessions for care homes, saved profiles with consent, and more languages.
 
-**Submission draft:** Devpost text, judge testing instructions and the official checklist are in [submission.md](submission.md).
+**Submission:** the official checklist, the claims rules and the judges' testing instructions are in [submission.md](submission.md); the final project text is on Devpost.
 
 **After submission (Oct 30 – Nov 16):** keep the demo working, free and unrestricted: Qloo key valid, Claude credits funded, Vercel up; check the live URL every few days.
 
@@ -592,29 +646,32 @@ Saved resident profiles (consent and a privacy setup first) · care-home roster 
 
 ```mermaid
 gitGraph
-    commit id: "Phase 0"
-    commit id: "README update"
+    commit id: "Phase 0: era test"
+    commit id: "README"
     branch feat/memory-lane-build
     checkout feat/memory-lane-build
-    commit id: "plan + scaffold"
-    commit id: "form, kit, deploy"
-    checkout main
-    merge feat/memory-lane-build tag: "PR 1: skeleton"
+    commit id: "Phase 1: scaffold, form, kit"
+    commit id: "deploy (PR 1, closed)"
     branch feat/phase2-real-data
     checkout feat/phase2-real-data
-    commit id: "Qloo re-check"
-    commit id: "agent + filters"
-    commit id: "care features"
+    commit id: "agent, filters, care features"
+    branch fix/small-change
+    checkout fix/small-change
+    commit id: "one fix or feature"
+    checkout feat/phase2-real-data
+    merge fix/small-change tag: "PRs 3-31, squashed"
     checkout main
-    merge feat/phase2-real-data tag: "PR 2: live kits"
-    branch feat/phase3-product
-    checkout feat/phase3-product
-    commit id: "session mode, trace"
+    merge feat/phase2-real-data tag: "PR 2, Oct 29"
+    branch fix/after-launch
+    checkout fix/after-launch
+    commit id: "small change"
     checkout main
-    merge feat/phase3-product tag: "PR 3: product"
+    merge fix/after-launch tag: "PRs 32+"
 ```
 
-- One branch and one PR per phase; review is welcome but never blocks: a PR stays open up to 24 h for comments, then merges.
+- **Until Oct 29:** Phase 1 and 2 were built on their own branches, and each fix or feature went in through a small PR into `feat/phase2-real-data`, squash-merged. PR #1 (Phase 1) was closed: its commits carried on in the Phase 2 branch. PR #2 merged all of it into `main` on Oct 29, with a merge commit so every commit and author is kept.
+- **Since Oct 29:** small PRs straight into `main`. Merging into `main` deploys production, so test on the PR's preview first and check the live site as an anonymous visitor after merging.
+- One change per PR, so it's easy to see what works and what doesn't. Review is welcome and asked for; anything that changes the agent or prompts gets a live smoke check.
 - Production is the URL to share; preview links require a Vercel login.
 - Short, plain commit messages.
 - Team workspace (brief, task board, decision log): [shared doc](https://claude.ai/code/artifact/26055603-1597-46c1-869f-5894d51f3f96), team access only.

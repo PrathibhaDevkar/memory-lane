@@ -102,14 +102,17 @@ Checked on the Oct 14 responses: **films 25 of 25** carry `properties.wikidata_i
 
 ---
 
-## 4. Still to measure
+## 4. Measured since, and still open
 
-- Live kits with Claude (needs an API key): era of music picks, choice of place and restaurant, question quality, time and cost per kit
-- Tester study: script and results sheet in §5 below
+**Measured:** live kits with Claude (era of the music picks, places and restaurants, question quality, time and cost per kit) have been checked many times since Oct 19; every run is in [`audits/`](../audits/). The latest: the [production audit](../audits/2026-10-27-production-audit.md) (Oct 27) and the [end-to-end check](../audits/2026-10-29-end-to-end-after-merges.md) after the last fixes (Oct 29): 8 live kits and 7 comparisons, all built, at about 0.1–0.15 US cents of Claude tokens and 10–20 seconds a kit.
+
+**Still open:** the tester study (§5) was not run before submission, so we make no claim about what testers think.
 
 ---
 
 ## 5. Tester study: script and results
+
+> **Status (Oct 29):** not run before submission; the results sheet in §5.6 is empty on purpose.
 
 Plan: [plan.md §12.8](plan.md#128-evidence-plan). No professional caregiver is available, so three groups test what each can honestly judge. Results go in §5.6 and are reported **exactly as they happened**.
 
