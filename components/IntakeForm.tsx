@@ -1,0 +1,424 @@
+"use client";
+
+import { useEffect, useId, useRef, useState } from "react";
+import { track } from "@/lib/analytics/client";
+import { SAFETY_STOP_MESSAGE, SUDDEN_CHANGE_QUESTION, SUPPORT_LEVELS } from "@/lib/care";
+import { EXAMPLE_PROFILE } from "@/lib/example-profile";
+import {
+  BIRTH_YEAR_MAX,
+  BIRTH_YEAR_MIN,
+  MAX_FAVORITES,
+  type Favorite,
+  type FavoriteKind,
+  type Profile,
+  type SupportLevel,
+} from "@/lib/types";
+import { SafetyStop } from "./SafetyStop";
+
+export type FieldErrors = Partial<Record<keyof Profile, string[]>>;
+
+const KIND_LABELS: Record<FavoriteKind, string> = {
+  artist: "Singer or band",
+  movie: "Film",
+  tv: "TV show",
+  other: "Something else",
+};
+
+export { EXAMPLE_PROFILE };
+
+type Props = {
+  initial?: Profile;
+  /** Ask the sudden-change question fresh, even when other answers are prefilled (a new session). */
+  askSafetyAgain?: boolean;
+  errors?: FieldErrors;
+  busy: boolean;
+  onSubmit: (profile: Profile) => void;
+};
+
+export function IntakeForm({ initial, askSafetyAgain = false, errors = {}, busy, onSubmit }: Props) {
+  const id = useId();
+  const [displayName, setDisplayName] = useState(initial?.displayName ?? "");
+  const [birthYear, setBirthYear] = useState(initial ? String(initial.birthYear) : "");
+  const [hometown, setHometown] = useState(initial?.hometown ?? "");
+  // Always at least one row: a rejected submit can come back with zero favorites,
+  // and the caregiver needs a field to fix it in.
+  const [favorites, setFavorites] = useState<Favorite[]>(
+    initial?.favorites.length ? initial.favorites : [{ text: "", kind: "artist" }],
+  );
+  const initialNothing = initial?.thingsToAvoid.length === 1 && initial.thingsToAvoid[0] === "none";
+  const [nothingToAvoid, setNothingToAvoid] = useState(initialNothing);
+  const [avoidText, setAvoidText] = useState(initial && !initialNothing ? initial.thingsToAvoid.join("\n") : "");
+  // No defaults for these two: the caregiver has to choose.
+  const [suddenChange, setSuddenChange] = useState<boolean | null>(askSafetyAgain ? null : (initial?.suddenChange ?? null));
+  const [supportLevel, setSupportLevel] = useState<SupportLevel | null>(initial?.supportLevel ?? null);
+  const [formerWork, setFormerWork] = useState(initial?.formerWork ?? "");
+  const [firstLanguage, setFirstLanguage] = useState(initial?.firstLanguage ?? "");
+  const [traditions, setTraditions] = useState(initial?.traditions ?? "");
+  // Open when there's something in it to start with; after that only the caregiver opens or
+  // closes it, so clearing a box while typing doesn't collapse the section.
+  const [moreOpen, setMoreOpen] = useState(Boolean(initial?.formerWork || initial?.firstLanguage || initial?.traditions));
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // After the server rejects a submit, put the caregiver on the first field to fix.
+  useEffect(() => {
+    if (Object.values(errors).some((e) => e?.length)) {
+      formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"], [data-invalid="true"]')?.focus();
+    }
+  }, [errors]);
+
+  function fill(p: Profile) {
+    setSuddenChange(p.suddenChange);
+    setSupportLevel(p.supportLevel);
+    setFormerWork(p.formerWork ?? "");
+    setFirstLanguage(p.firstLanguage ?? "");
+    setTraditions(p.traditions ?? "");
+    if (p.formerWork || p.firstLanguage || p.traditions) setMoreOpen(true);
+    setDisplayName(p.displayName);
+    setBirthYear(String(p.birthYear));
+    setHometown(p.hometown);
+    setFavorites(p.favorites);
+    const none = p.thingsToAvoid.length === 1 && p.thingsToAvoid[0] === "none";
+    setNothingToAvoid(none);
+    setAvoidText(none ? "" : p.thingsToAvoid.join("\n"));
+  }
+
+  function updateFavorite(i: number, patch: Partial<Favorite>) {
+    setFavorites((fs) => fs.map((f, j) => (j === i ? { ...f, ...patch } : f)));
+  }
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (busy) return;
+    // One item per line, as the hint says: a title like "Hello, Dolly!" stays whole.
+    const thingsToAvoid = nothingToAvoid
+      ? ["none"]
+      : avoidText.split("\n").map((s) => s.trim()).filter(Boolean);
+    // Unanswered choices are sent as-is so the server's caregiver-friendly message explains them.
+    onSubmit({
+      suddenChange: suddenChange as boolean,
+      supportLevel: supportLevel as SupportLevel,
+      formerWork: formerWork.trim() || undefined,
+      firstLanguage: firstLanguage.trim() || undefined,
+      traditions: traditions.trim() || undefined,
+      displayName: displayName.trim(),
+      birthYear: Number(birthYear),
+      hometown: hometown.trim(),
+      favorites: favorites.filter((f) => f.text.trim()).map((f) => ({ ...f, text: f.text.trim() })),
+      thingsToAvoid,
+    });
+  }
+
+  const err = (field: keyof Profile) =>
+    errors[field]?.length ? (
+      <p id={`${id}-${field}-error`} className="mt-2 font-semibold text-error">
+        {errors[field]!.join(" ")}
+      </p>
+    ) : null;
+  const describedBy = (field: keyof Profile, hint?: string) =>
+    [hint, errors[field]?.length ? `${id}-${field}-error` : null].filter(Boolean).join(" ") || undefined;
+
+  // Large boxes with a clear edge: easier to see and to tap.
+  const inputClass =
+    "mt-1 block min-h-12 w-full rounded-lg border-2 border-control bg-card px-3 py-2.5 text-ink placeholder:text-muted aria-[invalid=true]:border-error";
+  const choiceClass =
+    "flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border-2 border-control bg-card px-4 py-2.5 has-[:checked]:border-accent has-[:checked]:bg-accent-soft";
+
+  return (
+    <form ref={formRef} onSubmit={submit} className="space-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-muted">A few details are enough. We don’t save these details.</p>
+        <button
+          type="button"
+          onClick={() => {
+            fill(EXAMPLE_PROFILE);
+            track("example_filled", {});
+          }}
+          className="btn btn-secondary"
+        >
+          Fill in an example (Rosa)
+        </button>
+      </div>
+
+      <fieldset aria-describedby={describedBy("suddenChange")}>
+        <legend className="font-semibold">First, a safety check</legend>
+        <p className="mt-1">{SUDDEN_CHANGE_QUESTION}</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          {[
+            { value: false, label: "No" },
+            { value: true, label: "Yes" },
+          ].map((o) => (
+            <label key={o.label} className={`${choiceClass} min-w-28`}>
+              <input
+                type="radio"
+                name={`${id}-sudden`}
+                className="size-6 accent-accent"
+                checked={suddenChange === o.value}
+                onChange={() => setSuddenChange(o.value)}
+                required
+                data-invalid={errors.suddenChange?.length ? true : undefined}
+              />
+              {o.label}
+            </label>
+          ))}
+        </div>
+        {err("suddenChange")}
+      </fieldset>
+
+      {suddenChange === true ? (
+        // D9: the stop shows as soon as the caregiver says yes, before any other answer. Nothing is
+        // sent: no kit, no Qloo or Claude call, and no analytics event. Answering "No" brings the
+        // rest of the form back with what was typed.
+        <SafetyStop name={displayName.trim() || undefined} message={SAFETY_STOP_MESSAGE} />
+      ) : (
+        <>
+          <div>
+            <label htmlFor={`${id}-name`} className="font-semibold">
+              What do they like to be called?
+            </label>
+            <input
+              id={`${id}-name`}
+              className={inputClass}
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              required
+              maxLength={60}
+              autoComplete="off"
+              aria-invalid={Boolean(errors.displayName?.length)}
+              aria-describedby={describedBy("displayName")}
+            />
+            {err("displayName")}
+          </div>
+
+          <fieldset aria-describedby={describedBy("supportLevel")}>
+            <legend className="font-semibold">How much support do they need today?</legend>
+            <p className="mt-1 text-muted">This shapes the kit. It can change from day to day.</p>
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              {(Object.keys(SUPPORT_LEVELS) as SupportLevel[]).map((level) => (
+                <label key={level} className={`${choiceClass} items-start p-4`}>
+                  <input
+                    type="radio"
+                    name={`${id}-support`}
+                    className="mt-1 size-6 shrink-0 accent-accent"
+                    checked={supportLevel === level}
+                    onChange={() => setSupportLevel(level)}
+                    required
+                    data-invalid={errors.supportLevel?.length ? true : undefined}
+                  />
+                  <span>
+                    <span className="block font-semibold">{SUPPORT_LEVELS[level].label}</span>
+                    <span className="block text-muted">{SUPPORT_LEVELS[level].description}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            {err("supportLevel")}
+          </fieldset>
+
+          <div className="grid gap-7 sm:grid-cols-2">
+            <div>
+              <label htmlFor={`${id}-year`} className="font-semibold">
+                Year of birth
+              </label>
+              <input
+                id={`${id}-year`}
+                className={inputClass}
+                type="number"
+                inputMode="numeric"
+                min={BIRTH_YEAR_MIN}
+                max={BIRTH_YEAR_MAX}
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value)}
+                required
+                aria-invalid={Boolean(errors.birthYear?.length)}
+                aria-describedby={describedBy("birthYear", `${id}-year-hint`)}
+              />
+              <p id={`${id}-year-hint`} className="mt-1 text-muted">
+                We look at the years they were about 10 to 30.
+              </p>
+              {err("birthYear")}
+            </div>
+            <div>
+              <label htmlFor={`${id}-town`} className="font-semibold">
+                Where they grew up
+              </label>
+              <input
+                id={`${id}-town`}
+                className={inputClass}
+                value={hometown}
+                onChange={(e) => setHometown(e.target.value)}
+                placeholder="City or town"
+                required
+                maxLength={80}
+                aria-invalid={Boolean(errors.hometown?.length)}
+                aria-describedby={describedBy("hometown")}
+              />
+              {err("hometown")}
+            </div>
+          </div>
+
+          <fieldset>
+            <legend className="font-semibold">Favorites they still remember</legend>
+            <p className="mt-1 text-muted">
+              1 to {MAX_FAVORITES}. Something from when they were young works best.
+            </p>
+            <div className="mt-3 space-y-3">
+              {favorites.map((f, i) => (
+                <div key={i} className="flex flex-wrap gap-2 sm:flex-nowrap">
+                  <label className="sr-only" htmlFor={`${id}-fav-${i}`}>
+                    Favorite {i + 1}
+                  </label>
+                  <input
+                    id={`${id}-fav-${i}`}
+                    className={`${inputClass} mt-0 min-w-0 flex-1 basis-full sm:basis-auto`}
+                    value={f.text}
+                    onChange={(e) => updateFavorite(i, { text: e.target.value })}
+                    placeholder="e.g. Frank Sinatra"
+                    required={i === 0}
+                    maxLength={80}
+                    aria-invalid={Boolean(errors.favorites?.length)}
+                    aria-describedby={describedBy("favorites")}
+                  />
+                  <label className="sr-only" htmlFor={`${id}-kind-${i}`}>
+                    Type of favorite {i + 1}
+                  </label>
+                  <select
+                    id={`${id}-kind-${i}`}
+                    className="min-h-12 flex-1 rounded-lg border-2 border-control bg-card px-3 py-2.5 sm:flex-none"
+                    value={f.kind}
+                    onChange={(e) => updateFavorite(i, { kind: e.target.value as FavoriteKind })}
+                  >
+                    {Object.entries(KIND_LABELS).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  {favorites.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFavorites((fs) => fs.filter((_, j) => j !== i));
+                        track("form_action", { action: "remove_favorite" });
+                      }}
+                      className="btn btn-secondary"
+                      aria-label={`Remove favorite ${i + 1}`}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            {favorites.length < MAX_FAVORITES && (
+              <button
+                type="button"
+                onClick={() => {
+                  setFavorites((fs) => [...fs, { text: "", kind: "artist" }]);
+                  track("form_action", { action: "add_favorite" });
+                }}
+                className="btn btn-link mt-3"
+              >
+                + Add another favorite
+              </button>
+            )}
+            {err("favorites")}
+          </fieldset>
+
+          <div>
+            <label htmlFor={`${id}-avoid`} className="font-semibold">
+              Things to avoid
+            </label>
+            <p id={`${id}-avoid-hint`} className="mt-1 text-muted">
+              Topics, songs or places that could upset them. One per line. We also try to screen out titles
+              about illness, dementia, death, war or mature content.
+            </p>
+            <textarea
+              id={`${id}-avoid`}
+              className={`${inputClass.replace("min-h-12", "min-h-28")} disabled:opacity-50`}
+              value={avoidText}
+              onChange={(e) => setAvoidText(e.target.value)}
+              disabled={nothingToAvoid}
+              required={!nothingToAvoid}
+              placeholder={"e.g. hospitals\nanything about the war\nMoon River"}
+              aria-invalid={Boolean(errors.thingsToAvoid?.length)}
+              aria-describedby={describedBy("thingsToAvoid", `${id}-avoid-hint`)}
+            />
+            <label className={`${choiceClass} mt-3 w-fit`}>
+              <input
+                type="checkbox"
+                className="size-6 accent-accent"
+                checked={nothingToAvoid}
+                onChange={(e) => setNothingToAvoid(e.target.checked)}
+              />
+              Nothing to avoid that I know of
+            </label>
+            {err("thingsToAvoid")}
+          </div>
+
+          <details className="rounded-lg border-2 border-control bg-card p-4" open={moreOpen}
+            onToggle={(e) => {
+              const open = e.currentTarget.open;
+              if (open && !moreOpen) track("form_action", { action: "more_about_opened" });
+              setMoreOpen(open);
+            }}
+          >
+            <summary className="min-h-12 cursor-pointer py-2 font-semibold">More about them (optional)</summary>
+            <p className="mt-2 text-muted">Helps make the questions personal. Used for this kit only, not saved.</p>
+            <div className="mt-4 grid gap-5 sm:grid-cols-2">
+              <div>
+                <label htmlFor={`${id}-work`} className="font-medium">
+                  Work they did
+                </label>
+                <input
+                  id={`${id}-work`}
+                  className={inputClass}
+                  value={formerWork}
+                  onChange={(e) => setFormerWork(e.target.value)}
+                  placeholder="e.g. teacher, ran the family farm"
+                  maxLength={80}
+                />
+              </div>
+              <div>
+                <label htmlFor={`${id}-lang`} className="font-medium">
+                  First language
+                </label>
+                <input
+                  id={`${id}-lang`}
+                  className={inputClass}
+                  value={firstLanguage}
+                  onChange={(e) => setFirstLanguage(e.target.value)}
+                  placeholder="e.g. Polish"
+                  maxLength={40}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor={`${id}-trad`} className="font-medium">
+                  Traditions or faith that matter to them
+                </label>
+                <input
+                  id={`${id}-trad`}
+                  className={inputClass}
+                  value={traditions}
+                  onChange={(e) => setTraditions(e.target.value)}
+                  placeholder="e.g. Sunday hymns, Diwali"
+                  maxLength={80}
+                />
+              </div>
+            </div>
+            {err("formerWork")}
+            {err("firstLanguage")}
+            {err("traditions")}
+          </details>
+
+          <button
+            type="submit"
+            aria-disabled={busy || undefined}
+            className="btn btn-primary min-h-14 w-full px-8 text-lg aria-disabled:opacity-60 sm:w-auto"
+          >
+            {busy ? "Putting the kit together…" : "Build the session kit"}
+          </button>
+        </>
+      )}
+    </form>
+  );
+}

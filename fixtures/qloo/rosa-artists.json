@@ -1,0 +1,430 @@
+{
+  "url": "/v2/insights?signal.interests.entities=FC0F8D26-BA80-4D83-8BBF-FC011DC8D241&filter.type=urn%3Aentity%3Aartist&take=25",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "78991296-9E4A-4559-996A-5C5B5DCB8374",
+      "name": "Louis Armstrong",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Louis Armstrong (1901–1971) was a seminal American jazz trumpeter, cornetist, vocalist and bandleader. Rising from a poor childhood in New Orleans, he became one of the most important figures in jazz history: a pioneering soloist, an innovator of rhythmic phrasing and improvisation, and a hugely popular performer whose recordings and tours brought jazz to global audiences. His career included landmark Hot Five and Hot Seven recordings, decades leading his All-Stars, successful crossover hits like \"Hello, Dolly!\" and \"What a Wonderful World,\" film appearances, and frequent collaborations with top vocalists and bandleaders."
+      },
+      "genres": [
+        "Traditional Jazz",
+        "Swing",
+        "Oldies",
+        "Dixieland",
+        "Trumpet",
+        "Jazz",
+        "Blues",
+        "New Orleans Jazz"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "E0CD9B0B-75BB-4DAE-BCB7-79AB5DE42A0D",
+      "name": "Nat King Cole",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Nat King Cole (born Nathaniel Adams Coles) was an American jazz pianist and vocalist whose warm, smooth baritone and elegant phrasing made him one of the 20th century's most popular singers. He rose to fame leading the Nat King Cole Trio in the late 1930s and 1940s with a piano-guitar-bass format, then transitioned into orchestral pop vocal recordings that produced enduring hits such as \"Unforgettable,\" \"Mona Lisa,\" \"Nature Boy,\" and \"The Christmas Song.\" Cole broke racial barriers as one of the first African-American entertainers to host a national television variety program and achieved major crossover success on pop and jazz charts worldwide."
+      },
+      "genres": [
+        "Blues",
+        "Jazz",
+        "Swing",
+        "Vocal Jazz",
+        "Oldies",
+        "Traditional Pop",
+        "Crooner"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F3BF838E-C78F-4282-A660-CE022F4A4BCB",
+      "name": "Dean Martin",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Dean Martin (born Dino Paul Crocetti) was an American singer, actor and entertainer whose warm baritone, effortless cool and relaxed stage presence made him one of mid-20th-century popular music's definitive crooners. Rising from working-class beginnings in Steubenville, Ohio, Martin found success as part of a comedy duo with Jerry Lewis in the late 1940s and early 1950s, then as a solo recording artist and film star. He was a core member of the Las Vegas Rat Pack alongside Frank Sinatra and Sammy Davis Jr., hosted The Dean Martin Show and The Dean Martin Celebrity Roast on television, and left a lasting catalog of standards and hits that bridged pop, jazz and lounge traditions."
+      },
+      "genres": [
+        "Jazz",
+        "Swing",
+        "Lounge",
+        "Traditional Pop",
+        "Oldies",
+        "Easy Listening",
+        "Vocal Jazz",
+        "Crooner"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "B47866C7-8250-4B81-B8F9-14CF66DA5E80",
+      "name": "Glenn Miller",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Glenn Miller was an American trombonist, arranger, composer, and bandleader in the swing era. He led one of the best-selling big bands of the late 1930s and early 1940s, known for hits like 'In the Mood' and 'Moonlight Serenade.' His music was characterized by a distinctive clarinet-led reed section sound. Miller's career was cut short when he disappeared in 1944 during World War II while traveling to entertain U.S. troops overseas."
+      },
+      "genres": [
+        "Jazz",
+        "Swing",
+        "Big Band",
+        "Oldies"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+      "name": "Ella Fitzgerald",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Ella Fitzgerald (1917–1996) was an American jazz vocalist whose clarity of tone, impeccable diction, rhythmic swing and pioneering scat improvisation made her one of the most influential singers of the 20th century. She rose to fame with Chick Webb's orchestra in the 1930s, achieved pop crossover success with hits like \"A-Tisket, A-Tasket,\" and later created the landmark Songbook series for Verve Records, recording the works of Cole Porter, Irving Berlin, the Gershwins and others."
+      },
+      "genres": [
+        "Vocal Jazz",
+        "Blues",
+        "Swing",
+        "Jazz",
+        "Big Band"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "15D12B84-FEC9-4049-B783-BAC121CA4904",
+      "name": "Tony Bennett",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Tony Bennett (born Anthony Dominick Benedetto, 1926–2023) was an American singer celebrated for his warm, expressive interpretations of the Great American Songbook and his career-spanning work in traditional pop and vocal jazz. He achieved international fame with hits such as \"I Left My Heart in San Francisco,\" won multiple Grammy Awards, collaborated across generations (notably with Bill Evans and Lady Gaga), and helped revive popular interest in classic American standards while maintaining a long, influential career."
+      },
+      "genres": [
+        "Jazz",
+        "Swing",
+        "Oldies",
+        "Big Band",
+        "Traditional Pop",
+        "Easy Listening",
+        "Vocal Jazz",
+        "Pop Standards"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "3F144530-744A-421D-A425-5AF95DD55F4F",
+      "name": "Peggy Lee",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Peggy Lee was a renowned American jazz and popular music singer, songwriter, and actress whose career spanned over six decades. She was known for her smooth, sultry voice and her ability to convey emotion with subtlety and sophistication. Lee's work included jazz standards, pop hits, and film soundtracks, and she was influential in shaping vocal jazz and traditional pop music. She also contributed as a songwriter and was noted for her collaborations with prominent musicians and composers."
+      },
+      "genres": [
+        "Swing",
+        "Jazz",
+        "Traditional Pop",
+        "Pop",
+        "Blues",
+        "Oldies"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "3ADB7376-2FA5-49C4-84FD-9704DD38AB6C",
+      "name": "Bobby Darin",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Bobby Darin (born Walden Robert Cassotto) was a versatile American singer, songwriter and actor whose career spanned rock & roll, pop standards, jazz and country. He became a major pop star in the late 1950s and 1960s with a string of charting singles and was noted for his ability to move between uptempo rockers and sophisticated orchestral arrangements. He also worked in film and television and built a reputation as a charismatic, theatrical performer."
+      },
+      "genres": [
+        "Swing",
+        "Folk",
+        "Rock And Roll",
+        "Pop",
+        "Jazz",
+        "Easy Listening",
+        "Oldies",
+        "Traditional Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "C0A5886B-EDC4-4930-A175-5CB60C112025",
+      "name": "Doris Day",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Doris Day (born Doris Mary Ann Kappelhoff, 1922–2019) was an American singer and actress who rose from big-band vocalist to one of Hollywood's most popular film stars and recording artists in the 1940s–1960s. She recorded chart-topping hits, starred in romantic comedies and musicals, and cultivated a wholesome, girl-next-door screen persona. Later in life she became a prominent animal welfare advocate."
+      },
+      "genres": [
+        "Traditional Pop",
+        "Jazz",
+        "Oldies",
+        "Easy Listening",
+        "Big Band",
+        "Vocal Jazz",
+        "Big-Band"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "29A09D72-F12E-49B2-B404-1DC87FC1F9B9",
+      "name": "Mel Tormé",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Mel Tormé was an American jazz singer, composer, arranger, drummer, and actor, renowned for his smooth vocal style and impeccable phrasing. Nicknamed 'The Velvet Fog' for his silky voice, Tormé was a versatile musician who contributed significantly to jazz and popular music from the 1940s through the 1990s. He was also a talented songwriter, co-writing the classic Christmas song 'The Christmas Song (Chestnuts Roasting on an Open Fire)'."
+      },
+      "genres": [
+        "Swing",
+        "Jazz",
+        "Vocal Jazz"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "CF104894-43FC-483E-9A4D-0E2D9A30520C",
+      "name": "Rosemary Clooney",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rosemary Clooney was an American singer and actress who gained fame in the 1950s with her warm, rich voice and interpretations of traditional pop and jazz standards. She was known for her smooth vocal style and ability to convey emotion, making her a beloved figure in the American music scene. Clooney also appeared in films and television, further establishing her as a versatile entertainer."
+      },
+      "genres": [
+        "Jazz",
+        "Traditional Pop",
+        "Oldies",
+        "Vocal Jazz"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0C79C7BE-8E28-40D9-994E-3A3E950A2728",
+      "name": "Sammy Davis, Jr.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sammy Davis, Jr. was a multifaceted American entertainer renowned for his singing, dancing, acting, and comedic skills. Rising to fame as a member of the Rat Pack alongside Frank Sinatra and Dean Martin, Davis was celebrated for his charismatic performances across music, film, and television. His career spanned several decades, during which he broke racial barriers and became one of the most popular African American entertainers of the 20th century."
+      },
+      "genres": [
+        "Traditional Pop",
+        "Jazz",
+        "Swing",
+        "Vocal Jazz"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "DA47A814-6D62-4D16-8FCD-A4BBC915122D",
+      "name": "Harry Connick, Jr.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Harry Connick, Jr. is an American singer, pianist, composer, actor, and television host. He is renowned for his work in jazz and big band music, blending traditional jazz with pop and blues influences. Connick has released numerous albums, many of which have achieved commercial success and critical acclaim. He is also known for his acting roles in film and television, as well as his work as a television host."
+      },
+      "genres": [
+        "Swing",
+        "New Orleans",
+        "Jazz",
+        "Pop",
+        "Vocal Jazz",
+        "Big Band"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "36959494-D305-4B40-9BA0-F099BE259473",
+      "name": "Paul Anka",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Paul Anka is a Canadian-American singer, songwriter, and actor who rose to fame in the late 1950s and 1960s with a string of hit songs. Known for his smooth vocal style and songwriting skills, Anka has had a long and successful career in pop and traditional pop music. He wrote and performed numerous hits such as \"Diana,\" \"Put Your Head on My Shoulder,\" and \"Lonely Boy.\" Anka also wrote the English lyrics to Frank Sinatra's signature song \"My Way.\""
+      },
+      "genres": [
+        "Easy Listening",
+        "Canadian",
+        "Pop",
+        "Swing",
+        "Traditional Pop",
+        "Rock",
+        "Oldies",
+        "Jazz"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "3D864FF6-ABAD-4243-B5D8-10A1634F8FD7",
+      "name": "Julie London",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Julie London was an American singer and actress who gained fame in the 1950s and 1960s for her smoky, intimate vocal style and torch songs. She was known for her sultry voice and emotive delivery, often performing jazz and pop standards. London also had a successful acting career, appearing in films and television shows. Her music career was marked by a smooth, understated style that made her a popular figure in traditional pop and vocal jazz genres."
+      },
+      "genres": [
+        "Vocal Jazz",
+        "Swing",
+        "Jazz",
+        "Traditional Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "8004D878-CF71-4FA8-A5FB-872ED95D6695",
+      "name": "Ray Charles",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Ray Charles (1930–2004) was an American vocalist, pianist and composer who fused gospel, rhythm & blues, jazz and country to help invent soul music. Renowned for his emotive, gritty voice and piano-driven arrangements, he scored numerous hits across pop, R&B and country charts, expanded the possibilities of genre crossover (notably with Modern Sounds in Country and Western Music), and had a lasting influence on generations of singers and songwriters."
+      },
+      "genres": [
+        "Gospel",
+        "Rhythm And Blues",
+        "R & B",
+        "Blues",
+        "Jazz",
+        "Soul",
+        "Piano",
+        "Rhythm & Blues",
+        "Pop",
+        "Country"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "A5F2D98E-639A-498C-A4B5-8CDF4B017F23",
+      "name": "Billie Holiday",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Billie Holiday, also known as Lady Day, was an American jazz and blues singer renowned for her deeply emotive vocal style and unique phrasing. She became one of the most influential jazz vocalists of all time, with a career spanning from the 1930s to the late 1950s. Holiday's music often conveyed themes of love, sorrow, and social injustice, and she is remembered for her ability to convey profound emotion through her singing."
+      },
+      "genres": [
+        "Jazz",
+        "Blues",
+        "Vocal Jazz",
+        "Swing"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "B0587DF1-93F1-46C2-94EB-995DF5FF5EE7",
+      "name": "Perry Como",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Perry Como was an American singer and television personality whose career spanned more than half a century. Known for his smooth baritone voice and relaxed, easygoing style, he became one of the most popular vocalists of the mid-20th century. Como's music primarily encompassed traditional pop and easy listening genres, with influences from big band and jazz. He was also a pioneer in television variety shows, hosting 'The Perry Como Show' which was highly successful and influential."
+      },
+      "genres": [
+        "Traditional Pop",
+        "Jazz",
+        "Easy Listening",
+        "Vocal",
+        "Oldies"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "B0D42EB4-DD21-4106-A025-78BB85A09383",
+      "name": "Lena Horne",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Lena Horne was a celebrated American singer, actress, and civil rights activist whose career spanned over 70 years. She was known for her rich, smooth vocal style and her ability to cross over from jazz and traditional pop to blues and R&B. Horne was also a pioneering African American entertainer who broke racial barriers in Hollywood and on Broadway, becoming a symbol of elegance and dignity. Her work included numerous recordings, film appearances, and stage performances, and she was also active in the civil rights movement, using her platform to advocate for racial equality."
+      },
+      "genres": [
+        "Jazz",
+        "Swing",
+        "Oldies",
+        "Traditional Pop",
+        "Vocal Jazz"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "CE15DE6B-8B9E-4644-A5A1-F575483BA57F",
+      "name": "Louis Prima",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Louis Prima (1910–1978) was an influential American singer, songwriter, bandleader, and trumpeter, renowned for his lively and charismatic performances that combined jazz, swing, and New Orleans-style music. He gained fame for his dynamic stage presence and his ability to blend various musical styles, including jazz, swing, jump blues, and traditional pop. Prima was also known for his collaborations with his wife Keely Smith and saxophonist Sam Butera, producing hits that remain classics in the jazz and swing genres."
+      },
+      "genres": [
+        "Jazz",
+        "Swing",
+        "Lounge",
+        "Vocal Jazz",
+        "Big Band",
+        "Jump Blues"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "29E20425-1C3C-47CD-AD25-D296B1258038",
+      "name": "Benny Goodman",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Benny Goodman was a pioneering American jazz clarinetist and bandleader who played a central role in popularizing swing music in the 1930s and 1940s. Known as the 'King of Swing', Goodman led one of the most popular big bands of the swing era and was instrumental in breaking racial barriers in music by integrating his band. He was also a skilled classical clarinetist, performing and recording classical repertoire."
+      },
+      "genres": [
+        "Swing",
+        "Big Band",
+        "Jazz",
+        "Clarinet",
+        "Oldies"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "97966857-92D0-4779-8DBF-EDB85BFB0B79",
+      "name": "Bing Crosby",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Bing Crosby was a highly influential American singer and actor whose career spanned from the 1920s to the 1970s. He was a pioneer in the use of magnetic tape recording and multi-track recording, which revolutionized the music industry. Crosby's smooth baritone voice and relaxed singing style made him one of the best-selling recording artists of the 20th century. He was also a successful film star, known for roles in movies such as \"White Christmas.\" His style helped define the crooner genre and influenced countless artists."
+      },
+      "genres": [
+        "Vocal Jazz",
+        "Christmas",
+        "Jazz",
+        "Oldies",
+        "Big Band",
+        "Swing",
+        "Traditional Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "6AF100F6-9B5D-490C-94FE-CEC9E02ADCC5",
+      "name": "Dave Brubeck",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Dave Brubeck (1920–2012) was a highly influential American jazz pianist and composer, best known for his work in cool jazz and West Coast jazz. He gained international fame with his Dave Brubeck Quartet, particularly for the album 'Time Out' which featured the hit 'Take Five'. Brubeck was known for his use of unusual time signatures and complex rhythms, blending classical music elements with jazz. His career spanned over six decades, during which he became one of the most popular and respected figures in jazz history."
+      },
+      "genres": [
+        "Jazz - Piano",
+        "Cool Jazz",
+        "Bebop",
+        "Jazz",
+        "West Coast Jazz",
+        "Piano",
+        "Instrumental"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "4D1E08A9-6683-491C-91D3-27E726C30903",
+      "name": "Chet Baker",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Chet Baker was an American jazz trumpeter and singer celebrated for a delicate, lyrical trumpet tone and a breathy, intimate vocal style. A key figure in the 1950s cool jazz and West Coast scenes, he rose to prominence with the Gerry Mulligan Quartet and became known for spare, melodic solos and sensitive ballad interpretations. His career combined critical acclaim, prolific recordings, extensive touring (including long European residencies), and a well-documented struggle with drug addiction that affected his life and art."
+      },
+      "genres": [
+        "Jazz",
+        "Cool Jazz",
+        "West Coast Jazz",
+        "Trumpet",
+        "Vocal Jazz",
+        "Blues"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "EFA367F5-A217-4FC4-A164-CAADC31C131C",
+      "name": "Sarah Vaughan",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sarah Vaughan was an American jazz singer renowned for her rich, expressive voice and remarkable vocal range. She was a leading figure in jazz from the 1940s through the 1980s, known for her ability to blend bebop, swing, and blues styles with a unique vocal technique. Vaughan's career spanned several decades during which she recorded numerous albums and collaborated with many jazz greats, earning her a lasting legacy as one of the greatest jazz vocalists of all time."
+      },
+      "genres": [
+        "Vocal Jazz",
+        "Jazz",
+        "Bebop",
+        "Blues"
+      ],
+      "keywords": []
+    }
+  ]
+}

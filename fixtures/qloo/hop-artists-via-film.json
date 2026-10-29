@@ -1,0 +1,200 @@
+{
+  "url": "/v2/insights?signal.interests.entities=4D711F6C-123D-4889-82FE-26AD25C819C0&filter.type=urn%3Aentity%3Aartist&take=10",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "BE9644BD-E4E5-4303-A24C-3B2A600F9BF2",
+      "name": "Randy Newman",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Randy Newman is an American singer-songwriter, pianist, arranger and film composer whose career spans pop records of literate, character-driven songs and award-winning film scores. He is noted for a distinctive nasal vocal delivery, mordant satire, lush orchestral arrangements and memorable themes for animated and live-action films."
+      },
+      "genres": [
+        "Piano",
+        "Rock",
+        "Singer Songwriter",
+        "Pop Rock",
+        "Soft Rock",
+        "Pop",
+        "Singer & Songwriter",
+        "Soundtrack",
+        "Film Score",
+        "Singer-Songwriter",
+        "Piano Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "FC0F8D26-BA80-4D83-8BBF-FC011DC8D241",
+      "name": "Frank Sinatra",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Frank Sinatra (1915–1998) was an American singer and actor whose smooth, expressive voice and impeccable phrasing made him one of the definitive interpreters of the Great American Songbook. He rose from Hoboken, New Jersey, to stardom singing with big bands and then as a solo artist, becoming a cultural icon through recordings, films, and live performances. Sinatra founded Reprise Records, led the Rat Pack era of Las Vegas entertainment, and influenced generations of vocalists with his timing, breath control, and intimate delivery."
+      },
+      "genres": [
+        "Oldies",
+        "Vocal Jazz",
+        "Swing",
+        "Traditional Pop",
+        "Easy Listening",
+        "Jazz",
+        "Big Band",
+        "Crooner"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "38C826CA-D452-4C05-A624-6E414F7BDB5A",
+      "name": "Don McLean",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Don McLean is an American singer-songwriter famous for his poetic and narrative songwriting style, particularly his iconic 1971 hit 'American Pie'. His music blends folk, rock, and country influences, and he is known for his storytelling ability and emotional vocal delivery."
+      },
+      "genres": [
+        "Classic Rock",
+        "Singer Songwriter",
+        "Singer & Songwriter",
+        "Folk Rock",
+        "Folk",
+        "Rock",
+        "70s",
+        "Singer-Songwriter"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "4395AE84-43E1-45BC-9606-344226C6ADEC",
+      "name": "Elton John",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Elton John (born Reginald Kenneth Dwight) is an English singer, pianist and composer whose career has spanned six decades. Celebrated for his melodic, piano-driven songs, theatrical stage costumes and partnership with lyricist Bernie Taupin, he has produced numerous international hits and sold hundreds of millions of records. His work spans pop, rock, glam and orchestral ballads; he has written for film and theatre, won multiple awards including an Academy Award and Grammys, and founded the Elton John AIDS Foundation."
+      },
+      "genres": [
+        "Singer & Songwriter",
+        "Rock",
+        "Pop",
+        "Glam Rock",
+        "Soft Rock",
+        "Piano",
+        "Classic Rock",
+        "Singer-Songwriter",
+        "Pop Rock",
+        "Piano Rock",
+        "Adult Contemporary"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0DC6AE64-E9C1-486D-B239-5E77458C0B2E",
+      "name": "Billy Joel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Billy Joel is an American singer-songwriter and pianist whose career, beginning in the 1960s, produced numerous pop and rock hits built around his piano-driven melodies and narrative lyrics. He achieved major commercial success in the 1970s and 1980s with albums such as The Stranger and 52nd Street and singles including \"Piano Man,\" \"Just the Way You Are,\" and \"Uptown Girl.\" Known for energetic live performances—especially his long-standing annual concerts at Madison Square Garden—Joel's catalog spans storytelling ballads, rockers, and adult-contemporary standards."
+      },
+      "genres": [
+        "Rock",
+        "Singer & Songwriter",
+        "Pop Rock",
+        "Piano",
+        "Pop",
+        "Classic Rock",
+        "Soft Rock",
+        "Singer-Songwriter",
+        "Piano Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "CB48B032-4F0E-4E2D-A9DC-95D093687635",
+      "name": "Carole King",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Carole King (born 1942) is an American singer-songwriter and pianist. She began her career as a Brill Building songwriter in the late 1950s and 1960s, penning a long string of hits for other artists with lyricist Gerry Goffin. In 1971 she achieved superstar status as a solo artist with the album Tapestry, a best-selling, critically acclaimed record that produced multiple hit singles and became a touchstone of the 1970s singer-songwriter movement. King is known for intimate, piano-based arrangements, warm conversational vocals, and durable pop craftsmanship; her songs have been recorded by countless artists across genres. Over a career spanning six decades she has won multiple Grammy Awards and has been widely honored for her songwriting and influence."
+      },
+      "genres": [
+        "Singer & Songwriter",
+        "Pop",
+        "Singer Songwriter",
+        "Classic Rock",
+        "Soft Rock",
+        "Singer-Songwriter",
+        "Folk",
+        "Adult Contemporary"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F3BF838E-C78F-4282-A660-CE022F4A4BCB",
+      "name": "Dean Martin",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Dean Martin (born Dino Paul Crocetti) was an American singer, actor and entertainer whose warm baritone, effortless cool and relaxed stage presence made him one of mid-20th-century popular music's definitive crooners. Rising from working-class beginnings in Steubenville, Ohio, Martin found success as part of a comedy duo with Jerry Lewis in the late 1940s and early 1950s, then as a solo recording artist and film star. He was a core member of the Las Vegas Rat Pack alongside Frank Sinatra and Sammy Davis Jr., hosted The Dean Martin Show and The Dean Martin Celebrity Roast on television, and left a lasting catalog of standards and hits that bridged pop, jazz and lounge traditions."
+      },
+      "genres": [
+        "Jazz",
+        "Swing",
+        "Lounge",
+        "Traditional Pop",
+        "Oldies",
+        "Easy Listening",
+        "Vocal Jazz",
+        "Crooner"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "51584316-495F-49C4-B281-908C920B32A9",
+      "name": "Neil Diamond",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Neil Diamond (born 1941) is an American singer-songwriter whose warm, slightly raspy baritone and knack for melodic, emotional songwriting made him a major pop-rock star from the 1960s onward. He wrote hits for himself and others, scored enduring singles like \"Sweet Caroline,\" \"Song Sung Blue,\" and \"Cracklin' Rosie,\" and became a staple of adult-contemporary radio and arena singalongs. Diamond sold tens of millions of records worldwide and has been honored by the Songwriters Hall of Fame and Rock and Roll Hall of Fame. He retired from touring after announcing a Parkinson's diagnosis in 2018 but remains one of the most recognizable voices in popular music of the baby-boomer era."
+      },
+      "genres": [
+        "Soft Rock",
+        "Rock",
+        "Pop",
+        "Classic Rock",
+        "Singer & Songwriter",
+        "Singer-Songwriter",
+        "Adult Contemporary"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "7B593A2A-A764-4958-8055-128A1C20E4BE",
+      "name": "Harry Nilsson",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Harry Nilsson was an American singer-songwriter and musician known for his wide vocal range, distinctive voice, and eclectic musical style that blended pop, rock, and baroque pop elements. He gained fame in the late 1960s and 1970s with hits like \"Everybody's Talkin'\" and \"Without You.\" Nilsson was also known for his collaborations with The Beatles and his influence on the singer-songwriter genre."
+      },
+      "genres": [
+        "Rock",
+        "Pop",
+        "Classic Rock",
+        "Singer & Songwriter",
+        "Baroque Pop",
+        "Soft Rock"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "6F04D7A4-AA26-4D57-B677-DDD3F737A4B6",
+      "name": "Simon & Garfunkel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Simon & Garfunkel are an American folk-rock duo consisting of Paul Simon and Art Garfunkel, celebrated for their close two-part vocal harmonies, poetic songwriting, and a string of defining 1960s recordings such as 'The Sound of Silence' and 'Bridge Over Troubled Water.' Emerging from New York, they blended acoustic folk roots with pop and subtle orchestral arrangements, achieving both commercial success and lasting cultural influence."
+      },
+      "genres": [
+        "Rock",
+        "Classic Rock",
+        "Pop Rock",
+        "Acoustic",
+        "Singer & Songwriter",
+        "Folk",
+        "Folk Rock",
+        "Singer-Songwriter"
+      ],
+      "keywords": []
+    }
+  ]
+}

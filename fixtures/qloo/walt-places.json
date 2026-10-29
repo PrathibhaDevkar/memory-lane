@@ -1,0 +1,983 @@
+{
+  "url": "/v2/insights?signal.interests.entities=95593E4D-2CBE-44E5-BF82-F1E542B63A96&filter.type=urn%3Aentity%3Aplace&filter.location.query=Memphis&take=50",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "B8AA92F2-A3B3-469B-BDCA-F955F40B3343",
+      "name": "Sun Studio",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Iconic 1950s recording studio offering guided tours, memorabilia displays, and original session rooms where Elvis, Johnny Cash, and other legends recorded.",
+        "short_description": "Iconic 1950s recording studio offering guided tours, memorabilia displays, and original session rooms where Elvis, Johnny Cash, and other legends recorded.",
+        "primary_genre": "urn:tag:genre:place:museum"
+      },
+      "genres": [
+        "Shopping",
+        "Tourist attraction",
+        "Museum",
+        "Record store",
+        "Place",
+        "Souvenir store"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "03F0032F-CBB5-4204-9DFF-388806F79D18",
+      "name": "Lorraine Motel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Memphis motel site of Martin Luther King Jr.'s assassination, now a comprehensive museum on the U.S. civil rights movement.",
+        "short_description": "Historic Memphis motel site of Martin Luther King Jr.'s assassination, now a comprehensive museum on the U.S. civil rights movement.",
+        "primary_genre": "urn:tag:genre:place:heritage_building"
+      },
+      "genres": [
+        "Heritage building",
+        "Tourist attraction",
+        "Place",
+        "Museum",
+        "Historical landmark"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "CCBCC746-DA89-414C-8992-34A39CF04EED",
+      "name": "Guest House at Graceland",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Polished Elvis-themed hotel adjacent to Graceland Mansion with spacious rooms, live music, theater, dining, and shuttle services.",
+        "short_description": "Polished Elvis-themed hotel adjacent to Graceland Mansion with spacious rooms, live music, theater, dining, and shuttle services.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Resort hotel",
+        "Hotel",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "A31CB3A1-D1AF-4D2A-B5A2-9ADCA157751E",
+      "name": "Gladys' Diner",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual American diner at Graceland serving Elvis-themed favorites like peanut butter and banana sandwiches, burgers, and comfort food.",
+        "short_description": "Casual American diner at Graceland serving Elvis-themed favorites like peanut butter and banana sandwiches, burgers, and comfort food.",
+        "primary_genre": "urn:tag:genre:place:restaurant:diner"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Diner"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "18C30E0B-165F-4654-B916-D1488CDD7F28",
+      "name": "Alfred's On Beale",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Lively Beale Street rock club offering nightly live music, dancing, BBQ-focused casual American food, and an outdoor patio.",
+        "short_description": "Lively Beale Street rock club offering nightly live music, dancing, BBQ-focused casual American food, and an outdoor patio.",
+        "primary_genre": "urn:tag:genre:place:night_club"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction",
+        "Night club"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7F0AF4FD-FCCE-4A70-9C6E-8C26BCF0FB91",
+      "name": "Ardent Studios",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Memphis recording complex with multiple professional studios, vintage Neve and SSL consoles, Dolby Atmos mixing, and decades of iconic recordings.",
+        "short_description": "Historic Memphis recording complex with multiple professional studios, vintage Neve and SSL consoles, Dolby Atmos mixing, and decades of iconic recordings.",
+        "primary_genre": "urn:tag:genre:place:recording_studio"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8A6CD712-E0DF-4044-AB8C-F8DB5697C553",
+      "name": "RockHouse Live Memphis",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual bar and grill in Memphis featuring live rock music, full menu, and late-night hours.",
+        "short_description": "Casual bar and grill in Memphis featuring live rock music, full menu, and late-night hours.",
+        "primary_genre": "urn:tag:genre:place:live_music_venue"
+      },
+      "genres": [
+        "Bar + grill",
+        "Place",
+        "Live music venue",
+        "Tourist attraction",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "766423D8-A022-4604-AB8C-347262D9F131",
+      "name": "Classic Hitz",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Boisterous Memphis dance club with DJ music, live bands, a VIP area, full bar and casual food menu.",
+        "short_description": "Boisterous Memphis dance club with DJ music, live bands, a VIP area, full bar and casual food menu.",
+        "primary_genre": "urn:tag:genre:place:night_club"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Restaurant",
+        "Bar",
+        "Night club",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0AD26E7D-53F0-439F-B46C-468EFA8B577E",
+      "name": "Stax Museum of American Soul Music",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Replica recording studio and rotating exhibits tell the story of a legendary Memphis soul label and the development of American soul music.",
+        "short_description": "Replica recording studio and rotating exhibits tell the story of a legendary Memphis soul label and the development of American soul music.",
+        "primary_genre": "urn:tag:genre:place:local_history_museum"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Local history museum",
+        "Museum"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "7FDD33CE-1D36-467F-BCFD-76634007E473",
+      "name": "Minglewood Hall",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large industrial concert hall in a converted bread factory hosting music, boxing, and other live events in Midtown Memphis.",
+        "short_description": "Large industrial concert hall in a converted bread factory hosting music, boxing, and other live events in Midtown Memphis.",
+        "primary_genre": "urn:tag:genre:place:live_music_venue"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Wedding venue",
+        "Restaurant",
+        "Live music venue",
+        "Lounge",
+        "Place",
+        "Event venue",
+        "Banquet hall",
+        "Concert hall"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8F3B80AF-BD24-4DE3-AB53-92E5F92C796D",
+      "name": "Miss Polly's Soul City Café",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Cozy Memphis soul-food café serving fried chicken, waffles, and classic comfort dishes.",
+        "short_description": "Cozy Memphis soul-food café serving fried chicken, waffles, and classic comfort dishes.",
+        "primary_genre": "urn:tag:genre:place:restaurant:cafe"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Chicken restaurant",
+        "Caterer",
+        "Cafe"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FFB36BD6-381B-4DDB-B2E8-339BD7BBB30F",
+      "name": "Prohibition Lounge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Elegant upscale Memphis nightlife venue offering cocktails, hookah, dancing, live DJs, private events, and a full-service bar with a vibrant party atmosphere.",
+        "short_description": "Elegant upscale Memphis nightlife venue offering cocktails, hookah, dancing, live DJs, private events, and a full-service bar with a vibrant party atmosphere.",
+        "primary_genre": "urn:tag:genre:place:restaurant:lounge_bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Lounge bar",
+        "Place",
+        "Bar",
+        "Cocktail bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8C7BA69E-2A86-487A-B2E0-1E06C615C8D4",
+      "name": "Delta Fair & Music Festival",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Annual Memphis festival celebrating Delta music, agriculture, and family entertainment with rides, livestock shows, crafts, food, and live performances.",
+        "short_description": "Annual Memphis festival celebrating Delta music, agriculture, and family entertainment with rides, livestock shows, crafts, food, and live performances.",
+        "primary_genre": "urn:tag:genre:place:festival"
+      },
+      "genres": [
+        "Festival",
+        "Tourist attraction",
+        "Place",
+        "Event venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "578181B6-BDF3-454A-BB4F-08E308F99E4E",
+      "name": "Growlers",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual beer-focused bar and live music venue serving bar food with billiards, cocktails, and frequent local shows.",
+        "short_description": "Casual beer-focused bar and live music venue serving bar food with billiards, cocktails, and frequent local shows.",
+        "primary_genre": "urn:tag:genre:place:entertainment_agency"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Cocktail bar",
+        "Entertainment agency",
+        "American",
+        "Place",
+        "Comedy club",
+        "Restaurant",
+        "Live music venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FC19E9DB-6FE8-438B-B113-C470F8285E2C",
+      "name": "New Daisy Theatre",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Beale Street theater dating to 1936, hosting rock and blues concerts, boxing and MMA events, and available for private rentals.",
+        "short_description": "Historic Beale Street theater dating to 1936, hosting rock and blues concerts, boxing and MMA events, and available for private rentals.",
+        "primary_genre": "urn:tag:genre:place:live_music_venue"
+      },
+      "genres": [
+        "Place",
+        "Live music venue",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "704C959F-E232-41C1-A440-09D107061E70",
+      "name": "The Pig On Beale",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Lively downtown Memphis BBQ spot serving ribs, pulled pork and Southern sides in a retro diner setting on Beale Street.",
+        "short_description": "Lively downtown Memphis BBQ spot serving ribs, pulled pork and Southern sides in a retro diner setting on Beale Street.",
+        "primary_genre": "urn:tag:genre:place:restaurant:barbecue",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:bbq_platter",
+            "name": "Bbq Platter"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:smoked_chicken",
+            "name": "Smoked Chicken"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:bbq_beans",
+            "name": "Bbq Beans"
+          }
+        ]
+      },
+      "genres": [
+        "American",
+        "Place",
+        "Barbecue restaurant",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "DDF05300-B181-429B-8A76-C5D136718793",
+      "name": "Graceland",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Preserved 20th-century celebrity estate offering guided mansion tours, extensive Elvis exhibits, a car museum, and two private jets.",
+        "short_description": "Preserved 20th-century celebrity estate offering guided mansion tours, extensive Elvis exhibits, a car museum, and two private jets.",
+        "primary_genre": "urn:tag:genre:place:museum"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Museum",
+        "Place",
+        "Historical landmark"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1AC0A09B-0027-4A86-9672-284AA7A76EAD",
+      "name": "Downtown Memphis Commission",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Public-private organization coordinating downtown Memphis economic development, planning, and business improvement to attract investment, events, and revitalization.",
+        "short_description": "Public-private organization coordinating downtown Memphis economic development, planning, and business improvement to attract investment, events, and revitalization.",
+        "primary_genre": "urn:tag:genre:place:economic_development_agency"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "CEBF4E8C-CA70-430C-9666-83C68D1C0D67",
+      "name": "Starbucks Coffee Company",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Chain coffeehouse serving signature roasts, light bites, and Wi-Fi in a convenient downtown location.",
+        "short_description": "Chain coffeehouse serving signature roasts, light bites, and Wi-Fi in a convenient downtown location.",
+        "primary_genre": "urn:tag:genre:place:restaurant:coffee_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Espresso bar",
+        "Cafe",
+        "Coffee shop",
+        "Coffee store",
+        "Place",
+        "Shopping"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "72F573C9-9330-4390-84CF-33A55D19F2CC",
+      "name": "Days Inn by Wyndham Memphis at Graceland",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Budget-friendly hotel near Graceland with Elvis memorabilia, guitar-shaped pool, and complimentary breakfast and parking.",
+        "short_description": "Budget-friendly hotel near Graceland with Elvis memorabilia, guitar-shaped pool, and complimentary breakfast and parking.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Inn",
+        "Hotel",
+        "Place",
+        "Motel"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "D1D49CC1-7B4A-46AC-8406-8249EA1DE861",
+      "name": "The Pumping Station",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Easygoing gay neighborhood bar with pool tables, dart boards, and a compact menu of bar snacks and drinks.",
+        "short_description": "Easygoing gay neighborhood bar with pool tables, dart boards, and a compact menu of bar snacks and drinks.",
+        "primary_genre": "urn:tag:genre:place:restaurant:gay_bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Gay bar",
+        "Bar",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "2278F967-D176-4FF0-94AF-EC01437F9BF8",
+      "name": "National Civil Rights Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Museum at the Lorraine Motel site where Martin Luther King Jr. was assassinated, presenting comprehensive exhibits on the U.S. civil rights movement and racial equality.",
+        "short_description": "Museum at the Lorraine Motel site where Martin Luther King Jr. was assassinated, presenting comprehensive exhibits on the U.S. civil rights movement and racial equality.",
+        "primary_genre": "urn:tag:genre:place:national_museum"
+      },
+      "genres": [
+        "History museum",
+        "Historical landmark",
+        "Historical place museum",
+        "Place",
+        "Tourist attraction",
+        "Heritage museum",
+        "Museum",
+        "National museum"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "F6AF3CEE-28EA-4948-844E-69772C296DDE",
+      "name": "Los Cabos Mexican Bar & Grill",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual, festive Mexican bar & grill offering classic dishes, margaritas, and late-night dining in Memphis.",
+        "short_description": "Casual, festive Mexican bar & grill offering classic dishes, margaritas, and late-night dining in Memphis.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:arroz_con_pollo",
+            "name": "Arroz Con Pollo"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_fajitas",
+            "name": "Chicken Fajitas"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:enchilada",
+            "name": "Enchilada"
+          }
+        ]
+      },
+      "genres": [
+        "Bar + grill",
+        "Mexican",
+        "Place",
+        "Restaurant",
+        "Tex mex"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "EABDF557-03C8-41BC-A213-E76A9A073D35",
+      "name": "Metal Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "The only U.S. museum devoted exclusively to fine metalwork, featuring exhibitions, a working blacksmith shop and foundry, hands-on classes, sculpture garden, and event spaces.",
+        "short_description": "The only U.S. museum devoted exclusively to fine metalwork, featuring exhibitions, a working blacksmith shop and foundry, hands-on classes, sculpture garden, and event spaces.",
+        "primary_genre": "urn:tag:genre:place:museum"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Museum",
+        "Place",
+        "Art gallery",
+        "Event venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "52FC82AD-9371-4221-ADEE-12D76BC2D858",
+      "name": "Paula & Raiford's Disco",
+      "type": "urn:entity",
+      "properties": {
+        "description": "High-energy nightclub with cocktails, DJ sets, and late-night dancing in downtown Memphis.",
+        "short_description": "High-energy nightclub with cocktails, DJ sets, and late-night dancing in downtown Memphis.",
+        "primary_genre": "urn:tag:genre:place:night_club"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Night club"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "92ABFCBF-2D1B-4E34-9F61-52B3538C4C72",
+      "name": "Holiday Inn Express Memphis Medical Center Midtown by IHG",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Laid-back hotel near Methodist University Hospital offering free breakfast, outdoor pool, fitness center, and free parking in a central Memphis location.",
+        "short_description": "Laid-back hotel near Methodist University Hospital offering free breakfast, outdoor pool, fitness center, and free parking in a central Memphis location.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Place",
+        "Wedding venue",
+        "Tourist attraction",
+        "Hotel"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1F00BA40-5B34-4E68-82FC-989DC84E8F7B",
+      "name": "Imagine Vegan Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Homey, sustainable eatery serving vegan entrees, sandwiches, desserts, brunch and a kids' menu.",
+        "short_description": "Homey, sustainable eatery serving vegan entrees, sandwiches, desserts, brunch and a kids' menu.",
+        "primary_genre": "urn:tag:genre:place:restaurant:vegan",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:bbq_beans",
+            "name": "Bbq Beans"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_nuggets",
+            "name": "Chicken Nuggets"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_waffles",
+            "name": "Chicken And Waffles"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Dessert",
+        "Restaurant",
+        "Vegetarian",
+        "Vegan"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "65313A77-7246-4E46-B3DD-995C3603F075",
+      "name": "EP's Bar & Grill",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Modern American bar and grill inside The Guest House at Graceland offering casual American eats, sports on TV, and a pool table.",
+        "short_description": "Modern American bar and grill inside The Guest House at Graceland offering casual American eats, sports on TV, and a pool table.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill"
+      },
+      "genres": [
+        "Bar + grill",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "3A20AFEA-7132-42BE-928A-7DFB7486678A",
+      "name": "Southaven High School",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Suburban public high school serving grades 9–12 in Southaven, emphasizing academics, extracurriculars, and community involvement.",
+        "short_description": "Suburban public high school serving grades 9–12 in Southaven, emphasizing academics, extracurriculars, and community involvement.",
+        "primary_genre": "urn:tag:genre:place:high_school"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "336AD1FB-5E26-414B-8C0E-1D7E7A69DA5F",
+      "name": "Club Handy",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Bar and restaurant on Memphis's historic Beale Street serving cocktails, beer, wine, and outdoor seating; moderately expensive.",
+        "short_description": "Bar and restaurant on Memphis's historic Beale Street serving cocktails, beer, wine, and outdoor seating; moderately expensive.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "B6F87A91-C048-41BB-A74E-2BDC56F85711",
+      "name": "Memphis Made Brewing Co.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Downtown Memphis craft brewery and taproom offering rotating beers, a relaxed event-friendly space, and regular weekend hours.",
+        "short_description": "Downtown Memphis craft brewery and taproom offering rotating beers, a relaxed event-friendly space, and regular weekend hours.",
+        "primary_genre": "urn:tag:genre:place:brewery"
+      },
+      "genres": [
+        "Brewery",
+        "Tourist attraction",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E46D12B2-D78A-4A2A-B3E5-E08773DEE816",
+      "name": "Vernon’s Smoke House",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Memphis-style barbecue and Southern comfort classics served on the Graceland grounds, featuring Elvis favorites and a signature house BBQ sauce.",
+        "short_description": "Memphis-style barbecue and Southern comfort classics served on the Graceland grounds, featuring Elvis favorites and a signature house BBQ sauce.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "45FA6F4C-7DB2-4C1E-BA10-26B9DE829ABD",
+      "name": "Illusion Ink",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Tattoo studio in Southaven focused on personal body art and custom designs.",
+        "short_description": "Tattoo studio in Southaven focused on personal body art and custom designs.",
+        "primary_genre": "urn:tag:genre:place:tattoo_shop"
+      },
+      "genres": [
+        "Tattoo shop",
+        "Place",
+        "Personal care"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "07E3976C-F58F-4E3E-9F2D-49E1647AF5D6",
+      "name": "East End Skating Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Family-friendly roller skating rink with arcade, birthday party packages, and regular adult nights, offering a newly resurfaced floor and group event hosting in Memphis.",
+        "short_description": "Family-friendly roller skating rink with arcade, birthday party packages, and regular adult nights, offering a newly resurfaced floor and group event hosting in Memphis.",
+        "primary_genre": "urn:tag:genre:place:roller_skating_rink"
+      },
+      "genres": [
+        "Roller skating rink",
+        "Tourist attraction",
+        "Restaurant",
+        "Place",
+        "Video arcade"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "B671BDF9-BB83-44B8-B5EE-E35AC3EAAB77",
+      "name": "ATM | First Horizon Bank | Memphis, TN | Peabody Hotel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Self-service First Horizon ATM inside a downtown Memphis landmark hotel on Union Avenue, offering cash withdrawals, deposits, and basic banking services.",
+        "short_description": "Self-service First Horizon ATM inside a downtown Memphis landmark hotel on Union Avenue, offering cash withdrawals, deposits, and basic banking services.",
+        "primary_genre": "urn:tag:genre:place:atm"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "8F9C86AE-048C-49FB-907B-20B0FD1D7BBF",
+      "name": "Renasant Convention Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Downtown Memphis convention center offering extensive exhibit, meeting and event space near Beale Street and the riverfront.",
+        "short_description": "Downtown Memphis convention center offering extensive exhibit, meeting and event space near Beale Street and the riverfront.",
+        "primary_genre": "urn:tag:genre:place:convention_center"
+      },
+      "genres": [
+        "Convention center",
+        "Place",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "D699E388-7413-4613-BD44-B211D92CD5E3",
+      "name": "Visible Music College",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Accredited Christian music college in downtown Memphis combining professional music training, performance venues, recording facilities, and a touring worship collective.",
+        "short_description": "Accredited Christian music college in downtown Memphis combining professional music training, performance venues, recording facilities, and a touring worship collective.",
+        "primary_genre": "urn:tag:genre:place:music_college"
+      },
+      "genres": [
+        "Event venue",
+        "Wedding chapel",
+        "Music instructor",
+        "Music college",
+        "Place",
+        "Church",
+        "Tourist attraction",
+        "Concert hall"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8F7F087B-ABF5-41E7-A1FA-311E1E6CBC82",
+      "name": "The Mid-South Maze",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large agritourism corn maze on a Memphis farm offering family daytime activities and seasonal nighttime haunted-maze events.",
+        "short_description": "Large agritourism corn maze on a Memphis farm offering family daytime activities and seasonal nighttime haunted-maze events.",
+        "primary_genre": "urn:tag:genre:place:farm"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E5E060D7-40E6-4160-A3CB-174686819EA8",
+      "name": "Memphis Redbirds",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Triple-A professional baseball team playing at downtown AutoZone Park, serving as the St. Louis Cardinals' top minor-league affiliate with family-friendly promotions and events.",
+        "short_description": "Triple-A professional baseball team playing at downtown AutoZone Park, serving as the St. Louis Cardinals' top minor-league affiliate with family-friendly promotions and events.",
+        "primary_genre": "urn:tag:genre:place:baseball_club"
+      },
+      "genres": [
+        "Place",
+        "Baseball club",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8C1129FA-C731-4922-B9CF-D4AE5A8E7950",
+      "name": "Silky O'Sullivan's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Beale Street Irish pub serving Memphis-style BBQ, oysters and cocktails with live music, outdoor patio and resident pet goats.",
+        "short_description": "Historic Beale Street Irish pub serving Memphis-style BBQ, oysters and cocktails with live music, outdoor patio and resident pet goats.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:one_dozen_oysters_on_half_shell",
+            "name": "One Dozen Oysters On The Half Shell"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:catfish",
+            "name": "Catfish"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:diver_bucket",
+            "name": "Diver Bucket"
+          }
+        ]
+      },
+      "genres": [
+        "American",
+        "Place",
+        "Restaurant",
+        "Cajun",
+        "Bar + grill",
+        "Southern restaurant us",
+        "Live music bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "BD7C878E-5490-41A2-84C8-7A9CD409E830",
+      "name": "Hu. Roof",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rooftop bar and restaurant atop a boutique hotel offering cocktails, elevated bar fare, and outdoor seating with city views.",
+        "short_description": "Rooftop bar and restaurant atop a boutique hotel offering cocktails, elevated bar fare, and outdoor seating with city views.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "B96C7A7C-946E-4928-8FFE-B07076379060",
+      "name": "Premiere Palace Ballroom",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Spacious ballroom in Memphis for private parties, birthdays, and community events, offering on-site bar service and catering-friendly facilities.",
+        "short_description": "Spacious ballroom in Memphis for private parties, birthdays, and community events, offering on-site bar service and catering-friendly facilities.",
+        "primary_genre": "urn:tag:genre:place:event_venue"
+      },
+      "genres": [
+        "Place",
+        "Ballroom",
+        "Tourist attraction",
+        "Event venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "85419AC2-B96E-4EA9-A4EA-875180155A46",
+      "name": "Mud Island River Park",
+      "type": "urn:entity",
+      "properties": {
+        "description": "A riverfront park offering skyline views, scale-model river features, and access to the Mississippi along downtown Memphis.",
+        "short_description": "A riverfront park offering skyline views, scale-model river features, and access to the Mississippi along downtown Memphis.",
+        "primary_genre": "urn:tag:genre:place:monorail_station"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7030FCA5-DBD8-4882-86E8-21239B1DB55B",
+      "name": "King Jerry Lawler's Hall of Fame Bar & Grille",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Beale Street barbecue bar with live music, wrestling memorabilia, and BBQ plates plus cocktails.",
+        "short_description": "Casual Beale Street barbecue bar with live music, wrestling memorabilia, and BBQ plates plus cocktails.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:1_2_rack_ribs",
+            "name": "1 2 Rack Of Ribs"
+          }
+        ]
+      },
+      "genres": [
+        "Museum",
+        "Restaurant",
+        "Place",
+        "Barbecue restaurant",
+        "Bar + grill",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F56ED7AD-F8F0-406B-AC1F-85D6EAF8E7A4",
+      "name": "Memphis Zoo",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large urban zoo showcasing diverse land and aquatic species in geographically themed pavilions.",
+        "short_description": "Large urban zoo showcasing diverse land and aquatic species in geographically themed pavilions.",
+        "primary_genre": "urn:tag:genre:place:zoo"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Zoo",
+        "Wedding venue",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "60FD6D35-D54F-40E7-960B-7D3D6CED0FEA",
+      "name": "Memphis Botanic Garden",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Expansive botanical garden showcasing global plant collections in themed areas, highlighted by a tranquil Japanese garden and seasonal horticultural displays.",
+        "short_description": "Expansive botanical garden showcasing global plant collections in themed areas, highlighted by a tranquil Japanese garden and seasonal horticultural displays.",
+        "primary_genre": "urn:tag:genre:place:botanical_garden"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Botanical garden"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "A4C896A1-8494-410A-9B98-9E28E935E096",
+      "name": "Southland Mall",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Enclosed suburban shopping center in Memphis offering national retailers, dining options, and frequent sales and events with extended weekend hours.",
+        "short_description": "Enclosed suburban shopping center in Memphis offering national retailers, dining options, and frequent sales and events with extended weekend hours.",
+        "primary_genre": "urn:tag:genre:place:shopping_mall"
+      },
+      "genres": [
+        "Shopping",
+        "Place",
+        "Shopping mall"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FD477274-3648-4D27-B761-9CC84F73F589",
+      "name": "FedExForum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large downtown arena on Beale Street hosting NBA and college basketball, concerts, and major touring events; home venue for the Memphis Grizzlies.",
+        "short_description": "Large downtown arena on Beale Street hosting NBA and college basketball, concerts, and major touring events; home venue for the Memphis Grizzlies.",
+        "primary_genre": "urn:tag:genre:place:arena"
+      },
+      "genres": [
+        "Place",
+        "Stadium",
+        "Sports complex",
+        "Event venue",
+        "Tourist attraction",
+        "Arena"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7E8F0194-7FF7-4A33-8980-58C1E586FC4F",
+      "name": "Sweet Noshings",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Neighborhood candy and ice cream shop in Midtown Memphis offering sweets, frozen treats, onsite dining, and delivery.",
+        "short_description": "Neighborhood candy and ice cream shop in Midtown Memphis offering sweets, frozen treats, onsite dining, and delivery.",
+        "primary_genre": "urn:tag:genre:place:candy_store"
+      },
+      "genres": [
+        "Shopping",
+        "Restaurant",
+        "Place",
+        "Ice cream shop",
+        "Candy store"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "BBE071DD-C34E-4D7B-A89A-7D1C294270B5",
+      "name": "Ronald McDonald House Charities of Memphis",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Nonprofit providing free lodging, meals, and support services to families of hospitalized children, keeping them close to medical care in Memphis.",
+        "short_description": "Nonprofit providing free lodging, meals, and support services to families of hospitalized children, keeping them close to medical care in Memphis.",
+        "primary_genre": "urn:tag:genre:place:social_services_organization"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    }
+  ]
+}

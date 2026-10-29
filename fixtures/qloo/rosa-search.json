@@ -1,0 +1,46 @@
+{
+  "url": "/search?query=Frank+Sinatra&types=urn%3Aentity%3Aartist&take=3",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "FC0F8D26-BA80-4D83-8BBF-FC011DC8D241",
+      "name": "Frank Sinatra",
+      "properties": {
+        "short_description": "Iconic American singer and actor known for his smooth voice and timeless classics."
+      },
+      "genres": [
+        "Jazz",
+        "Oldies",
+        "Vocal Jazz",
+        "Swing",
+        "Easy Listening",
+        "Traditional Pop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "D02D4C37-6ECF-4B85-AE7C-C941F79A6B48",
+      "name": "Frank Sinatra, Jr.",
+      "properties": {
+        "short_description": "American singer and conductor known for traditional pop and jazz music."
+      },
+      "genres": [
+        "All",
+        "Swing",
+        "Jazz",
+        "Traditional Pop",
+        "Big Band"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "8E1154E1-9D37-412E-8D7A-729E35D6D228",
+      "name": "Frank Sinatra with Antonio Carlos Jobim",
+      "properties": {
+        "short_description": "A collaborative music project blending Frank Sinatra's vocals with Antonio Carlos Jobim's bossa nova style."
+      },
+      "genres": [],
+      "keywords": []
+    }
+  ]
+}

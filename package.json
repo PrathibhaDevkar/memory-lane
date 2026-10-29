@@ -1,0 +1,45 @@
+{
+  "name": "memory-lane",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "typecheck": "next typegen && tsc --noEmit",
+    "dev:agent": "KIT_SOURCE=agent next dev",
+    "smoke": "node --env-file=.env.local scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.134.0",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.39.0",
+    "next": "16.4.1",
+    "posthog-js": "1.438.2",
+    "posthog-node": "5.55.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.1",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.0.4"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "overrides": {
+    "@posthog/core": "1.57.1",
+    "@posthog/types": "1.415.1",
+    "@posthog/browser-common": "0.9.2"
+  }
+}

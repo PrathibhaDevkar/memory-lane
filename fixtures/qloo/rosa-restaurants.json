@@ -1,0 +1,1170 @@
+{
+  "url": "/v2/insights?signal.interests.entities=FC0F8D26-BA80-4D83-8BBF-FC011DC8D241&filter.type=urn%3Aentity%3Aplace&filter.location.query=Chicago&filter.tags=urn%3Atag%3Agenre%3Aplace%3Arestaurant&take=50",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "264EE9C5-C8AE-460B-AEE2-155DCA8AC344",
+      "name": "Gino's East",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Longstanding pizzeria serving Chicago-style deep-dish and thin-crust pizzas, plus Italian sandwiches, salads, vegan and gluten-free options.",
+        "short_description": "Longstanding pizzeria serving Chicago-style deep-dish and thin-crust pizzas, plus Italian sandwiches, salads, vegan and gluten-free options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:pizza",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:meaty_legend_deep_dish_pizza",
+            "name": "Meaty Legend Deep Dish Pizza"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:gino_s_house_salad",
+            "name": "Gino S House Salad"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:gino_s_supreme_pizza",
+            "name": "Gino S Supreme Pizza"
+          }
+        ]
+      },
+      "genres": [
+        "Pizza delivery",
+        "Lunch restaurant",
+        "Bar",
+        "Restaurant",
+        "Pizza takeout",
+        "Pizza",
+        "Delivery restaurant",
+        "Italian",
+        "Place",
+        "Caterer"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "EA4DB65A-02F4-4E9E-A5ED-F5C3F2615060",
+      "name": "CloudBar at 360 CHICAGO",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Fashionable 94th-floor bar serving craft cocktails, local beers and snacks with panoramic Chicago skyline views and a lively nighttime atmosphere.",
+        "short_description": "Fashionable 94th-floor bar serving craft cocktails, local beers and snacks with panoramic Chicago skyline views and a lively nighttime atmosphere.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Bar",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "73F023E6-471E-40FF-9568-43E65CDEF6A4",
+      "name": "Cubs Bar & Grill",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Airport bar and grill in O'Hare Terminal 3 offering comfort food and cocktails, known for chicken wings and diverse drink selection.",
+        "short_description": "Airport bar and grill in O'Hare Terminal 3 offering comfort food and cocktails, known for chicken wings and diverse drink selection.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_wings",
+            "name": "Chicken And Wings"
+          }
+        ]
+      },
+      "genres": [
+        "Bar + grill",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "3A3D9314-F135-4468-872C-DC08684154BF",
+      "name": "My Second Home",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual neighborhood restaurant and bar offering drinks and relaxed dining on Chicago’s Southwest Side.",
+        "short_description": "Casual neighborhood restaurant and bar offering drinks and relaxed dining on Chicago’s Southwest Side.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Bar"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "843BDADF-2588-4F9C-B6A3-73F1098AFAD4",
+      "name": "Bubbles",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sleek champagne and wine bar near O'Hare serving Mediterranean small plates, breakfast, cocktails, and arcade games.",
+        "short_description": "Sleek champagne and wine bar near O'Hare serving Mediterranean small plates, breakfast, cocktails, and arcade games.",
+        "primary_genre": "urn:tag:genre:place:restaurant:wine_bar"
+      },
+      "genres": [
+        "Wine bar",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "CBCC1565-488B-49C9-A24B-07C42ED60D0E",
+      "name": "European Chalet Banquets",
+      "type": "urn:entity",
+      "properties": {
+        "description": "European-inspired full-service banquet hall and caterer in Chicago offering wedding, quinceañera, and corporate event packages with customizable decor, menus, and onsite parking.",
+        "short_description": "European-inspired full-service banquet hall and caterer in Chicago offering wedding, quinceañera, and corporate event packages with customizable decor, menus, and onsite parking.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Event venue",
+        "Wedding venue",
+        "Restaurant",
+        "Tourist attraction",
+        "Place",
+        "Banquet hall"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FD28B863-60D4-4006-9986-E3B197A7CD42",
+      "name": "Gaslight Club",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Old-school airport bar and restaurant serving surf‑and‑turf, cocktails, and late-night fare in a vintage cabaret atmosphere with servers in classic cabaret attire.",
+        "short_description": "Old-school airport bar and restaurant serving surf‑and‑turf, cocktails, and late-night fare in a vintage cabaret atmosphere with servers in classic cabaret attire.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "AD993BD8-7AD9-42B6-91B8-736425DE2E01",
+      "name": "Fountain Blue Banquets & Conference Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Elegant renovated banquet and conference center offering award-winning cuisine, dedicated event planning, full-venue buyouts, and complimentary parking for weddings and corporate events.",
+        "short_description": "Elegant renovated banquet and conference center offering award-winning cuisine, dedicated event planning, full-venue buyouts, and complimentary parking for weddings and corporate events.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Wedding venue",
+        "Banquet hall",
+        "Tourist attraction",
+        "Event venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "790E602B-2B2C-48F6-AD8C-8133D872C06A",
+      "name": "RiNo Bar",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Late-night River North bar and dance venue with pulsating beats, mesmerizing lights, and mixed-genre DJ nights including country remixes and 2000s pop.",
+        "short_description": "Late-night River North bar and dance venue with pulsating beats, mesmerizing lights, and mixed-genre DJ nights including country remixes and 2000s pop.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "06E65AC0-2891-4B9F-987E-CA048A512BE7",
+      "name": "Lido Banquets & Events",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Full-service, single-ballroom banquet hall in Chicago hosting weddings and events for up to 250 guests with personalized, one-at-a-time service.",
+        "short_description": "Full-service, single-ballroom banquet hall in Chicago hosting weddings and events for up to 250 guests with personalized, one-at-a-time service.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Place",
+        "Banquet hall",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7BA93B9D-6B21-4DE4-90A0-1DC41C797976",
+      "name": "Wrigley View Rooftop",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rooftop bar and event venue overlooking Wrigley Field, serving food, cocktails, beer, and wine with game-day dining and private-event options.",
+        "short_description": "Rooftop bar and event venue overlooking Wrigley Field, serving food, cocktails, beer, and wine with game-day dining and private-event options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Event venue",
+        "Baseball field",
+        "Place",
+        "Bar",
+        "Sports bar",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "619FBC26-F2C8-493C-B858-583CD9FD8F82",
+      "name": "WNDR Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Immersive, multi-sensory contemporary art museum with interactive installations and a camp-themed retail lounge and refreshment area in West Loop.",
+        "short_description": "Immersive, multi-sensory contemporary art museum with interactive installations and a camp-themed retail lounge and refreshment area in West Loop.",
+        "primary_genre": "urn:tag:genre:place:tourist_attraction"
+      },
+      "genres": [
+        "Gift shop",
+        "Cafe",
+        "Lounge bar",
+        "Art museum",
+        "Place",
+        "Shopping",
+        "Tourist attraction",
+        "Lounge",
+        "Cocktail bar",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "A1BF3E0F-D3D0-4DA2-A681-AE23E7E32261",
+      "name": "Cindy's Rooftop",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Chic all-season rooftop bar in the Chicago Athletic Association offering panoramic Millennium Park and Lake Michigan views and craft cocktails.",
+        "short_description": "Chic all-season rooftop bar in the Chicago Athletic Association offering panoramic Millennium Park and Lake Michigan views and craft cocktails.",
+        "primary_genre": "urn:tag:genre:place:restaurant",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:oysters_on_half_shell",
+            "name": "Oysters On Half Shell"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chilaquiles",
+            "name": "Chilaquiles"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:charcuterie",
+            "name": "Charcuterie"
+          }
+        ]
+      },
+      "genres": [
+        "American",
+        "Bar",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "5FBDD001-D570-4FFB-942E-E7269ABA4BD6",
+      "name": "Trump International Hotel & Tower® Chicago",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Luxurious riverside skyscraper hotel offering spacious suites with full kitchens, panoramic city and lake views, an award-winning spa, and upscale dining.",
+        "short_description": "Luxurious riverside skyscraper hotel offering spacious suites with full kitchens, panoramic city and lake views, an award-winning spa, and upscale dining.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Place",
+        "Fitness center",
+        "Personal care",
+        "Event venue",
+        "Tourist attraction",
+        "Wedding venue",
+        "Hotel",
+        "Restaurant",
+        "Day spa"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "0F3BEC66-3FEB-428C-90DD-0C4E859A0F2E",
+      "name": "Zam Zam Banquet Hall",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Event-focused restaurant and banquet hall offering private-event catering, flexible banquet spaces, and full-service facilities near North Oak Park in Chicago.",
+        "short_description": "Event-focused restaurant and banquet hall offering private-event catering, flexible banquet spaces, and full-service facilities near North Oak Park in Chicago.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Restaurant",
+        "Banquet hall",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8167C9E8-1B4C-48E3-9CE0-838432C48B5F",
+      "name": "Chicago",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual downtown Loop coffee shop and eatery on Jackson Boulevard, offering coffee and light fare.",
+        "short_description": "Casual downtown Loop coffee shop and eatery on Jackson Boulevard, offering coffee and light fare.",
+        "primary_genre": "urn:tag:genre:place:restaurant:coffee_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Coffee shop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "E1762B5A-6CA3-4C43-BFF9-4116FD756EBD",
+      "name": "Benihana - Chicago (John Hancock)",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Hibachi-style teppanyaki serving Japanese dishes with theatrical tableside chefs and grilled seafood, sushi, and steaks.",
+        "short_description": "Hibachi-style teppanyaki serving Japanese dishes with theatrical tableside chefs and grilled seafood, sushi, and steaks.",
+        "primary_genre": "urn:tag:genre:place:restaurant:japanese",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_fried_rice",
+            "name": "Chicken And Fried Rice"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:steak",
+            "name": "Le Steak"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:green_tea_ice_cream",
+            "name": "And Green Tea Ice Cream"
+          }
+        ]
+      },
+      "genres": [
+        "Teppanyaki restaurant",
+        "Restaurant",
+        "Japanese",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "3D7F157E-883E-42E0-A67C-7206D382F279",
+      "name": "Carlucci Rosemont",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Modern Tuscan-inspired fine-dining Italian restaurant and bar featuring a fountain-lined patio, private event rooms for up to 300 guests, and an extensive wine list.",
+        "short_description": "Modern Tuscan-inspired fine-dining Italian restaurant and bar featuring a fountain-lined patio, private event rooms for up to 300 guests, and an extensive wine list.",
+        "primary_genre": "urn:tag:genre:place:restaurant:italian"
+      },
+      "genres": [
+        "Place",
+        "Fine dining restaurant",
+        "Bar",
+        "Italian",
+        "Restaurant",
+        "Banquet hall"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "848BE797-6F98-4B10-B122-21A56D998B2A",
+      "name": "Lola's Diner 3",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Offering around-the-clock breakfast and American comfort fare in casual, no-frills soda-fountain diner surroundings.",
+        "short_description": "Offering around-the-clock breakfast and American comfort fare in casual, no-frills soda-fountain diner surroundings.",
+        "primary_genre": "urn:tag:genre:place:restaurant:diner"
+      },
+      "genres": [
+        "Diner",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7662737C-2A63-4DC5-BA74-5B46E0F38C2A",
+      "name": "Giordano's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual restaurant specializing in Chicago-style deep-dish stuffed pizza and classic Italian dishes, with dine-in, pickup and delivery options.",
+        "short_description": "Casual restaurant specializing in Chicago-style deep-dish stuffed pizza and classic Italian dishes, with dine-in, pickup and delivery options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:pizza",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chicago_style_pizza",
+            "name": "Chicago Style Pizza"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:giordano_s_house_salad",
+            "name": "Giordano S House Salad"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:bruschetta",
+            "name": "Bruschetta"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Pizza",
+        "Takeout restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "0EA62E48-68FA-4A92-921A-4A9C741294CB",
+      "name": "The Royal Sonesta Chicago Downtown",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Upscale downtown riverfront hotel offering elegant rooms with city and river views, extensive meeting and wedding spaces, fitness center, and pet-friendly services.",
+        "short_description": "Upscale downtown riverfront hotel offering elegant rooms with city and river views, extensive meeting and wedding spaces, fitness center, and pet-friendly services.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Wedding venue",
+        "Restaurant",
+        "Tourist attraction",
+        "Place",
+        "Hotel"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "100853FB-5F29-4E53-A6E4-4630BFD72604",
+      "name": "Three Dots and a Dash",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Retro Polynesian-style speakeasy serving classic tropical cocktails, house daiquiris, and Polynesian-inspired small plates in River North.",
+        "short_description": "Retro Polynesian-style speakeasy serving classic tropical cocktails, house daiquiris, and Polynesian-inspired small plates in River North.",
+        "primary_genre": "urn:tag:genre:place:restaurant:cocktail_bar",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:thai_fried_chicken",
+            "name": "Thai Fried Chicken"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:pu_pu_platter",
+            "name": "Pu Pu Platter"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:kalua_pulled_pork_sliders",
+            "name": "Kalua Pulled Pork Sliders"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Lounge bar",
+        "Cocktail bar",
+        "Bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "20FE49CE-1DE9-4A32-B4BA-B3067C46E086",
+      "name": "Color Cocktail Factory",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Expert-led pottery, glass fusion, and mosaic workshops in Pilsen offering BYOB, beginner-friendly classes and private events for groups and celebrations.",
+        "short_description": "Expert-led pottery, glass fusion, and mosaic workshops in Pilsen offering BYOB, beginner-friendly classes and private events for groups and celebrations.",
+        "primary_genre": "urn:tag:genre:place:art_school"
+      },
+      "genres": [
+        "Pottery classes",
+        "Night club",
+        "Adult entertainment club",
+        "Painting lessons",
+        "Shopping",
+        "Art cafe",
+        "Place",
+        "Art gallery",
+        "Pottery store",
+        "Event venue",
+        "Restaurant",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "D08165E7-6EB3-4E39-B9F0-046841CEE309",
+      "name": "Ron of Japan",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Tableside teppanyaki steakhouse offering theatrical chef-performed grill shows with steak, seafood, vegetables and Japanese sides at communal tables.",
+        "short_description": "Tableside teppanyaki steakhouse offering theatrical chef-performed grill shows with steak, seafood, vegetables and Japanese sides at communal tables.",
+        "primary_genre": "urn:tag:genre:place:restaurant:japanese",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:steak",
+            "name": "Le Steak"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:calamari",
+            "name": "And Calamari"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_soup",
+            "name": "And Chicken Soup"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Japanese steakhouse",
+        "Asian",
+        "Restaurant",
+        "Japanese",
+        "Bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "028744E7-A841-4C59-80D1-C709231C55FD",
+      "name": "Harry Caray's 7th Inning Stretch",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Lively sports-themed restaurant on Chicago's Magnificent Mile offering American comfort food, cocktails, craft beer, and event spaces with complimentary Chicago Sports Museum access.",
+        "short_description": "Lively sports-themed restaurant on Chicago's Magnificent Mile offering American comfort food, cocktails, craft beer, and event spaces with complimentary Chicago Sports Museum access.",
+        "primary_genre": "urn:tag:genre:place:restaurant:american"
+      },
+      "genres": [
+        "Restaurant",
+        "Lunch restaurant",
+        "Bar",
+        "Tourist attraction",
+        "Place",
+        "American",
+        "Event venue",
+        "Sports bar"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "676DC653-970A-4854-A90B-2B52EB8279AC",
+      "name": "NEVER HAVE I EVER",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Futuristic neon-lit Lincoln Park bar and live-music nightclub offering craft drinks, LGBTQ+- and Black-owned atmosphere with intimate club space.",
+        "short_description": "Futuristic neon-lit Lincoln Park bar and live-music nightclub offering craft drinks, LGBTQ+- and Black-owned atmosphere with intimate club space.",
+        "primary_genre": "urn:tag:genre:place:live_music_venue"
+      },
+      "genres": [
+        "Live music bar",
+        "Place",
+        "Live music venue",
+        "Bar",
+        "Restaurant",
+        "Night club",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FB0C4284-5686-4568-A64E-2EC7205A0446",
+      "name": "ROOF",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Upscale rooftop lounge on the 27th floor of a downtown hotel offering skyline views, craft cocktails, seasonal menus, and year-round events.",
+        "short_description": "Upscale rooftop lounge on the 27th floor of a downtown hotel offering skyline views, craft cocktails, seasonal menus, and year-round events.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Live music venue",
+        "Place",
+        "American",
+        "Lounge bar",
+        "Bar",
+        "Tourist attraction",
+        "Night club",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "774B2488-C709-41FE-A129-B467B5626BFE",
+      "name": "Chicago Chop House",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Victorian brownstone steakhouse serving hand-cut USDA prime steaks, house-made sides and five-star service in River North.",
+        "short_description": "Historic Victorian brownstone steakhouse serving hand-cut USDA prime steaks, house-made sides and five-star service in River North.",
+        "primary_genre": "urn:tag:genre:place:restaurant:steak_house"
+      },
+      "genres": [
+        "Steak house",
+        "Restaurant",
+        "Fine dining restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FCA2CBC9-4504-4725-A043-A6755AA15BB6",
+      "name": "Bernie's Tap & Grill",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Long-running Wrigleyville bar and grill serving burgers, comfort food, craft beer and cocktails in a lively, multi-level space with beer garden and outdoor seating.",
+        "short_description": "Long-running Wrigleyville bar and grill serving burgers, comfort food, craft beer and cocktails in a lively, multi-level space with beer garden and outdoor seating.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar + grill",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "BA2116A0-C0FD-4432-B108-D2D2DA539E5D",
+      "name": "Santa Baby Bar at Stolen Saddle",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large multi-room holiday-themed bar featuring wall-to-wall Christmas décor, multiple bars, DJs, full food and drink menus, and 20+ photo opportunities.",
+        "short_description": "Large multi-room holiday-themed bar featuring wall-to-wall Christmas décor, multiple bars, DJs, full food and drink menus, and 20+ photo opportunities.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Bar",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FF9B3C46-009B-471A-8341-0910719AF305",
+      "name": "The Elmcrest Banquets",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Family- and women-owned banquet venue in Elmwood Park offering four rooms, full catering, and personalized service for weddings, quinceañeras, and events for 50–500 guests.",
+        "short_description": "Family- and women-owned banquet venue in Elmwood Park offering four rooms, full catering, and personalized service for weddings, quinceañeras, and events for 50–500 guests.",
+        "primary_genre": "urn:tag:genre:place:restaurant:banquet_hall"
+      },
+      "genres": [
+        "Banquet hall",
+        "Caterer",
+        "Restaurant",
+        "Place",
+        "Wedding venue",
+        "Event venue",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "93E6F88E-99A6-4570-8511-6DE500BB7F6B",
+      "name": "Frosty's Christmas Bar Chicago",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Holiday pop-up bar serving Christmas-themed cocktails with colorful lights, DJs, and dancing in Chicago.",
+        "short_description": "Holiday pop-up bar serving Christmas-themed cocktails with colorful lights, DJs, and dancing in Chicago.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Bar",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "009E8302-FE7B-4A34-A688-00E5738D0D02",
+      "name": "Elf’d Up",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Holiday-themed Wrigleyville bar and grill offering Elf-inspired cocktails, comfort food, craft beers, and a lively, family-friendly atmosphere for private parties.",
+        "short_description": "Holiday-themed Wrigleyville bar and grill offering Elf-inspired cocktails, comfort food, craft beers, and a lively, family-friendly atmosphere for private parties.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill"
+      },
+      "genres": [
+        "Place",
+        "Bar + grill",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8D21D72E-849E-42A8-8F81-43067073D086",
+      "name": "Breakthrough FamilyPlex",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Multiservice community hub offering family programs, fitness, arts, preschool, cafe, and event spaces on Chicago's West Side.",
+        "short_description": "Multiservice community hub offering family programs, fitness, arts, preschool, cafe, and event spaces on Chicago's West Side.",
+        "primary_genre": "urn:tag:genre:place:community_center"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Fitness center",
+        "Place",
+        "Cafe",
+        "Event venue",
+        "Restaurant",
+        "Physical fitness program",
+        "Personal care"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "48EEAE3C-CE9E-4474-A60B-C92DC4D1C69C",
+      "name": "Klairmont Kollections Automotive Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Veteran-owned Chicago museum showcasing an extensive private collection of classic, celebrity, and historically significant automobiles in a restored exhibition space.",
+        "short_description": "Veteran-owned Chicago museum showcasing an extensive private collection of classic, celebrity, and historically significant automobiles in a restored exhibition space.",
+        "primary_genre": "urn:tag:genre:place:museum"
+      },
+      "genres": [
+        "Restaurant",
+        "Banquet hall",
+        "Tourist attraction",
+        "History museum",
+        "Festival hall",
+        "Museum",
+        "Event venue",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "113DF558-E34C-42B8-9DE1-EBED197D8887",
+      "name": "Giordano's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Chicago-style pizzeria famed for stuffed and deep-dish pies, offering Italian classics along with beer and wine.",
+        "short_description": "Casual Chicago-style pizzeria famed for stuffed and deep-dish pies, offering Italian classics along with beer and wine.",
+        "primary_genre": "urn:tag:genre:place:restaurant:pizza",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:world_famous_deep_dish_pizza",
+            "name": "World Famous Deep Dish Pizza"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:giordano_s_sampler",
+            "name": "Giordano S Sampler"
+          }
+        ]
+      },
+      "genres": [
+        "Pizza",
+        "Place",
+        "Takeout restaurant",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "2E39156C-01A1-4F4A-9477-3AE5BCFF407F",
+      "name": "Offshore Rooftop",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sleek rooftop restaurant offering chef-driven Californian cuisine and craft cocktails with sweeping Lake Michigan views.",
+        "short_description": "Sleek rooftop restaurant offering chef-driven Californian cuisine and craft cocktails with sweeping Lake Michigan views.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E5685607-703C-45C9-A4D7-F96EC43F1023",
+      "name": "Geja's Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Intimate, candlelit fondue restaurant since 1965 offering table-side fondue and an extensive wine list—perfect for romantic date nights.",
+        "short_description": "Intimate, candlelit fondue restaurant since 1965 offering table-side fondue and an extensive wine list—perfect for romantic date nights.",
+        "primary_genre": "urn:tag:genre:place:restaurant:fondue"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Fondue restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "73D828C9-FAFC-44D4-9B96-DA1E25326956",
+      "name": "Gold Coast Social",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Southern-inspired menu, live music, plush lounge seating and cocktail-focused bar in Chicago’s Gold Coast, offering brunch, dancing, and late-night hours.",
+        "short_description": "Southern-inspired menu, live music, plush lounge seating and cocktail-focused bar in Chicago’s Gold Coast, offering brunch, dancing, and late-night hours.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:french_toast",
+            "name": "And French Toast"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Bar",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "C50FB405-3BCF-4468-878C-D3DC884C7D65",
+      "name": "Soup & Scoops",
+      "type": "urn:entity",
+      "properties": {
+        "primary_genre": "urn:tag:genre:place:restaurant:soup"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Soup restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "441D7693-6714-4BE6-84D8-7544702973C4",
+      "name": "McCormick & Schmick's Seafood & Steaks",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Upscale seafood and steak restaurant near O’Hare with a clubby ambiance, award-winning happy hour, and regionally sourced seafood and aged steaks.",
+        "short_description": "Upscale seafood and steak restaurant near O’Hare with a clubby ambiance, award-winning happy hour, and regionally sourced seafood and aged steaks.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Bar + grill",
+        "Steak house",
+        "Takeout restaurant",
+        "Fine dining restaurant",
+        "Restaurant",
+        "Seafood",
+        "American",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "B8CB8970-0CC7-4365-9074-E7518AB812FF",
+      "name": "House of Hookah",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Moroccan-style hookah lounge with shisha, coffee drinks, and a BYOB policy in a late-night lounge setting.",
+        "short_description": "Moroccan-style hookah lounge with shisha, coffee drinks, and a BYOB policy in a late-night lounge setting.",
+        "primary_genre": "urn:tag:genre:place:hookah_bar"
+      },
+      "genres": [
+        "Cannabis store",
+        "Restaurant",
+        "Lounge bar",
+        "Hookah bar",
+        "Place",
+        "Tourist attraction",
+        "Hookah store",
+        "Shopping",
+        "Tobacco shop",
+        "Vaporizer store",
+        "Night club"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "6D0454E0-A572-40EB-AEE1-1E16DE0BE5E7",
+      "name": "Hammond Marina",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Lake Michigan marina offering slips, fuel, ship store, deli, and banquet facilities, designated Indiana's first \"Clean Marina\" and 12 nautical miles from Chicago.",
+        "short_description": "Lake Michigan marina offering slips, fuel, ship store, deli, and banquet facilities, designated Indiana's first \"Clean Marina\" and 12 nautical miles from Chicago.",
+        "primary_genre": "urn:tag:genre:place:marina"
+      },
+      "genres": [
+        "Marina",
+        "Tourist attraction",
+        "Sailing school",
+        "Banquet hall",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F171C1CB-4697-40B6-8413-25D882FC7FAA",
+      "name": "Giordano's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Italian restaurant near O'Hare offering famous Chicago deep-dish pizza, pastas, sandwiches, delivery, and a private event room.",
+        "short_description": "Casual Italian restaurant near O'Hare offering famous Chicago deep-dish pizza, pastas, sandwiches, delivery, and a private event room.",
+        "primary_genre": "urn:tag:genre:place:restaurant:pizza_delivery",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:world_famous_deep_dish_pizza",
+            "name": "World Famous Deep Dish Pizza"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicago_style_pizza",
+            "name": "Chicago Style Pizza"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:giordano_s_house_salad",
+            "name": "Giordano S House Salad"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Pizza delivery",
+        "Pizza",
+        "Takeout restaurant",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "3630B0A7-45C0-4DA7-BF95-1553B3CA93B7",
+      "name": "Gyu-Kaku Japanese BBQ",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Japanese yakiniku where diners grill premium wagyu and small plates at tabletop grills, offering cocktails, sake, and happy hour.",
+        "short_description": "Japanese yakiniku where diners grill premium wagyu and small plates at tabletop grills, offering cocktails, sake, and happy hour.",
+        "primary_genre": "urn:tag:genre:place:restaurant:yakiniku",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:miso",
+            "name": "Miso"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:gyu_kaku_premium_select_plate_raw",
+            "name": "Gyu Kaku Premium Select Plate Raw"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:gyu_kaku_salad_dressing",
+            "name": "Gyu Kaku Salad Dressing"
+          }
+        ]
+      },
+      "genres": [
+        "Japanese",
+        "Restaurant",
+        "Barbecue restaurant",
+        "Yakiniku restaurant",
+        "Tapas bar",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "9B1E38FC-3F8E-4FF2-A4A0-C5F1D1062F5A",
+      "name": "Billy Goat Tavern (The Original)",
+      "type": "urn:entity",
+      "properties": {
+        "description": "No-frills Chicago tavern known for classic cheeseburgers, hot dogs and quick late-night American comfort fare.",
+        "short_description": "No-frills Chicago tavern known for classic cheeseburgers, hot dogs and quick late-night American comfort fare.",
+        "primary_genre": "urn:tag:genre:place:restaurant:hamburger",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:double_cheeseburger",
+            "name": "Double Cheeseburger"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:hamburger",
+            "name": "Hamburger"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:steak",
+            "name": "Le Steak"
+          }
+        ]
+      },
+      "genres": [
+        "American",
+        "Restaurant",
+        "Hamburger restaurant",
+        "Fast food",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "BD8193F2-2ABE-4822-9D28-815F74F2E123",
+      "name": "Kennedy Rooftop",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Urban-chic rooftop bar and restaurant atop Hyatt Place, serving sharing plates, pub fare, cocktails, beer and wine with panoramic Chicago skyline views.",
+        "short_description": "Urban-chic rooftop bar and restaurant atop Hyatt Place, serving sharing plates, pub fare, cocktails, beer and wine with panoramic Chicago skyline views.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "5B14058C-0DDD-4486-9DA0-5B14460EC984",
+      "name": "Z Bar",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Posh rooftop lounge offering creative cocktails, global tapas, and scenic city views atop The Peninsula Chicago.",
+        "short_description": "Posh rooftop lounge offering creative cocktails, global tapas, and scenic city views atop The Peninsula Chicago.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Cocktail bar",
+        "Bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "37EB8B99-9515-4527-A810-8A4B6FFC2EF3",
+      "name": "RPM Steak",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sleek, upscale steakhouse in Chicago's River North offering diverse premium beef cuts, seafood, and elegant private dining.",
+        "short_description": "Sleek, upscale steakhouse in Chicago's River North offering diverse premium beef cuts, seafood, and elegant private dining.",
+        "primary_genre": "urn:tag:genre:place:restaurant:steak_house",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:14k_chocolate_cake",
+            "name": "14k Chocolate Cake"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:grape_cotton_candy",
+            "name": "Grape Cotton Candy"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:tomahawk",
+            "name": "The Tomahawk"
+          }
+        ]
+      },
+      "genres": [
+        "Caterer",
+        "American",
+        "Seafood",
+        "Restaurant",
+        "Tourist attraction",
+        "Steak house",
+        "Event venue",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "313AC5B0-B649-4FC2-A4CF-F98D422B5A49",
+      "name": "RPM Italian",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sleek River North Italian restaurant serving housemade pastas, steaks and seafood in a modern, group-friendly setting with celebrity-backed hospitality.",
+        "short_description": "Sleek River North Italian restaurant serving housemade pastas, steaks and seafood in a modern, group-friendly setting with celebrity-backed hospitality.",
+        "primary_genre": "urn:tag:genre:place:restaurant:italian",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:truffled_garlic_bread",
+            "name": "Truffled Garlic Bread"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:black_truffle_risotto",
+            "name": "Black Truffle Risotto"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:short_rib_bolognese",
+            "name": "Short Rib Bolognese"
+          }
+        ]
+      },
+      "genres": [
+        "Italian",
+        "Event venue",
+        "Place",
+        "Restaurant",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    }
+  ]
+}

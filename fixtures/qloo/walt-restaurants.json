@@ -1,0 +1,1140 @@
+{
+  "url": "/v2/insights?signal.interests.entities=95593E4D-2CBE-44E5-BF82-F1E542B63A96&filter.type=urn%3Aentity%3Aplace&filter.location.query=Memphis&filter.tags=urn%3Atag%3Agenre%3Aplace%3Arestaurant&take=50",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "A31CB3A1-D1AF-4D2A-B5A2-9ADCA157751E",
+      "name": "Gladys' Diner",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual American diner at Graceland serving Elvis-themed favorites like peanut butter and banana sandwiches, burgers, and comfort food.",
+        "short_description": "Casual American diner at Graceland serving Elvis-themed favorites like peanut butter and banana sandwiches, burgers, and comfort food.",
+        "primary_genre": "urn:tag:genre:place:restaurant:diner"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Diner"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8A6CD712-E0DF-4044-AB8C-F8DB5697C553",
+      "name": "RockHouse Live Memphis",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual bar and grill in Memphis featuring live rock music, full menu, and late-night hours.",
+        "short_description": "Casual bar and grill in Memphis featuring live rock music, full menu, and late-night hours.",
+        "primary_genre": "urn:tag:genre:place:live_music_venue"
+      },
+      "genres": [
+        "Bar + grill",
+        "Place",
+        "Live music venue",
+        "Tourist attraction",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "766423D8-A022-4604-AB8C-347262D9F131",
+      "name": "Classic Hitz",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Boisterous Memphis dance club with DJ music, live bands, a VIP area, full bar and casual food menu.",
+        "short_description": "Boisterous Memphis dance club with DJ music, live bands, a VIP area, full bar and casual food menu.",
+        "primary_genre": "urn:tag:genre:place:night_club"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Restaurant",
+        "Bar",
+        "Night club",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "7FDD33CE-1D36-467F-BCFD-76634007E473",
+      "name": "Minglewood Hall",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large industrial concert hall in a converted bread factory hosting music, boxing, and other live events in Midtown Memphis.",
+        "short_description": "Large industrial concert hall in a converted bread factory hosting music, boxing, and other live events in Midtown Memphis.",
+        "primary_genre": "urn:tag:genre:place:live_music_venue"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Wedding venue",
+        "Restaurant",
+        "Live music venue",
+        "Lounge",
+        "Place",
+        "Event venue",
+        "Banquet hall",
+        "Concert hall"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8F3B80AF-BD24-4DE3-AB53-92E5F92C796D",
+      "name": "Miss Polly's Soul City Café",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Cozy Memphis soul-food café serving fried chicken, waffles, and classic comfort dishes.",
+        "short_description": "Cozy Memphis soul-food café serving fried chicken, waffles, and classic comfort dishes.",
+        "primary_genre": "urn:tag:genre:place:restaurant:cafe"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Chicken restaurant",
+        "Caterer",
+        "Cafe"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "FFB36BD6-381B-4DDB-B2E8-339BD7BBB30F",
+      "name": "Prohibition Lounge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Elegant upscale Memphis nightlife venue offering cocktails, hookah, dancing, live DJs, private events, and a full-service bar with a vibrant party atmosphere.",
+        "short_description": "Elegant upscale Memphis nightlife venue offering cocktails, hookah, dancing, live DJs, private events, and a full-service bar with a vibrant party atmosphere.",
+        "primary_genre": "urn:tag:genre:place:restaurant:lounge_bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Lounge bar",
+        "Place",
+        "Bar",
+        "Cocktail bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "578181B6-BDF3-454A-BB4F-08E308F99E4E",
+      "name": "Growlers",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual beer-focused bar and live music venue serving bar food with billiards, cocktails, and frequent local shows.",
+        "short_description": "Casual beer-focused bar and live music venue serving bar food with billiards, cocktails, and frequent local shows.",
+        "primary_genre": "urn:tag:genre:place:entertainment_agency"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Cocktail bar",
+        "Entertainment agency",
+        "American",
+        "Place",
+        "Comedy club",
+        "Restaurant",
+        "Live music venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "704C959F-E232-41C1-A440-09D107061E70",
+      "name": "The Pig On Beale",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Lively downtown Memphis BBQ spot serving ribs, pulled pork and Southern sides in a retro diner setting on Beale Street.",
+        "short_description": "Lively downtown Memphis BBQ spot serving ribs, pulled pork and Southern sides in a retro diner setting on Beale Street.",
+        "primary_genre": "urn:tag:genre:place:restaurant:barbecue",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:bbq_platter",
+            "name": "Bbq Platter"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:smoked_chicken",
+            "name": "Smoked Chicken"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:bbq_beans",
+            "name": "Bbq Beans"
+          }
+        ]
+      },
+      "genres": [
+        "American",
+        "Place",
+        "Barbecue restaurant",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "CEBF4E8C-CA70-430C-9666-83C68D1C0D67",
+      "name": "Starbucks Coffee Company",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Chain coffeehouse serving signature roasts, light bites, and Wi-Fi in a convenient downtown location.",
+        "short_description": "Chain coffeehouse serving signature roasts, light bites, and Wi-Fi in a convenient downtown location.",
+        "primary_genre": "urn:tag:genre:place:restaurant:coffee_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Espresso bar",
+        "Cafe",
+        "Coffee shop",
+        "Coffee store",
+        "Place",
+        "Shopping"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "D1D49CC1-7B4A-46AC-8406-8249EA1DE861",
+      "name": "The Pumping Station",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Easygoing gay neighborhood bar with pool tables, dart boards, and a compact menu of bar snacks and drinks.",
+        "short_description": "Easygoing gay neighborhood bar with pool tables, dart boards, and a compact menu of bar snacks and drinks.",
+        "primary_genre": "urn:tag:genre:place:restaurant:gay_bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Gay bar",
+        "Bar",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F6AF3CEE-28EA-4948-844E-69772C296DDE",
+      "name": "Los Cabos Mexican Bar & Grill",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual, festive Mexican bar & grill offering classic dishes, margaritas, and late-night dining in Memphis.",
+        "short_description": "Casual, festive Mexican bar & grill offering classic dishes, margaritas, and late-night dining in Memphis.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:arroz_con_pollo",
+            "name": "Arroz Con Pollo"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_fajitas",
+            "name": "Chicken Fajitas"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:enchilada",
+            "name": "Enchilada"
+          }
+        ]
+      },
+      "genres": [
+        "Bar + grill",
+        "Mexican",
+        "Place",
+        "Restaurant",
+        "Tex mex"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1F00BA40-5B34-4E68-82FC-989DC84E8F7B",
+      "name": "Imagine Vegan Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Homey, sustainable eatery serving vegan entrees, sandwiches, desserts, brunch and a kids' menu.",
+        "short_description": "Homey, sustainable eatery serving vegan entrees, sandwiches, desserts, brunch and a kids' menu.",
+        "primary_genre": "urn:tag:genre:place:restaurant:vegan",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:bbq_beans",
+            "name": "Bbq Beans"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_nuggets",
+            "name": "Chicken Nuggets"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_waffles",
+            "name": "Chicken And Waffles"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Dessert",
+        "Restaurant",
+        "Vegetarian",
+        "Vegan"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "65313A77-7246-4E46-B3DD-995C3603F075",
+      "name": "EP's Bar & Grill",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Modern American bar and grill inside The Guest House at Graceland offering casual American eats, sports on TV, and a pool table.",
+        "short_description": "Modern American bar and grill inside The Guest House at Graceland offering casual American eats, sports on TV, and a pool table.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill"
+      },
+      "genres": [
+        "Bar + grill",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "336AD1FB-5E26-414B-8C0E-1D7E7A69DA5F",
+      "name": "Club Handy",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Bar and restaurant on Memphis's historic Beale Street serving cocktails, beer, wine, and outdoor seating; moderately expensive.",
+        "short_description": "Bar and restaurant on Memphis's historic Beale Street serving cocktails, beer, wine, and outdoor seating; moderately expensive.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "07E3976C-F58F-4E3E-9F2D-49E1647AF5D6",
+      "name": "East End Skating Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Family-friendly roller skating rink with arcade, birthday party packages, and regular adult nights, offering a newly resurfaced floor and group event hosting in Memphis.",
+        "short_description": "Family-friendly roller skating rink with arcade, birthday party packages, and regular adult nights, offering a newly resurfaced floor and group event hosting in Memphis.",
+        "primary_genre": "urn:tag:genre:place:roller_skating_rink"
+      },
+      "genres": [
+        "Roller skating rink",
+        "Tourist attraction",
+        "Restaurant",
+        "Place",
+        "Video arcade"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8C1129FA-C731-4922-B9CF-D4AE5A8E7950",
+      "name": "Silky O'Sullivan's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic Beale Street Irish pub serving Memphis-style BBQ, oysters and cocktails with live music, outdoor patio and resident pet goats.",
+        "short_description": "Historic Beale Street Irish pub serving Memphis-style BBQ, oysters and cocktails with live music, outdoor patio and resident pet goats.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:one_dozen_oysters_on_half_shell",
+            "name": "One Dozen Oysters On The Half Shell"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:catfish",
+            "name": "Catfish"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:diver_bucket",
+            "name": "Diver Bucket"
+          }
+        ]
+      },
+      "genres": [
+        "American",
+        "Place",
+        "Restaurant",
+        "Cajun",
+        "Bar + grill",
+        "Southern restaurant us",
+        "Live music bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "BD7C878E-5490-41A2-84C8-7A9CD409E830",
+      "name": "Hu. Roof",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rooftop bar and restaurant atop a boutique hotel offering cocktails, elevated bar fare, and outdoor seating with city views.",
+        "short_description": "Rooftop bar and restaurant atop a boutique hotel offering cocktails, elevated bar fare, and outdoor seating with city views.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Bar"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7030FCA5-DBD8-4882-86E8-21239B1DB55B",
+      "name": "King Jerry Lawler's Hall of Fame Bar & Grille",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Beale Street barbecue bar with live music, wrestling memorabilia, and BBQ plates plus cocktails.",
+        "short_description": "Casual Beale Street barbecue bar with live music, wrestling memorabilia, and BBQ plates plus cocktails.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:1_2_rack_ribs",
+            "name": "1 2 Rack Of Ribs"
+          }
+        ]
+      },
+      "genres": [
+        "Museum",
+        "Restaurant",
+        "Place",
+        "Barbecue restaurant",
+        "Bar + grill",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "7E8F0194-7FF7-4A33-8980-58C1E586FC4F",
+      "name": "Sweet Noshings",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Neighborhood candy and ice cream shop in Midtown Memphis offering sweets, frozen treats, onsite dining, and delivery.",
+        "short_description": "Neighborhood candy and ice cream shop in Midtown Memphis offering sweets, frozen treats, onsite dining, and delivery.",
+        "primary_genre": "urn:tag:genre:place:candy_store"
+      },
+      "genres": [
+        "Shopping",
+        "Restaurant",
+        "Place",
+        "Ice cream shop",
+        "Candy store"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "9D06EF33-BB1F-4EE7-A9B2-9E5CE9A24C6B",
+      "name": "TACOS Y MARISCOS MÉXICO EXPRESS#2",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Mexican spot offering tacos, seafood, cocktails, beer, and late-night happy hour in Memphis.",
+        "short_description": "Casual Mexican spot offering tacos, seafood, cocktails, beer, and late-night happy hour in Memphis.",
+        "primary_genre": "urn:tag:genre:place:restaurant:mexican"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Mexican"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E1D80052-3C3A-4612-8DCB-3D689EA4568E",
+      "name": "Charlie Vergos' Rendezvous",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic basement barbecue serving charcoal-cooked ribs and sausages.",
+        "short_description": "Historic basement barbecue serving charcoal-cooked ribs and sausages.",
+        "primary_genre": "urn:tag:genre:place:restaurant:barbecue",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:rendezvous_famous_pork_ribs",
+            "name": "Rendezvous Famous Pork Ribs"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:pork_ribs",
+            "name": "Pork And Ribs"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:dry_ribs",
+            "name": "Dry Ribs"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Barbecue restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "9547B0EE-A977-4FD9-8247-6D39AD346EA6",
+      "name": "Hi Tone",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Long-running Memphis cocktail lounge and bar offering live music most nights, casual inexpensive fare, and an LGBTQ+-friendly atmosphere.",
+        "short_description": "Long-running Memphis cocktail lounge and bar offering live music most nights, casual inexpensive fare, and an LGBTQ+-friendly atmosphere.",
+        "primary_genre": "urn:tag:genre:place:live_music_venue"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Bar",
+        "Place",
+        "Live music venue",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "DD184A59-A086-4669-A195-FD204E675EC4",
+      "name": "Starbucks Coffee Company",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Seattle-origin coffeehouse offering signature roasts, light bites, Wi‑Fi, and convenient drive-through, dine-in, takeout, outdoor seating, and delivery.",
+        "short_description": "Seattle-origin coffeehouse offering signature roasts, light bites, Wi‑Fi, and convenient drive-through, dine-in, takeout, outdoor seating, and delivery.",
+        "primary_genre": "urn:tag:genre:place:restaurant:coffee_shop"
+      },
+      "genres": [
+        "Espresso bar",
+        "Breakfast",
+        "Cafe",
+        "Shopping",
+        "Restaurant",
+        "Place",
+        "Coffee store",
+        "Internet cafe",
+        "Coffee shop"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "AC6B668A-342B-41DA-BAEC-F025F5ECB5E6",
+      "name": "Silly Goose Lounge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Clubby, dimly lit downtown lounge serving hand-crafted cocktails, wood-fired Neapolitan pizzas, late-night dancing, arcade games and intimate private dining in an antique-furnished setting.",
+        "short_description": "Clubby, dimly lit downtown lounge serving hand-crafted cocktails, wood-fired Neapolitan pizzas, late-night dancing, arcade games and intimate private dining in an antique-furnished setting.",
+        "primary_genre": "urn:tag:genre:place:restaurant:cocktail_bar",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chopped_salad",
+            "name": "Chopped Salad"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:margherita_pizza",
+            "name": "Margherita Pizza"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:shrimp_pasta",
+            "name": "Shrimp And Pasta"
+          }
+        ]
+      },
+      "genres": [
+        "Bar",
+        "Night club",
+        "Pizza",
+        "Lounge",
+        "Place",
+        "Cocktail bar",
+        "Tourist attraction",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "15A3609E-1ACE-456C-B0B1-55E58D88185F",
+      "name": "Los Comales Downtown",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Downtown Mexican eatery offering chicken tacos, tomatillo sauce, cocktails, beer and all‑you‑can‑eat options with dine‑in, outdoor seating and drive‑through.",
+        "short_description": "Downtown Mexican eatery offering chicken tacos, tomatillo sauce, cocktails, beer and all‑you‑can‑eat options with dine‑in, outdoor seating and drive‑through.",
+        "primary_genre": "urn:tag:genre:place:restaurant:mexican",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_tacos",
+            "name": "Chicken Tacos"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:tomatillo_sauce",
+            "name": "Tomatillo Sauce"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Mexican",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "60567E56-53D8-484B-BAEF-D3150F379158",
+      "name": "Max's Sports Bar",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Neighborhood sports-bar serving BBQ nachos, steamed sandwiches, cocktails and beer amid extensive sports memorabilia.",
+        "short_description": "Neighborhood sports-bar serving BBQ nachos, steamed sandwiches, cocktails and beer amid extensive sports memorabilia.",
+        "primary_genre": "urn:tag:genre:place:restaurant:sports_bar"
+      },
+      "genres": [
+        "Sports bar",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "F081B2D6-64D7-4821-9D3A-234AA1DC38D4",
+      "name": "Dixie Queen",
+      "type": "urn:entity",
+      "properties": {
+        "description": "24-hour fast-food spot in Southaven offering inexpensive late-night meals with drive-through, dine-in, takeout, delivery, and outdoor seating.",
+        "short_description": "24-hour fast-food spot in Southaven offering inexpensive late-night meals with drive-through, dine-in, takeout, delivery, and outdoor seating.",
+        "primary_genre": "urn:tag:genre:place:restaurant:fast_food"
+      },
+      "genres": [
+        "Fast food",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "370A7724-C5E9-4AE5-A731-FC439678831D",
+      "name": "Kroger",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large supermarket offering deli, bakery, prepared and organic foods, wine, cheese, and grocery delivery services.",
+        "short_description": "Large supermarket offering deli, bakery, prepared and organic foods, wine, cheese, and grocery delivery services.",
+        "primary_genre": "urn:tag:genre:place:grocery_store"
+      },
+      "genres": [
+        "Shopping",
+        "Butcher shop",
+        "Florist",
+        "Health food store",
+        "Wine store",
+        "Deli",
+        "Seafood market",
+        "Place",
+        "Cheese shop",
+        "Grocery store",
+        "Tourist attraction",
+        "Bakery",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "94626AE4-FC75-46A2-BE02-ABD52D2229D0",
+      "name": "American Deli",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Informal counter-serve chain serving hot wings, cheesesteaks and classic American comfort food with quick takeout and delivery options.",
+        "short_description": "Informal counter-serve chain serving hot wings, cheesesteaks and classic American comfort food with quick takeout and delivery options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:chicken_wings"
+      },
+      "genres": [
+        "Chicken wings restaurant",
+        "Chicken restaurant",
+        "Fast food",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "F1422693-9F92-4C28-95B2-604059E422E6",
+      "name": "Rock N Roll Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "All-American BBQ serving burgers, ribs and brisket with live Elvis tribute performances and karaoke in a casual Graceland-area setting.",
+        "short_description": "All-American BBQ serving burgers, ribs and brisket with live Elvis tribute performances and karaoke in a casual Graceland-area setting.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill"
+      },
+      "genres": [
+        "Souvenir store",
+        "Live music venue",
+        "Tourist attraction",
+        "Bar + grill",
+        "Place",
+        "Delivery restaurant",
+        "Takeout restaurant",
+        "Shopping",
+        "Restaurant",
+        "American"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "EC1C0113-C529-4EC1-8593-99354D828F41",
+      "name": "Wendy's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Fast-food burger restaurant serving never-frozen beef burgers, chili, baked potatoes, breakfast, drive-through service, and late-night hours.",
+        "short_description": "Fast-food burger restaurant serving never-frozen beef burgers, chili, baked potatoes, breakfast, drive-through service, and late-night hours.",
+        "primary_genre": "urn:tag:genre:place:restaurant:fast_food"
+      },
+      "genres": [
+        "Hamburger restaurant",
+        "Fast food",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7A957054-0FDB-401A-8D21-B607859CB9F2",
+      "name": "Baskin-Robbins",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Colorful ice cream parlor offering dozens of flavors, custom cakes, drive-thru service, mobile ordering and rewards near major Memphis attractions.",
+        "short_description": "Colorful ice cream parlor offering dozens of flavors, custom cakes, drive-thru service, mobile ordering and rewards near major Memphis attractions.",
+        "primary_genre": "urn:tag:genre:place:restaurant:ice_cream_shop"
+      },
+      "genres": [
+        "Cake shop",
+        "Ice cream shop",
+        "Place",
+        "Restaurant",
+        "Dessert shop"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "BF59DD7F-B0BF-4A1C-B6ED-01F187F5578A",
+      "name": "Delta's Kitchen",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Laid-back Graceland eatery serving Southern breakfasts and upscale dinners with an extensive wine selection.",
+        "short_description": "Laid-back Graceland eatery serving Southern breakfasts and upscale dinners with an extensive wine selection.",
+        "primary_genre": "urn:tag:genre:place:restaurant:fine_dining"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Fine dining restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "3782368B-D819-4A44-922C-BA29642FD1C5",
+      "name": "Burger King",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Affordable fast-food chain serving flame-grilled burgers, fries and shakes with drive-through and dine-in options.",
+        "short_description": "Affordable fast-food chain serving flame-grilled burgers, fries and shakes with drive-through and dine-in options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:fast_food",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:classic_wrap_spicy_wrap_honey_mustard_wrap",
+            "name": "Classic Wrap Spicy Wrap Honey Mustard Wrap"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:french_toast_sticks",
+            "name": "French Toast Sticks"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:sourdough_bacon_cheeseburger",
+            "name": "Sourdough Bacon Cheeseburger"
+          }
+        ]
+      },
+      "genres": [
+        "Fast food",
+        "Restaurant",
+        "Place",
+        "Breakfast"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "69705896-00CE-4892-966B-57E180AA700E",
+      "name": "Hook's Catch Seafood and Wings - Memphis",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Inexpensive fast-casual seafood and wings spot on Elvis Presley Boulevard, offering dine-in, drive-through, delivery, and late-night service.",
+        "short_description": "Inexpensive fast-casual seafood and wings spot on Elvis Presley Boulevard, offering dine-in, drive-through, delivery, and late-night service.",
+        "primary_genre": "urn:tag:genre:place:restaurant:seafood"
+      },
+      "genres": [
+        "American",
+        "Seafood",
+        "Fried chicken takeaway",
+        "Chicken restaurant",
+        "Rice restaurant",
+        "Soul food",
+        "Fish chips restaurant",
+        "Fast food",
+        "Restaurant",
+        "Chicken wings restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "081169A4-30C7-4A60-BA80-6691B161FCF5",
+      "name": "Margaritas of Elvis",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Mexican eatery on Elvis Presley Boulevard serving margaritas, fajitas, burritos, and cocktails with indoor and outdoor seating and late-night service.",
+        "short_description": "Casual Mexican eatery on Elvis Presley Boulevard serving margaritas, fajitas, burritos, and cocktails with indoor and outdoor seating and late-night service.",
+        "primary_genre": "urn:tag:genre:place:restaurant:mexican",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:fajitas",
+            "name": "De Fajitas"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:burrito",
+            "name": "Burrito"
+          }
+        ]
+      },
+      "genres": [
+        "Mexican",
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "48EB6754-ACA0-4A98-96CE-FC815C6E1F51",
+      "name": "Carolina Watershed",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Contemporary round-building restaurant with a terrace serving homestyle cooking with a creative twist.",
+        "short_description": "Contemporary round-building restaurant with a terrace serving homestyle cooking with a creative twist.",
+        "primary_genre": "urn:tag:genre:place:restaurant",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:fries",
+            "name": "And Fries"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:loaded_pulled_pork",
+            "name": "Loaded Pulled Pork"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:turkey_leg_mac_cheese",
+            "name": "Turkey Leg With Mac And Cheese"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "73D26870-2D12-4A21-93AC-7B627B393E95",
+      "name": "Egg King Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Inexpensive diner-style cafe on Elvis Presley Boulevard serving comfort food, breakfast plates, small plates, coffee, and quick takeout.",
+        "short_description": "Inexpensive diner-style cafe on Elvis Presley Boulevard serving comfort food, breakfast plates, small plates, coffee, and quick takeout.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "B551384E-C02E-414D-95DE-DF0C1989C0BF",
+      "name": "Captain D's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Fast-food seafood chain serving breaded fish, shrimp, combo meals, sides, hush puppies, gumbo and desserts; budget-friendly, drive-thru and dine-in options.",
+        "short_description": "Fast-food seafood chain serving breaded fish, shrimp, combo meals, sides, hush puppies, gumbo and desserts; budget-friendly, drive-thru and dine-in options.",
+        "primary_genre": "urn:tag:genre:place:restaurant:seafood"
+      },
+      "genres": [
+        "American",
+        "Fast food",
+        "Fish chips restaurant",
+        "Place",
+        "Seafood",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "3913C93F-1BFF-445F-9371-94344D49ED54",
+      "name": "México Restaurant",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Inexpensive Mexican eatery in Memphis offering late-night service, drive-through, delivery and all-you-can-eat options with a salad bar and vegetarian choices.",
+        "short_description": "Inexpensive Mexican eatery in Memphis offering late-night service, drive-through, delivery and all-you-can-eat options with a salad bar and vegetarian choices.",
+        "primary_genre": "urn:tag:genre:place:restaurant:mexican"
+      },
+      "genres": [
+        "Restaurant",
+        "Mexican",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "B134F9CE-D9EA-48CA-AFD2-7CD40E73BC1C",
+      "name": "Half Shell",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual, longtime seafood house serving Cajun dishes and lunch specials with cocktails and extended hours.",
+        "short_description": "Casual, longtime seafood house serving Cajun dishes and lunch specials with cocktails and extended hours.",
+        "primary_genre": "urn:tag:genre:place:restaurant:seafood"
+      },
+      "genres": [
+        "Seafood",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1E0DC9BC-DF3D-4DEF-9824-FB9FFB6744DB",
+      "name": "Cooper's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Tex‑Mex spot serving fish tacos, bacon‑wrapped shrimp, cocktails and beer, with outdoor seating and late‑night service.",
+        "short_description": "Casual Tex‑Mex spot serving fish tacos, bacon‑wrapped shrimp, cocktails and beer, with outdoor seating and late‑night service.",
+        "primary_genre": "urn:tag:genre:place:restaurant:american",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:bacon_wrapped_shrimp_3",
+            "name": "Bacon Wrapped Shrimp 3"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:margarita_bong",
+            "name": "Margarita Bong"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "American"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "E1334E43-B9C4-4188-B7DD-F17C2B1DC20A",
+      "name": "WISEACRE Brewing Company OG",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Neighborhood craft brewery on Broad Avenue in Memphis known for award-winning beers, a lively taproom, and regular events.",
+        "short_description": "Neighborhood craft brewery on Broad Avenue in Memphis known for award-winning beers, a lively taproom, and regular events.",
+        "primary_genre": "urn:tag:genre:place:brewery"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Brewery",
+        "Place",
+        "Sandwich shop",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "7D9F606D-B759-4A45-A8E4-A09B71618E0F",
+      "name": "Lamplighter Lounge",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Modest old-school hangout with pool table, jukebox and occasional live music, serving inexpensive drinks, comfort and vegan-friendly food.",
+        "short_description": "Modest old-school hangout with pool table, jukebox and occasional live music, serving inexpensive drinks, comfort and vegan-friendly food.",
+        "primary_genre": "urn:tag:genre:place:restaurant"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Bar + grill",
+        "Restaurant",
+        "Cafe",
+        "Coffee shop",
+        "Vegan",
+        "Live music venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E7CD4CF7-2E04-4DD2-A3FF-04A694E04590",
+      "name": "Royal Hookah Cafe",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Black-owned hookah cafe in northeast Memphis offering shisha, casual cafe fare and delivery in a relaxed, social atmosphere.",
+        "short_description": "Black-owned hookah cafe in northeast Memphis offering shisha, casual cafe fare and delivery in a relaxed, social atmosphere.",
+        "primary_genre": "urn:tag:genre:place:hookah_bar"
+      },
+      "genres": [
+        "Hookah bar",
+        "Tourist attraction",
+        "Restaurant",
+        "Cafe",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "10D1935A-8DC4-4538-9CDB-167E46A77860",
+      "name": "The Orchid Club",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Lively Beale Street restaurant and bar offering beer, hard liquor, food, bar dining, outdoor seating, and delivery.",
+        "short_description": "Lively Beale Street restaurant and bar offering beer, hard liquor, food, bar dining, outdoor seating, and delivery.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Bar"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "3674AFF2-080D-4A51-AEC7-8DFBA2D516AA",
+      "name": "StarLight Event Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Intimate Memphis event and wedding venue with decorated reception rooms, on-site bar/catering, secure fenced parking, and experienced event staff.",
+        "short_description": "Intimate Memphis event and wedding venue with decorated reception rooms, on-site bar/catering, secure fenced parking, and experienced event staff.",
+        "primary_genre": "urn:tag:genre:place:event_venue"
+      },
+      "genres": [
+        "Place",
+        "Photographer",
+        "Wedding venue",
+        "Banquet hall",
+        "Event venue",
+        "Tourist attraction",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "38D0AF0C-E48F-4A3E-ABD2-207825822D19",
+      "name": "Wendy's",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Fast-food burger restaurant known for fresh, never-frozen beef, square patties, and signature Frosty desserts with chili and baked potato sides.",
+        "short_description": "Fast-food burger restaurant known for fresh, never-frozen beef, square patties, and signature Frosty desserts with chili and baked potato sides.",
+        "primary_genre": "urn:tag:genre:place:restaurant:fast_food",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:wendys_classic_chocolate_vanilla_frosty_desserts",
+            "name": "Wendys Classic Chocolate And Vanilla Frosty Desserts"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Fast food",
+        "Hamburger restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "BB734856-EED4-4CA7-B863-43CE867330A0",
+      "name": "Overton Park 9",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Reimagined 9-hole public course in central Memphis with a clubhouse, pro shop, and event programming.",
+        "short_description": "Reimagined 9-hole public course in central Memphis with a clubhouse, pro shop, and event programming.",
+        "primary_genre": "urn:tag:genre:place:public_golf_course"
+      },
+      "genres": [
+        "Place",
+        "Public golf course",
+        "Restaurant",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "DF9B0164-47F5-456C-ABF6-FA0194E30C06",
+      "name": "Big Bill's Bar-Be-Que (Whitehaven)",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Old-school Memphis barbecue serving ribs and classic sides in a casual, no-frills setting near Elvis Presley Boulevard.",
+        "short_description": "Old-school Memphis barbecue serving ribs and classic sides in a casual, no-frills setting near Elvis Presley Boulevard.",
+        "primary_genre": "urn:tag:genre:place:restaurant:barbecue"
+      },
+      "genres": [
+        "Place",
+        "Barbecue restaurant",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    }
+  ]
+}

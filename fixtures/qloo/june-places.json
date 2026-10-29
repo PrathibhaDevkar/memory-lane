@@ -1,0 +1,928 @@
+{
+  "url": "/v2/insights?signal.interests.entities=5D54CE58-DC3E-4294-A359-581A9C072952&filter.type=urn%3Aentity%3Aplace&filter.location.query=Los+Angeles&take=50",
+  "status": 200,
+  "entities": [
+    {
+      "entity_id": "6AEB61AD-CA56-49D6-B04A-EBCCC41D8CE2",
+      "name": "Walt Disney Imagineering",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Creative design and engineering studio that develops immersive themed entertainment, storytelling, and innovation for Disney parks, attractions, and experiences.",
+        "short_description": "Creative design and engineering studio that develops immersive themed entertainment, storytelling, and innovation for Disney parks, attractions, and experiences.",
+        "primary_genre": "urn:tag:genre:place:design_engineer"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "A162D7B9-05A9-40EF-B7C9-CD6E24DCDA1F",
+      "name": "The Three Broomsticks",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rustic, Harry Potter–themed British pub serving comfort food, beer, wine and coffee with counter service and outdoor seating near Universal Studios attractions.",
+        "short_description": "Rustic, Harry Potter–themed British pub serving comfort food, beer, wine and coffee with counter service and outdoor seating near Universal Studios attractions.",
+        "primary_genre": "urn:tag:genre:place:restaurant:british"
+      },
+      "genres": [
+        "British",
+        "Restaurant",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "187A2783-DBAB-4EB4-9546-0227D69DF64E",
+      "name": "Lard Lad Donuts",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Quick-serve theme-park donut counter serving colorful, creatively topped donuts and coffee for grab-and-go visitors.",
+        "short_description": "Quick-serve theme-park donut counter serving colorful, creatively topped donuts and coffee for grab-and-go visitors.",
+        "primary_genre": "urn:tag:genre:place:restaurant:donut_shop"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Donut shop"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E924C82D-F2CE-40A5-902D-66A6E1B47200",
+      "name": "Warner Bros. Studio Tour Hollywood",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Guided behind-the-scenes tour of a working Hollywood studio, featuring iconic backlot sets, Stage 48 exhibits (Central Perk), props, and themed retail and dining.",
+        "short_description": "Guided behind-the-scenes tour of a working Hollywood studio, featuring iconic backlot sets, Stage 48 exhibits (Central Perk), props, and themed retail and dining.",
+        "primary_genre": "urn:tag:genre:place:tourist_attraction"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1358A151-DB8A-40E6-8E84-952901BB1735",
+      "name": "Walt Disney’s Carolwood Barn",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Preserved historic barn in Griffith Park housing a famed animator's personal model-train collection and railroad memorabilia, operated by the Carolwood Foundation.",
+        "short_description": "Preserved historic barn in Griffith Park housing a famed animator's personal model-train collection and railroad memorabilia, operated by the Carolwood Foundation.",
+        "primary_genre": "urn:tag:genre:place:rail_museum"
+      },
+      "genres": [
+        "Rail museum",
+        "Museum",
+        "Place",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "46AEF00B-F9A6-4252-9956-99D651B2260D",
+      "name": "Revenge of the Mummy - The Ride",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Indoor launched dark roller coaster blending high-speed launches, practical effects, animatronics and fire in an ancient Egyptian film-themed attraction at Universal Studios Hollywood.",
+        "short_description": "Indoor launched dark roller coaster blending high-speed launches, practical effects, animatronics and fire in an ancient Egyptian film-themed attraction at Universal Studios Hollywood.",
+        "primary_genre": "urn:tag:genre:place:amusement_park_ride"
+      },
+      "genres": [
+        "Place",
+        "Amusement park ride",
+        "Tourist attraction",
+        "Roller coaster"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "2AB6D65A-450D-4E8F-A137-9FA1CF924C77",
+      "name": "Super Silly Fun Land",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Minion-themed interactive water play zone with 80 water features, family rides, an arcade and a souvenir shop within Universal Studios Hollywood.",
+        "short_description": "Minion-themed interactive water play zone with 80 water features, family rides, an arcade and a souvenir shop within Universal Studios Hollywood.",
+        "primary_genre": "urn:tag:genre:place:water_park"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Water park",
+        "Park"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "5A5D06DF-9F1F-494D-9F54-44C2B21E2C73",
+      "name": "Isla Nu-Bar",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Theme-park bar and restaurant inside Universal Studios Hollywood serving cocktails, beer, wine, and food.",
+        "short_description": "Theme-park bar and restaurant inside Universal Studios Hollywood serving cocktails, beer, wine, and food.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "229C1452-CF37-4E4D-9E6B-C934ED8A7961",
+      "name": "The Walking Dead Attraction",
+      "type": "urn:entity",
+      "properties": {
+        "description": "A live-action, walk-through haunted hospital attraction featuring professional zombie actors and immersive sets based on a popular TV horror series.",
+        "short_description": "A live-action, walk-through haunted hospital attraction featuring professional zombie actors and immersive sets based on a popular TV horror series.",
+        "primary_genre": "urn:tag:genre:place:haunted_house"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction",
+        "Haunted house"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "8AAE3B06-7DE9-4D53-8813-FE8BF2C444B4",
+      "name": "Jimmy Buffett’s Margaritaville",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Tropical-themed American bar and grill on Universal CityWalk serving cocktails, comfort food, and happy hour favorites in a family-friendly setting.",
+        "short_description": "Tropical-themed American bar and grill on Universal CityWalk serving cocktails, comfort food, and happy hour favorites in a family-friendly setting.",
+        "primary_genre": "urn:tag:genre:place:restaurant:american"
+      },
+      "genres": [
+        "American",
+        "Place",
+        "Restaurant",
+        "Bar + grill"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "CC34BB83-AF4C-457F-A9C5-627553F8335A",
+      "name": "Hog's Head Pub",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual pub inside Universal Studios Hollywood offering a full bar and signature BBQ pork ribs.",
+        "short_description": "Casual pub inside Universal Studios Hollywood offering a full bar and signature BBQ pork ribs.",
+        "primary_genre": "urn:tag:genre:place:restaurant:bar"
+      },
+      "genres": [
+        "Place",
+        "Bar",
+        "Restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "446606C5-D0D6-4441-B682-C01BD46DB19E",
+      "name": "El Capitan Theatre",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Restored 1926 Hollywood movie palace showing Disney films, hosting premieres and live stage events, featuring a theater pipe organ and vintage soda fountain.",
+        "short_description": "Restored 1926 Hollywood movie palace showing Disney films, hosting premieres and live stage events, featuring a theater pipe organ and vintage soda fountain.",
+        "primary_genre": "urn:tag:genre:place:movie_theater"
+      },
+      "genres": [
+        "Movie theater",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "44F295D4-14F7-4C36-BA99-E67229F43275",
+      "name": "Moe's Tavern",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Sit-down tavern at Universal Studios serving cocktails, beer, wine, and casual pub food in a Simpsons-inspired setting.",
+        "short_description": "Sit-down tavern at Universal Studios serving cocktails, beer, wine, and casual pub food in a Simpsons-inspired setting.",
+        "primary_genre": "urn:tag:genre:place:bar_&_grill"
+      },
+      "genres": [
+        "Restaurant",
+        "Bar",
+        "Bar + grill",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "B23BAA70-4E48-4120-B204-1D8080530629",
+      "name": "VIVO Italian Kitchen",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual Italian eatery at Universal CityWalk offering pizzas, pastas, small plates, cocktails, and outdoor seating—popular for relaxed meals and post-park dining.",
+        "short_description": "Casual Italian eatery at Universal CityWalk offering pizzas, pastas, small plates, cocktails, and outdoor seating—popular for relaxed meals and post-park dining.",
+        "primary_genre": "urn:tag:genre:place:restaurant:italian",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chicken_fettuccine_alfredo",
+            "name": "Chicken Fettuccine Alfredo"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:lasagna",
+            "name": "And Lasagna"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:margherita_pizza",
+            "name": "Margherita Pizza"
+          }
+        ]
+      },
+      "genres": [
+        "Restaurant",
+        "Place",
+        "Italian"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "B8D9A993-EBC9-4000-A137-1ACA7E63DE37",
+      "name": "Spadena House",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Quirky storybook cottage with whimsical fairytale architecture designed by a Hollywood art director in Beverly Hills.",
+        "short_description": "Quirky storybook cottage with whimsical fairytale architecture designed by a Hollywood art director in Beverly Hills.",
+        "primary_genre": "urn:tag:genre:place:historical_landmark"
+      },
+      "genres": [
+        "Place",
+        "Historical landmark",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "F8192FB7-3870-4193-8A4D-923FC118D0AC",
+      "name": "Grand Central Creative Campus",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Creative-focused corporate campus housing office and studio spaces for media, design, and tech companies in Glendale, California.",
+        "short_description": "Creative-focused corporate campus housing office and studio spaces for media, design, and tech companies in Glendale, California.",
+        "primary_genre": "urn:tag:genre:place:corporate_campus"
+      },
+      "genres": [],
+      "keywords": []
+    },
+    {
+      "entity_id": "8A8B9E08-73BA-456D-B959-C61BB8630338",
+      "name": "Universal CityWalk Hollywood",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Outdoor entertainment district with themed shops, diverse restaurants, bars, live entertainment, and a multi-story IMAX cinema next to a major theme park.",
+        "short_description": "Outdoor entertainment district with themed shops, diverse restaurants, bars, live entertainment, and a multi-story IMAX cinema next to a major theme park.",
+        "primary_genre": "urn:tag:genre:place:shopping_mall"
+      },
+      "genres": [
+        "Shopping mall",
+        "Tourist attraction",
+        "Shopping",
+        "Amusement center",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "A02280F6-EE5C-4935-8242-8FCB3C408390",
+      "name": "Halloween Town",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Specialty retail store offering Halloween costumes, props, special-effects makeup, fog machines, decor, and horror-themed collectibles across large themed spaces.",
+        "short_description": "Specialty retail store offering Halloween costumes, props, special-effects makeup, fog machines, decor, and horror-themed collectibles across large themed spaces.",
+        "primary_genre": "urn:tag:genre:place:toy_store"
+      },
+      "genres": [
+        "Toy store",
+        "Shopping",
+        "Book store",
+        "Gift shop",
+        "Place",
+        "Clothing store"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "F74E34FC-8E49-47F8-80C5-E925A6D1EF51",
+      "name": "Natural History Museum of Los Angeles County",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large natural history museum in Exposition Park showcasing T. rex skeletons, extensive fossil collections, mineral exhibits, and interactive displays across 35+ million artifacts.",
+        "short_description": "Large natural history museum in Exposition Park showcasing T. rex skeletons, extensive fossil collections, mineral exhibits, and interactive displays across 35+ million artifacts.",
+        "primary_genre": "urn:tag:genre:place:natural_history_museum"
+      },
+      "genres": [
+        "Natural history museum",
+        "Tourist attraction",
+        "Museum",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "CD66B252-3B77-49F8-B767-C10ED12293FE",
+      "name": "Hollywood Sign",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Iconic 1923 hillside landmark on Mount Lee overlooking Los Angeles, visible from Griffith Park and popular for hikes and viewpoints.",
+        "short_description": "Iconic 1923 hillside landmark on Mount Lee overlooking Los Angeles, visible from Griffith Park and popular for hikes and viewpoints.",
+        "primary_genre": "urn:tag:genre:place:historical_landmark"
+      },
+      "genres": [
+        "Historical landmark",
+        "Place",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "85EAE872-E9FE-473B-BC72-45E4D60E4BB2",
+      "name": "Jurassic World - The Ride",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Boat ride through a prehistoric environment with lifelike animatronic dinosaurs and immersive screens, ending in a thrilling finale.",
+        "short_description": "Boat ride through a prehistoric environment with lifelike animatronic dinosaurs and immersive screens, ending in a thrilling finale.",
+        "primary_genre": "urn:tag:genre:place:tourist_attraction"
+      },
+      "genres": [
+        "Place",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "791B60EF-3C42-4A09-BD04-550D74D69762",
+      "name": "Hollywood Wax Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Interactive museum featuring lifelike wax figures of Hollywood stars and photo-ready props on iconic Hollywood Boulevard.",
+        "short_description": "Interactive museum featuring lifelike wax figures of Hollywood stars and photo-ready props on iconic Hollywood Boulevard.",
+        "primary_genre": "urn:tag:genre:place:tourist_attraction"
+      },
+      "genres": [
+        "Museum",
+        "Tourist attraction",
+        "Place",
+        "Scenic spot"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "680465E0-46B6-4131-93E9-90C7EA14C720",
+      "name": "Los Angeles Live Steamers Railroad Museum",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Outdoor museum in Griffith Park showcasing live steam, gas-mechanical, and electric railroad technology with public train rides and vintage car exhibits.",
+        "short_description": "Outdoor museum in Griffith Park showcasing live steam, gas-mechanical, and electric railroad technology with public train rides and vintage car exhibits.",
+        "primary_genre": "urn:tag:genre:place:rail_museum"
+      },
+      "genres": [
+        "Rail museum",
+        "Tourist attraction",
+        "Place",
+        "History museum"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "F2BC982A-BC1A-422C-8D3C-05B8C3394FC3",
+      "name": "Hilton Los Angeles/Universal City",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Upscale 24-story hotel steps from Universal Studios Hollywood with panoramic views, modern amenities, and extensive meeting space.",
+        "short_description": "Upscale 24-story hotel steps from Universal Studios Hollywood with panoramic views, modern amenities, and extensive meeting space.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Place",
+        "Hotel"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "AD5CE191-8186-47A9-AAB1-149B3DF01847",
+      "name": "Krusty Burger",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Theme-park counter-serve joint offering Simpsons-inspired burgers, sandwiches, fries and hot dogs.",
+        "short_description": "Theme-park counter-serve joint offering Simpsons-inspired burgers, sandwiches, fries and hot dogs.",
+        "primary_genre": "urn:tag:genre:place:restaurant:hamburger",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:krusty_burger_fries_cheese",
+            "name": "Krusty Burger And Fries With Cheese"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:mother_nature_burger",
+            "name": "Mother Nature Burger"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:hamburger",
+            "name": "Hamburger"
+          }
+        ]
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Hamburger restaurant"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "23CAC315-371D-4742-BBA5-36704F8D56D3",
+      "name": "Voodoo Doughnut",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Counter-serve bakeshop offering creative, colorful, novelty donuts in a quirky, Instagram-friendly setting at Universal CityWalk.",
+        "short_description": "Counter-serve bakeshop offering creative, colorful, novelty donuts in a quirky, Instagram-friendly setting at Universal CityWalk.",
+        "primary_genre": "urn:tag:genre:place:restaurant:donut_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Donut shop",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "000D29BF-06B2-48F3-8CA4-C8C1ED865584",
+      "name": "Cletus' Chicken Shack",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Rustic Southern-themed counter-serve inside Universal Studios Hollywood offering fried chicken, waffles, comfort food, beer and quick bites for dine-in, takeout, or delivery.",
+        "short_description": "Rustic Southern-themed counter-serve inside Universal Studios Hollywood offering fried chicken, waffles, comfort food, beer and quick bites for dine-in, takeout, or delivery.",
+        "primary_genre": "urn:tag:genre:place:restaurant:chicken"
+      },
+      "genres": [
+        "Place",
+        "Chicken restaurant",
+        "Restaurant"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "6BD0CD5A-826F-4671-967C-FC53AA00ADB7",
+      "name": "Los Angeles Zoo",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Large urban zoo and botanical gardens in Griffith Park showcasing 270+ animal species and 800+ plant species with active conservation and breeding programs.",
+        "short_description": "Large urban zoo and botanical gardens in Griffith Park showcasing 270+ animal species and 800+ plant species with active conservation and breeding programs.",
+        "primary_genre": "urn:tag:genre:place:zoo"
+      },
+      "genres": [
+        "Botanical garden",
+        "Tourist attraction",
+        "Zoo",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "70DBBFF3-B40D-41E1-92D5-D4E4896BA2CA",
+      "name": "Hollywood Burbank Airport",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Compact commercial airport serving the San Fernando Valley and greater Southern California, with a direct rail link to downtown Los Angeles.",
+        "short_description": "Compact commercial airport serving the San Fernando Valley and greater Southern California, with a direct rail link to downtown Los Angeles.",
+        "primary_genre": "urn:tag:genre:place:airport"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "79752FD2-45FB-4B3D-82C0-EC9845E99852",
+      "name": "Upside Down House",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Interactive, gravity-defying photo attraction featuring a fully furnished house built upside down for hands-on exhibits and social-media-friendly photos.",
+        "short_description": "Interactive, gravity-defying photo attraction featuring a fully furnished house built upside down for hands-on exhibits and social-media-friendly photos.",
+        "primary_genre": "urn:tag:genre:place:museum"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Museum",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "2FEF8FE9-1B13-4CBA-9CB6-BA532C84CD38",
+      "name": "Hollywood Pantages Theatre",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Restored 1930s Art Deco movie palace on Hollywood Boulevard hosting major Broadway touring productions and large-scale live theater in a historic, ornate venue.",
+        "short_description": "Restored 1930s Art Deco movie palace on Hollywood Boulevard hosting major Broadway touring productions and large-scale live theater in a historic, ornate venue.",
+        "primary_genre": "urn:tag:genre:place:performing_arts_theater"
+      },
+      "genres": [
+        "Place",
+        "Live music venue",
+        "Performing arts theater",
+        "Event venue",
+        "Tourist attraction"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "29EF4F4E-E148-40D0-8E41-DA870DEF0966",
+      "name": "Santa Monica Pier Carousel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic 1920s wooden carousel in the Hippodrome on Santa Monica Pier, featuring 44 hand-carved animals and an ADA-accessible chariot; low-cost rides.",
+        "short_description": "Historic 1920s wooden carousel in the Hippodrome on Santa Monica Pier, featuring 44 hand-carved animals and an ADA-accessible chariot; low-cost rides.",
+        "primary_genre": "urn:tag:genre:place:amusement_park_ride"
+      },
+      "genres": [
+        "Amusement park ride",
+        "Place",
+        "Tourist attraction"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "FC2EBEBF-94CE-450D-AE23-82A8DD9FA984",
+      "name": "In-N-Out Burger",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Fresh made-to-order burgers, hand-cut fries, and shakes near LAX; classic drive-in popular for plane-watching.",
+        "short_description": "Fresh made-to-order burgers, hand-cut fries, and shakes near LAX; classic drive-in popular for plane-watching.",
+        "primary_genre": "urn:tag:genre:place:restaurant:hamburger",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:cheeseburger_grilled_onions",
+            "name": "Cheeseburger Grilled Onions"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:hamburger_fries",
+            "name": "Hamburger And Fries"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:cheese_fries",
+            "name": "Cheese And Fries"
+          }
+        ]
+      },
+      "genres": [
+        "Hamburger restaurant",
+        "Lunch restaurant",
+        "Fast food",
+        "American",
+        "Restaurant",
+        "Diner",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E065A02F-347F-4706-8ED3-68AC2B651D74",
+      "name": "Heal the Bay Aquarium",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Education-focused marine center beneath the Santa Monica Pier with over 100 local species, hands-on touch tanks, daily programs, and community outreach.",
+        "short_description": "Education-focused marine center beneath the Santa Monica Pier with over 100 local species, hands-on touch tanks, daily programs, and community outreach.",
+        "primary_genre": "urn:tag:genre:place:aquarium"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Aquarium"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "ABE770E5-8D36-447A-881F-5772478352BA",
+      "name": "The Garland",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Upscale retro boutique hotel with spacious family suites, poolside movies, and free shuttle to Universal Studios, set on a lush 7-acre urban oasis.",
+        "short_description": "Upscale retro boutique hotel with spacious family suites, poolside movies, and free shuttle to Universal Studios, set on a lush 7-acre urban oasis.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Hotel",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "0FF7F780-FC70-457B-9F42-FD908EF9CCF3",
+      "name": "Ghirardelli Soda Fountain & Chocolate Shop",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Iconic Hollywood soda fountain and chocolate shop offering handmade chocolates, ice cream sundaes, and gift items near the Walk of Fame.",
+        "short_description": "Iconic Hollywood soda fountain and chocolate shop offering handmade chocolates, ice cream sundaes, and gift items near the Walk of Fame.",
+        "primary_genre": "urn:tag:genre:place:chocolate_shop"
+      },
+      "genres": [
+        "Restaurant",
+        "Chocolate shop",
+        "Ice cream shop",
+        "Shopping",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "1E840C0D-1B26-4E3C-98D7-EB79E4178CA2",
+      "name": "DoubleTree by Hilton Hotel Los Angeles Downtown",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Modern hotel in downtown Little Tokyo with custom-designed beds, gastropub, fitness center, and event space near Union Station and cultural attractions.",
+        "short_description": "Modern hotel in downtown Little Tokyo with custom-designed beds, gastropub, fitness center, and event space near Union Station and cultural attractions.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Place",
+        "Hotel"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "52280AE2-040F-45CB-A452-BA1D5601D6D8",
+      "name": "Bubba Gump Shrimp Co.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Family-friendly seafood restaurant on Santa Monica Pier serving shrimp-forward Southern comfort dishes in a casual, movie-themed setting with ocean views.",
+        "short_description": "Family-friendly seafood restaurant on Santa Monica Pier serving shrimp-forward Southern comfort dishes in a casual, movie-themed setting with ocean views.",
+        "primary_genre": "urn:tag:genre:place:restaurant:seafood",
+        "specialty_dishes": [
+          {
+            "id": "urn:tag:specialty_dish:place:chowder",
+            "name": "Chowder"
+          },
+          {
+            "id": "urn:tag:specialty_dish:place:fried_calamari",
+            "name": "Fried Calamari"
+          }
+        ]
+      },
+      "genres": [
+        "American",
+        "Restaurant",
+        "Seafood",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "B1138E30-F77C-4B74-BF72-291E2BA790DB",
+      "name": "Embassy Suites by Hilton Los Angeles Glendale",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Contemporary all-suite hotel with atrium lobby, free cooked breakfast, evening appetizers, outdoor pool, and fitness center near LA Zoo and Hollywood Walk of Fame.",
+        "short_description": "Contemporary all-suite hotel with atrium lobby, free cooked breakfast, evening appetizers, outdoor pool, and fitness center near LA Zoo and Hollywood Walk of Fame.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Place",
+        "Hotel"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "534AEAF4-1653-4CDE-AB79-73271742F3BB",
+      "name": "Angelus Temple",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic 1923-founded Foursquare church in Los Angeles, known for community outreach and landmark domed sanctuary.",
+        "short_description": "Historic 1923-founded Foursquare church in Los Angeles, known for community outreach and landmark domed sanctuary.",
+        "primary_genre": "urn:tag:genre:place:foursquare_church"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "A3E04C78-7314-49AE-8DD2-6B4E83E0F4B6",
+      "name": "Griffith Park Merry-Go-Round",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Historic 1926 carousel in Griffith Park featuring 68 elaborately carved and painted horses and a restored band organ, serving as a family-friendly attraction.",
+        "short_description": "Historic 1926 carousel in Griffith Park featuring 68 elaborately carved and painted horses and a restored band organ, serving as a family-friendly attraction.",
+        "primary_genre": "urn:tag:genre:place:amusement_park_ride"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Amusement park ride"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "5379A052-5EC0-4CAE-804C-D0967504E455",
+      "name": "Madcap Motel",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Immersive 1960s-style motel experience with actor staff, quirky themed rooms, and secret passages for interactive exploration.",
+        "short_description": "Immersive 1960s-style motel experience with actor staff, quirky themed rooms, and secret passages for interactive exploration.",
+        "primary_genre": "urn:tag:genre:place:museum"
+      },
+      "genres": [
+        "Museum",
+        "Place",
+        "Tourist attraction",
+        "Event venue"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "7681CE38-B730-4914-B160-B75696316C80",
+      "name": "Labyrinth of Jareth Masquerade Ball",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Annual fantasy masquerade weekend featuring elaborate costumes, masks, live entertainment, and immersive Royal Court performances at The Biltmore in Los Angeles.",
+        "short_description": "Annual fantasy masquerade weekend featuring elaborate costumes, masks, live entertainment, and immersive Royal Court performances at The Biltmore in Los Angeles.",
+        "primary_genre": "urn:tag:genre:place:festival"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Place",
+        "Festival"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "3362B889-71EF-412D-B20A-47B1B3462CE2",
+      "name": "Los Angeles Airport Marriott",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Contemporary hotel near LAX with upscale rooms, multiple dining options, resort-style pool, and extensive meeting facilities.",
+        "short_description": "Contemporary hotel near LAX with upscale rooms, multiple dining options, resort-style pool, and extensive meeting facilities.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Wedding venue",
+        "Tourist attraction",
+        "Place",
+        "Hotel"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "CCB60593-0A69-4EBE-852E-CF43324C6494",
+      "name": "Bubba Gump Shrimp Co.",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Casual, family-friendly seafood restaurant serving shrimp-focused and Southern-inspired dishes with movie-themed décor inside Universal CityWalk.",
+        "short_description": "Casual, family-friendly seafood restaurant serving shrimp-focused and Southern-inspired dishes with movie-themed décor inside Universal CityWalk.",
+        "primary_genre": "urn:tag:genre:place:restaurant:seafood"
+      },
+      "genres": [
+        "Place",
+        "Restaurant",
+        "Seafood",
+        "American"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "BCC2CE14-AF1E-4B21-974D-5D2DC8145825",
+      "name": "Embassy Suites by Hilton Los Angeles International Airport North",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Modern all-suite hotel near LAX with spacious suites, free airport shuttle, heated indoor pool, and California cuisine bistro.",
+        "short_description": "Modern all-suite hotel near LAX with spacious suites, free airport shuttle, heated indoor pool, and California cuisine bistro.",
+        "primary_genre": "urn:tag:genre:place:hotel"
+      },
+      "genres": [
+        "Hotel",
+        "Place"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "E31D917B-A460-40FC-AF40-E3E3670E600E",
+      "name": "Duff Brewery Beer Garden",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Shaded beer garden at Universal Studios Hollywood offering craft brews with on-site tacos and nachos.",
+        "short_description": "Shaded beer garden at Universal Studios Hollywood offering craft brews with on-site tacos and nachos.",
+        "primary_genre": "urn:tag:genre:place:restaurant:brewpub"
+      },
+      "genres": [
+        "Restaurant",
+        "Brewpub",
+        "Place"
+      ],
+      "keywords": []
+    },
+    {
+      "entity_id": "90CCCB4D-ADC2-4523-B5C6-0F75AE27FADD",
+      "name": "Dreamworks Animation LLC",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Leading Glendale-based animation studio renowned for family-friendly CGI feature films and iconic franchises like Shrek, Madagascar, Kung Fu Panda, and How to Train Your Dragon.",
+        "short_description": "Leading Glendale-based animation studio renowned for family-friendly CGI feature films and iconic franchises like Shrek, Madagascar, Kung Fu Panda, and How to Train Your Dragon.",
+        "primary_genre": "urn:tag:genre:place:movie_studio"
+      },
+      "genres": [],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "F79547EB-FA92-4DA6-A1C0-9750E111FF77",
+      "name": "Ultimate Hollywood Tours",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Guided bus sightseeing tours of Hollywood, Beverly Hills, and Santa Monica highlighting celebrity homes, film locations, and major Los Angeles landmarks.",
+        "short_description": "Guided bus sightseeing tours of Hollywood, Beverly Hills, and Santa Monica highlighting celebrity homes, film locations, and major Los Angeles landmarks.",
+        "primary_genre": "urn:tag:genre:place:sightseeing_tour_agency"
+      },
+      "genres": [
+        "Tourist attraction",
+        "Bus tour agency",
+        "Place",
+        "Tour operator",
+        "Sightseeing tour agency"
+      ],
+      "keywords": [
+        "[object Object]"
+      ]
+    },
+    {
+      "entity_id": "79D03767-8B5B-4B15-84BB-E9EF55B598A7",
+      "name": "Wildlife Learning Center",
+      "type": "urn:entity",
+      "properties": {
+        "description": "Zoological park in a shaded San Fernando Valley olive grove offering education, conservation, and lifelong sanctuary for over 100 rescued and displaced wild animals.",
+        "short_description": "Zoological park in a shaded San Fernando Valley olive grove offering education, conservation, and lifelong sanctuary for over 100 rescued and displaced wild animals.",
+        "primary_genre": "urn:tag:genre:place:learning_center"
+      },
+      "genres": [],
+      "keywords": []
+    }
+  ]
+}
