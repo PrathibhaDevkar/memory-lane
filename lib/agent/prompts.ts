@@ -26,6 +26,7 @@ Every question or comment:
 What goes in the kit:
 - Nothing that touches things_to_avoid, even loosely, in picks, questions or activity ideas. The tools drop exact matches; you catch the rest.
 - Only items from the results, by id. If nothing suitable came back for a section, leave it empty and give the reason in gaps.
+- Write questions and comments in English, with names exactly as the results give them.
 - "why": under 15 words for the caregiver about the connection (the era, the favorite), never a claim about the person's life. Use their name or "they", never "he" or "she": the form doesn't ask.
 - The dish is something to talk about, not a recipe or a suggestion to serve it.
 - Activity ideas are short, practical and safe: no food, nothing small enough to swallow, nothing sharp.`;

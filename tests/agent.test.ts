@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildKit, checkIdeas, thinKit } from "@/lib/agent/kit";
+import { SYSTEM_PROMPT } from "@/lib/agent/prompts";
 import { KitSchema } from "@/lib/types";
 
 vi.mock("@/lib/qloo/client", () => ({
@@ -131,6 +132,12 @@ describe("support levels and activity ideas", () => {
     const kit = buildKit(ctxAt("middle"), { ...empty, activity_ideas: ["An old record sleeve to look at"] });
     expect(kit.activityIdeas).toEqual([{ text: "An old record sleeve to look at", source: "llm" }]);
     expect(KitSchema.safeParse(kit).success).toBe(true);
+  });
+});
+
+describe("names in questions match the cards", () => {
+  it("asks for English questions with names as the results give them (seen live: ちあきなおみ on the card, \"Chiaki Naomi\" in the question)", () => {
+    expect(SYSTEM_PROMPT).toContain("- Write questions and comments in English, with names exactly as the results give them.");
   });
 });
 
