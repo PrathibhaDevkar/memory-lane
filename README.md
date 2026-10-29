@@ -15,12 +15,20 @@ Built for the [Qloo Agentic Hackathon](https://qloo.devpost.com/) ("Agents, but 
 - **Rosa**, born 1942 in Chicago, loves Frank Sinatra: a full kit, then **Start session**.
 - **Margaret**, a sudden change today: the safety check stops the session and points to her nurse or doctor. No kit.
 
-Demos open instantly in your browser: no sign-in, no wait, nothing sent.
+Demos open instantly in your browser: no sign-in, no wait, and no details are sent.
 
 Or build a kit live: fill in the form (or tap **Fill in an example (Rosa)**), choose **Build the session kit**, and watch each Qloo lookup and Claude step as it happens. Under the kit, **Compare with Claude on its own** shows what Qloo adds.
 
 > **Status (Oct 29):** live. Kits are built by the agent (Claude Haiku 5.5 with Qloo) in about 10–20 seconds; the demos open instantly. Checked end to end on the live site on Oct 29.
 <!-- Update the status line at each deploy. -->
+
+### What it looks like
+
+| The kit | A session card, on a phone | How this kit was made |
+|---|---|---|
+| <img src="docs/images/kit.png" width="300" alt="Rosa's kit: signs to watch for, then songs from Qloo, each with the reason it was picked and a Spotify search link"> | <img src="docs/images/session.png" width="220" alt="One card at a time: Play a song, Ella Fitzgerald, a Spotify search link, and the reactions Lit up, Calm, Not interested, Not today and Stop"> | <img src="docs/images/trace.png" width="300" alt="The trace: each Qloo lookup, and what the content filter and the landmark ranking screened out, with the reason for each"> |
+
+Screenshots of the saved Rosa demo, Oct 29.
 
 ---
 
@@ -77,7 +85,7 @@ The year window, hometown and safety rules come from the caregiver's form and ar
 ## Measured, not guessed
 
 - **Cost and speed:** about 0.1–0.15 US cents of Claude tokens per kit, in 10–20 seconds (live, Oct 27–29). That is what lets the demo stay free.
-- **Tests:** 309 automated tests cover the Qloo filters (on real Qloo responses), the agent loop, the safety check, the question rules and the screens.
+- **Tests:** 311 automated tests cover the Qloo filters (on real Qloo responses), the agent loop, the safety check, the question rules and the screens.
 - **Audits:** every live check is in [`audits/`](audits/), including the [production audit](audits/2026-10-27-production-audit.md) (Oct 27) and the [end-to-end check](audits/2026-10-29-end-to-end-after-merges.md) after the last fixes (Oct 29).
 
 ## Built with

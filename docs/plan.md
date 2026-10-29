@@ -559,13 +559,15 @@ No professional caregiver is available. **Adults aged 60+** judge era accuracy (
 
 | Layer | What | Tool |
 |---|---|---|
-| Unit | Era window, content filter on real offenders, avoid list, landmarks, dishes, client retries and concurrency, tools' rules, grounding, question rules per level, activity ideas, safety stop (no API calls), loop control | vitest (134 tests) |
+| Unit | Era window, content filter on real offenders, avoid list, landmarks, dishes, client retries and concurrency, tools' rules, grounding, question rules per level, activity ideas, safety stop (no API calls), loop control | vitest |
 | Contract | Tools against recorded Qloo responses in `fixtures/qloo/` | vitest, no network |
 | UI | Kit view (gaps, banners, labels, no embeds), intake form | vitest, server-rendered |
 | Live | Tools against the real Qloo API | `LIVE=1 npx vitest run tests/live` |
 | End to end | Personas through a running app | `node scripts/smoke.mjs <url>` |
 | Session | Card order per level, care note from the log, avoid-next-time, share text and link, screens, safety question asked again | vitest |
 | Human | Testers per §12.8; a stranger | Phase 3–4 |
+
+On Oct 29, 311 tests pass with no network; the 2 live tests run only with `LIVE=1` and a Qloo key.
 
 ---
 
@@ -689,7 +691,7 @@ gitGraph
 | `/search` and `/v2/insights` return results in different shapes | Live run | Client reads both |
 | Places have no Wikidata ID; films do | Data check | Place era check made optional |
 | *Charly* no longer returned without the age signal | Re-check | Demo safety example moved to June |
-| The agent could loop forever | Review | Last turn offers only `submit_kit` |
+| The agent could loop forever | Review | At most 4 Claude calls and 100 s; the last turn asks for `submit_kit` and refuses further lookups (the same tools are offered on every turn, so the cached prefix and Claude's thinking stay valid) |
 | The form lost its favorite field after a rejected submit | Browser test | Fixed, with a regression test |
 | The sample kit's trace showed hand-made choices as rules | Self-review | Hand-made choices labeled as such |
 | "Do you remember…?" was allowed | Care-practice review | D10 (proposed) |
