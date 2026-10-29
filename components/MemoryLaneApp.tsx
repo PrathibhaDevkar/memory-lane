@@ -35,6 +35,8 @@ export function MemoryLaneApp() {
   const [lastKit, setLastKit] = useState<Kit | undefined>();
   // The last comparison with Claude on its own, so a session and back doesn't lose it.
   const [compared, setCompared] = useState<{ kit: Kit; comparison: Comparison } | undefined>();
+  // Bumped to give the form a fresh start: it reads its details only when it first appears.
+  const [formKey, setFormKey] = useState(0);
   const kitRef = useRef<HTMLDivElement>(null);
 
   function showKit(kit: Kit) {
@@ -50,6 +52,16 @@ export function MemoryLaneApp() {
       window.scrollTo({ top: 0 });
     }
   }, [state.view]);
+
+  // For someone else: forget this person's details, kit and comparison, and show an empty form.
+  function startOver() {
+    setLastProfile(undefined);
+    setLastKit(undefined);
+    setCompared(undefined);
+    setFormKey((k) => k + 1);
+    setState({ view: "form", busy: false });
+    window.scrollTo({ top: 0 });
+  }
 
   async function build(profile: Profile) {
     setLastProfile(profile);
@@ -228,6 +240,16 @@ export function MemoryLaneApp() {
           >
             ← Change details
           </button>
+          <button
+            type="button"
+            onClick={() => {
+              track("kit_action", { action: "start_over" });
+              startOver();
+            }}
+            className="btn btn-secondary"
+          >
+            Start over for someone else
+          </button>
         </div>
         <KitView
           kit={kit}
@@ -247,17 +269,31 @@ export function MemoryLaneApp() {
 
   return (
     <div>
-      {lastKit && (
-        <div className="no-print mb-6">
+      {(lastKit || lastProfile) && (
+        <div className="no-print mb-6 flex flex-wrap items-center justify-between gap-3">
+          {lastKit ? (
+            <button
+              type="button"
+              onClick={() => {
+                track("kit_action", { action: "back_to_kit" });
+                showKit(lastKit);
+              }}
+              className="btn btn-link"
+            >
+              ← Back to {lastKit.profile.displayName}&apos;s kit
+            </button>
+          ) : (
+            <span />
+          )}
           <button
             type="button"
             onClick={() => {
-              track("kit_action", { action: "back_to_kit" });
-              showKit(lastKit);
+              track("form_action", { action: "start_over" });
+              startOver();
             }}
-            className="btn btn-link"
+            className="btn btn-secondary"
           >
-            ← Back to {lastKit.profile.displayName}&apos;s kit
+            Start over for someone else
           </button>
         </div>
       )}
@@ -296,6 +332,7 @@ export function MemoryLaneApp() {
         {state.busy && <p className="sr-only">Putting the kit together…</p>}
       </div>
       <IntakeForm
+        key={formKey}
         initial={lastProfile}
         askSafetyAgain={state.askSafetyAgain}
         errors={state.errors}
