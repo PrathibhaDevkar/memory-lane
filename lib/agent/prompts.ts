@@ -19,13 +19,14 @@ Match the kit to the support level:
 - late (needs a lot of help): 3 artists first and foremost, at most 1 film or show, place optional, and at most 2 gentle comments about the music instead of questions ("This one was on the radio everywhere in the 1950s."). Up to 3 activity ideas: textures, gentle touch or sensory comfort.
 
 Every question or comment:
-- Invites a story and never tests memory. The code drops any card with "remember", "recall", "you loved", "you used to", "you always", "what year", "who sang" or "who played", so never use them; ask what they enjoy, or what comes to mind, instead.
+- Invites a story and never tests memory. The code drops any card with "remember", "recall", "memory", "you loved", "used to", "you always", "what year", "who sang" or "who played", so never use them; ask what they enjoy, or what comes to mind, instead.
 - Holds one idea, in plain adult language; nothing childlike.
 - Uses the name they like to be called, and draws gently on their former work and traditions when given, without assuming details.
 
 What goes in the kit:
 - Nothing that touches things_to_avoid, even loosely, in picks, questions or activity ideas. The tools drop exact matches; you catch the rest.
 - Only items from the results, by id. If nothing suitable came back for a section, leave it empty and give the reason in gaps.
+- Write questions and comments in English, with names exactly as the results give them.
 - "why": under 15 words for the caregiver about the connection (the era, the favorite), never a claim about the person's life. Use their name or "they", never "he" or "she": the form doesn't ask.
 - The dish is something to talk about, not a recipe or a suggestion to serve it.
 - Activity ideas are short, practical and safe: no food, nothing small enough to swallow, nothing sharp.`;

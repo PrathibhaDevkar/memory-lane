@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { avoidMatch, avoidPhrases, cleanDishes, contentConcern, landmarks, screen } from "@/lib/qloo/filters";
+import { avoidMatch, avoidPhrases, careerStart, cleanDishes, contentConcern, landmarks, screen, withinTheirYears } from "@/lib/qloo/filters";
 import type { QlooEntity } from "@/lib/qloo/types";
 
 // Real Qloo responses: the Oct 14 re-check plus the Phase 0 offenders.
@@ -141,3 +141,35 @@ describe("cleanDishes", () => {
     expect(cleanDishes(hut).map((d) => d.slug)).toEqual(["pizza_margherita"]);
   });
 });
+
+describe("artists' years (Qloo gives artists no year field)", () => {
+  const names = (es: QlooEntity[]) => es.map((e) => e.name);
+
+  it("reads when an artist began from the description", () => {
+    expect(careerStart("Louis Armstrong (1901–1971) was a seminal American jazz trumpeter.")).toEqual({ year: 1921, from: "born 1901" });
+    expect(careerStart("The Eagles are an American rock band formed in Los Angeles in 1971, celebrated for … Their Greatest Hits (1971–1975)")).toEqual({ year: 1971, from: "began 1971" });
+    expect(careerStart("Katy Perry is an American singer who rose to fame with her 2008 hit single.")).toEqual({ year: 2008, from: "first year mentioned 2008" });
+    expect(careerStart("Beyoncé is an American singer who rose to fame as lead singer of Destiny's Child.")).toBeNull();
+    expect(careerStart(undefined)).toBeNull();
+  });
+
+  it("drops modern artists for a Taylor Swift fan born in 1942, and says why (real Qloo responses)", () => {
+    const { kept, excluded } = withinTheirYears(load("fixtures/qloo/hop-artists-direct.json"), { start: 1952, end: 1972 });
+    expect(excluded.map((e) => e.title)).toEqual(
+      expect.arrayContaining(["Selena Gomez & the Scene", "Katy Perry", "One Direction", "Jonas Brothers", "Carly Rae Jepsen", "P!nk"]),
+    );
+    expect(excluded.find((e) => e.title === "Selena Gomez & the Scene")?.reason).toBe("Came along after their years (began 2008).");
+    // Artists whose descriptions give no year stay: a guess shouldn't remove them.
+    expect(kept.length).toBe(4);
+  });
+
+  it("keeps everyone in the right years, with 5 years' grace (real Qloo responses)", () => {
+    expect(withinTheirYears(load("fixtures/qloo/rosa-artists.json"), { start: 1952, end: 1972 }).excluded).toEqual([]);
+    expect(names(withinTheirYears(load("fixtures/qloo/walt-artists.json"), { start: 1960, end: 1980 }).kept)).toContain("Eagles");
+    expect(withinTheirYears(load("fixtures/qloo/june-artists.json"), { start: 1968, end: 1988 }).excluded.map((e) => e.title)).toEqual(["Josh Groban"]);
+    const debut = [{ entity_id: "x", name: "Late Starter", properties: { description: "Their debut album came out in 1977." }, genres: [], keywords: [] }];
+    expect(withinTheirYears(debut, { start: 1952, end: 1972 }).kept).toHaveLength(1); // 1977 is within 5 years
+    expect(withinTheirYears(debut, { start: 1950, end: 1970 }).kept).toHaveLength(0); // 1977 is not
+  });
+});
+
