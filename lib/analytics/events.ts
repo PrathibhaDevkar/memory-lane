@@ -8,10 +8,10 @@
 export type ClientEvents = {
   demo_opened: { demo: string }; // a fictional demo person: "rosa" or "margaret"
   example_filled: Record<string, never>;
-  form_action: { action: "add_favorite" | "remove_favorite" | "more_about_opened" };
+  form_action: { action: "add_favorite" | "remove_favorite" | "more_about_opened" | "start_over" };
   kit_shown: { source: "live" | "cached" | "fixture"; seconds: number };
   kit_failed: { reason: "check_fields" | "limit" | "paused" | "server" | "shape" | "network" };
-  kit_action: { action: "start_session" | "whatsapp" | "print" | "change_details" | "back_to_kit" | "compare" };
+  kit_action: { action: "start_session" | "whatsapp" | "print" | "change_details" | "back_to_kit" | "compare" | "start_over" };
   comparison_shown: { source: "live" | "cached" };
   comparison_failed: { reason: "not_live" | "limit" | "paused" | "server" | "shape" | "network" };
   media_opened: { where: "kit" | "session"; service: "spotify" | "youtube" };

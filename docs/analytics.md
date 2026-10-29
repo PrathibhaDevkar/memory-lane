@@ -13,10 +13,10 @@ Only the events and properties listed in [`lib/analytics/events.ts`](../lib/anal
 | `$pageview`, `$pageleave` | PostHog's standard page and browser details (URL `/`, browser, screen size, time zone) | Opening and leaving the app |
 | `demo_opened` | `demo`: the fictional person (`rosa`, `margaret`) | A demo button |
 | `example_filled` | none | "Fill in an example (Rosa)" |
-| `form_action` | `action`: `add_favorite`, `remove_favorite`, `more_about_opened` | Form controls |
+| `form_action` | `action`: `add_favorite`, `remove_favorite`, `more_about_opened`, `start_over` | Form controls |
 | `kit_shown` | `source` (`live`, `cached`, `fixture`), `seconds` to build | A kit appears |
 | `kit_failed` | `reason`: `check_fields`, `limit`, `paused`, `server`, `shape`, `network` | A kit couldn't be built |
-| `kit_action` | `action`: `start_session`, `whatsapp`, `print`, `change_details`, `back_to_kit`, `compare` | Buttons on the kit |
+| `kit_action` | `action`: `start_session`, `whatsapp`, `print`, `change_details`, `back_to_kit`, `compare`, `start_over` | Buttons on the kit |
 | `comparison_shown` | `source` (`live`, `cached`) | The comparison with Claude on its own appears |
 | `comparison_failed` | `reason`: `not_live`, `limit`, `paused`, `server`, `shape`, `network` | A comparison couldn't be made |
 | `media_opened` | `where` (`kit`, `session`), `service` (`spotify`, `youtube`) | A song or film search is opened (not which one) |
