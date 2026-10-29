@@ -37,6 +37,28 @@ const words = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
 const humanize = (slug: string) => slug.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const tidy = (why: string) => why.trim().slice(0, 240);
 
+const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Whether a card names this artist: as written, as whole words, with or without a leading "The". */
+function names(text: string, artist: string): boolean {
+  const bare = artist.replace(/^The /, "");
+  return [artist, bare].some((n) => new RegExp(`(^|[^\\p{L}\\p{N}])${escape(n)}($|[^\\p{L}\\p{N}])`, "u").test(text));
+}
+
+/** Artists Qloo offered in this run that the kit leaves out, apart from the person's favorites. */
+function notInKit(ctx: RunContext, music: MediaItem[]): string[] {
+  const inKit = new Set(music.map((m) => m.title));
+  const favorites = ctx.profile.favorites.map((f) => f.text.toLowerCase());
+  const out = new Set<string>();
+  for (const s of ctx.seen.values()) {
+    // Very short names ("Yes", "Low") read as ordinary words, so they aren't checked.
+    // A name inside one the kit has ("Bing Crosby" in "Bing Crosby and The Andrews Sisters") is fine too.
+    const partOfKit = [...inKit].some((t) => t.includes(s.name));
+    if (s.kind === "artist" && s.name.length >= 4 && !partOfKit && !favorites.includes(s.name.toLowerCase())) out.add(s.name);
+  }
+  return [...out];
+}
+
 export function buildKit(ctx: RunContext, submitted: Submission | null, failure?: string): Kit {
   const started = Date.now();
   // Claude answers with the short handles it was shown; map them back to Qloo IDs.
@@ -105,7 +127,18 @@ export function buildKit(ctx: RunContext, submitted: Submission | null, failure?
       place.push({ source: "qloo", qlooId: p.id, name: s.name, genre: s.genre, whyPicked: `${tidy(p.why)} A place to talk about, not a visit suggestion.` });
   }
 
-  const prompts = validatePrompts(sub?.prompts ?? [], level);
+  // A card that names an artist Qloo offered but the kit doesn't include sends the caregiver looking
+  // for music that isn't there (Femi Kuti for Mr. Okafor, first live audit). The person's own
+  // favorites may always be named.
+  const checked = validatePrompts(sub?.prompts ?? [], level);
+  const elsewhere = notInKit(ctx, music);
+  const offList = checked.kept.flatMap((text) => {
+    const name = elsewhere.find((n) => names(text, n));
+    return name ? [{ title: text, reason: `Names ${name}, who isn't in the kit.` }] : [];
+  });
+  const prompts = offList.length
+    ? { ...validatePrompts(checked.kept.filter((t) => !offList.some((d) => d.title === t)), level), dropped: [...checked.dropped, ...offList] }
+    : checked;
   const ideas = checkIdeas(sub?.activity_ideas ?? [], level);
 
   ctx.trace.push({
@@ -140,3 +173,29 @@ export function buildKit(ctx: RunContext, submitted: Submission | null, failure?
     trace: ctx.trace,
   };
 }
+
+/**
+ * What makes a submitted kit too thin to show, when Qloo gave Claude enough to do better: no music
+ * though artists were offered, fewer than 2 sections though there was material for more, or fewer
+ * questions than the level needs. Seen live once in 30 kits (one modern artist, no questions).
+ * Empty when the kit is fine, or when Qloo found little (an honest gap is better than a retry).
+ */
+export function thinKit(ctx: RunContext, kit: Kit): string[] {
+  const offered = new Set<Section>();
+  for (const s of ctx.seen.values()) {
+    if (s.kind === "artist") offered.add("music");
+    if (s.kind === "movie" || s.kind === "tv") offered.add("screen");
+    if (s.kind === "place") offered.add("place");
+    if (s.kind === "dish") offered.add("dish");
+  }
+  const filled = (["music", "screen", "dish", "place"] as const).filter((x) => kit[x].status === "ok");
+  const problems: string[] = [];
+  if (kit.music.status !== "ok" && offered.has("music")) problems.push("no music, though artists were offered");
+  if (filled.length < 2 && offered.size >= 2) problems.push(`only ${filled.length} of the 4 sections filled, though results came back for ${offered.size}`);
+  const level = ctx.profile.supportLevel;
+  const { open } = validatePrompts(kit.prompts, level);
+  if (level === "early" && open < KIT_LIMITS.early.minOpenPrompts) problems.push(`${open} open question${open === 1 ? "" : "s"}; this level needs ${KIT_LIMITS.early.minOpenPrompts} to ${KIT_LIMITS.early.prompts}`);
+  if (level === "middle" && kit.prompts.length === 0) problems.push("no questions; this level needs up to 3");
+  return problems;
+}
+

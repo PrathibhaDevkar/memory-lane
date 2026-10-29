@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { buildKit, checkIdeas } from "@/lib/agent/kit";
+import { buildKit, checkIdeas, thinKit } from "@/lib/agent/kit";
 import { SYSTEM_PROMPT } from "@/lib/agent/prompts";
 import { KitSchema } from "@/lib/types";
 
@@ -16,7 +16,7 @@ vi.mock("@/lib/qloo/client", () => ({
 }));
 
 const { RunContext } = await import("@/lib/qloo/tools");
-const { agentConfig, artistFromReply, buildLiveKit, DEFAULT_EFFORT, DEFAULT_MODEL, FINISH_NOW, traditionQuestion, traditionsToDo } = await import("@/lib/agent/run");
+const { agentConfig, artistFromReply, buildLiveKit, DEFAULT_EFFORT, thinKitNote, DEFAULT_MODEL, FINISH_NOW, traditionQuestion, traditionsToDo } = await import("@/lib/agent/run");
 const { auditKit } = await import("@/lib/agent/audit");
 const { qlooGet } = await import("@/lib/qloo/client");
 
@@ -31,6 +31,9 @@ const rosa = {
 };
 const era = { start: 1952, end: 1972 };
 const empty = { music: [], screen: [], dish: [], place: [], prompts: [], activity_ideas: [], gaps: [] };
+// A submission the loop accepts as it is (thinKit): Sinatra (always f1 here) and three open questions. Tests of the loop use it so
+// they don't also trigger the one-more-try for a thin kit.
+const done = { ...empty, music: [{ id: "f1", why: "x" }], prompts: ["What music did people dance to back then?", "Which singer's voice do you like best?", "What was going to the movies like?"] };
 
 function ctxWithSeen() {
   const ctx = new RunContext(rosa, era);
@@ -138,6 +141,39 @@ describe("names in questions match the cards", () => {
   });
 });
 
+describe("questions name only artists in the kit (first live audit: Femi Kuti for Mr. Okafor)", () => {
+  const kitWith = (prompts: string[], extra: [string, string][] = []) => {
+    const ctx = ctxWithSeen();
+    for (const [id, name] of [["NAT", "Nat King Cole"], ["QUEEN", "Queen"], ["YES", "Yes"], ["SINATRA", "Frank Sinatra"], ...extra]) ctx.seen.set(id, { kind: "artist", name });
+    return buildKit(ctx, { ...empty, music: [{ id: "ELLA", why: "x" }], prompts });
+  };
+
+  it("drops a card naming an artist Qloo offered but the kit leaves out, and says why", () => {
+    const kit = kitWith(["Would you like Ella Fitzgerald or Nat King Cole next?", "What comes to mind when you hear Ella Fitzgerald?"]);
+    expect(kit.prompts).toEqual(["What comes to mind when you hear Ella Fitzgerald?"]);
+    const check = kit.trace.find((t) => t.label === "grounding + question check")!;
+    expect(check.excluded).toContainEqual({ title: "Would you like Ella Fitzgerald or Nat King Cole next?", reason: "Names Nat King Cole, who isn't in the kit." });
+    expect(check.outputSummary).toContain("1 questions kept");
+  });
+
+  it("allows the person's own favorites and ordinary words", () => {
+    const kit = kitWith([
+      "What do you enjoy most about Frank Sinatra's voice?", // Rosa's favorite, even when not in the kit
+      "Which song would you crown the queen of the dance floor?", // "Queen" the band only as written
+      "Yes or no: would you like another song?", // too short a name to check
+    ]);
+    expect(kit.prompts).toHaveLength(3);
+  });
+
+  it("treats a name inside one the kit has as in the kit", () => {
+    const ctx = ctxWithSeen();
+    ctx.seen.set("BOTH", { kind: "artist", name: "Bing Crosby and The Andrews Sisters" });
+    ctx.seen.set("BING", { kind: "artist", name: "Bing Crosby" });
+    const kit = buildKit(ctx, { ...empty, music: [{ id: "BOTH", why: "x" }], prompts: ["What comes to mind when you hear Bing Crosby sing?"] });
+    expect(kit.prompts).toHaveLength(1);
+  });
+});
+
 describe("model rule: Haiku by default, Sonnet or Opus only with a recorded approval", () => {
   afterEach(() => vi.unstubAllEnvs());
   const quiet = () => vi.spyOn(console, "warn").mockImplementation(() => {});
@@ -221,7 +257,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
 
   it("sends the default effort, low, with the main call", async () => {
     vi.stubEnv("CLAUDE_EFFORT", "");
-    const { client, sent } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }])]);
+    const { client, sent } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: done }])]);
     await buildLiveKit(rosa, { client });
     expect((sent[0].body as unknown as { output_config: unknown }).output_config).toEqual({ effort: "low" });
     vi.unstubAllEnvs();
@@ -229,7 +265,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
 
   it("runs the usual lookups in code, so the usual kit takes one Claude call", async () => {
     const { client, create, sent } = fakeClient([
-      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "f1", why: "x" }] } }]),
+      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...done, music: [{ id: "f1", why: "x" }] } }]),
     ]);
     const kit = await buildLiveKit(rosa, { client });
     expect(create).toHaveBeenCalledTimes(1);
@@ -249,7 +285,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
   });
 
   it("reports each step as it happens, and when Claude starts choosing, for the page to show", async () => {
-    const { client } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "f1", why: "x" }] } }])]);
+    const { client } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...done, music: [{ id: "f1", why: "x" }] } }])]);
     const events: { type: string; phase?: string; step?: Record<string, unknown> }[] = [];
     const kit = await buildLiveKit(rosa, { client, onProgress: (e) => events.push(e) });
     // Lookups first, then Claude, then the kit's own check: the same steps as the trace, in order.
@@ -264,7 +300,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
   });
 
   describe("music for the caregiver's traditions", () => {
-    const submit = () => msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }]);
+    const submit = () => msg([{ type: "tool_use", id: "d", name: "submit_kit", input: done }]);
     const reply = (text: string) => msg([{ type: "text", text }], "end_turn", { input_tokens: 70, output_tokens: 5 });
     const elena = { ...rosa, traditions: "Catholic hymns" };
 
@@ -372,11 +408,13 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
     try {
       // Stands in for Claude: picks the era artist from music_from_film, with no extra lookup.
       type Artist = { id: string; name: string };
-      let message: { lookups: { music: { artists: Artist[] }; music_from_film: Artist[] } } | undefined;
+      let message: { lookups: { music: { artists: Artist[] }; music_from_film: Artist[]; movies: { titles: Artist[] } } } | undefined;
       const create = vi.fn(async (body: Body) => {
         message = JSON.parse((body.messages[0].content as string).split("\n\n")[1]);
         const pick = message!.lookups.music_from_film.find((a) => a.name === "Frank Sinatra")!;
-        return msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: pick.id, why: "x" }] } }]);
+        // The film too, so the kit has the 2 sections a full kit needs (thinKit).
+        const film = message!.lookups.movies.titles[0];
+        return msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...done, music: [{ id: pick.id, why: "x" }], screen: [{ id: film.id, why: "x" }] } }]);
       });
       const client = { beta: { messages: { create } } } as unknown as Anthropic;
       const kit = await buildLiveKit({ ...rosa, favorites: [{ text: "Taylor Swift", kind: "artist" }] }, { client });
@@ -388,12 +426,62 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
 
       // A film favorite from the person's era already gives music its era: no second music list.
       vi.mocked(qlooGet).mockClear();
-      const june = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }])]);
+      // Here f1 is the film favorite and a1 the first artist its lookups offer.
+      const june = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...done, music: [{ id: "a1", why: "x" }], screen: [{ id: "f1", why: "x" }] } }])]);
       await buildLiveKit({ ...rosa, favorites: [{ text: "Mary Poppins", kind: "movie" }] }, { client: june.client });
       expect(JSON.stringify(june.sent[0].body.messages[0])).not.toContain("music_from_film");
     } finally {
       vi.mocked(qlooGet).mockImplementation(original);
     }
+  });
+
+  describe("a kit too thin to show (seen live once in 30: one modern artist, no questions)", () => {
+    const thin = () => msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "f1", why: "x" }] } }]);
+    const full = () => msg([{ type: "tool_use", id: "e", name: "submit_kit", input: done }]);
+
+    it("sends it back once with what's missing, then uses the better kit", async () => {
+      const { client, create, sent } = fakeClient([thin(), full()]);
+      const kit = await buildLiveKit(rosa, { client });
+      expect(create).toHaveBeenCalledTimes(2);
+      expect(kit.prompts).toHaveLength(3);
+      // The history grows only at the end: Claude's answer, then the error for its submit_kit.
+      const [answer, reply] = sent[1].body.messages.slice(-2);
+      expect(answer.role).toBe("assistant");
+      expect(JSON.stringify(reply)).toContain('"tool_use_id":"d"');
+      expect(JSON.stringify(reply)).toContain('"is_error":true');
+      expect(JSON.stringify(reply)).toContain("0 open questions; this level needs 3 to 5");
+      expect(kit.trace.find((t) => t.label === "kit too thin")?.outputSummary).toMatch(/^Asked Claude once more: 0 open questions/);
+    });
+
+    it("asks only once: a second thin kit is shown as it is", async () => {
+      const { client, create } = fakeClient([thin(), thin()]);
+      const kit = await buildLiveKit(rosa, { client });
+      expect(create).toHaveBeenCalledTimes(2);
+      expect(kit.music.items).toHaveLength(1);
+      expect(kit.prompts).toHaveLength(0);
+    });
+
+    it("doesn't ask when Qloo found nothing to choose from: an honest gap is better", async () => {
+      vi.mocked(qlooGet).mockImplementationOnce(async (path: string) => ({ ok: true, status: 200, url: path, ms: 1, cached: false, entities: [] }));
+      const { client, create } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...done, music: [] } }])]);
+      const kit = await buildLiveKit({ ...rosa, favorites: [{ text: "Zxqwv Blorf", kind: "artist" }] }, { client });
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(kit.music.status).toBe("gap");
+    });
+
+    it("judges questions by the support level", () => {
+      const ctx = ctxWithSeen();
+      const at = (supportLevel: "early" | "middle" | "late", prompts: string[]) => {
+        const c = new RunContext({ ...rosa, supportLevel }, era);
+        for (const [k, v] of ctx.seen) c.seen.set(k, v);
+        return thinKit(c, buildKit(c, { ...empty, music: [{ id: "ELLA", why: "x" }], screen: [{ id: "FILM", why: "x" }], prompts }));
+      };
+      expect(at("early", ["What music did people dance to back then?"])).toEqual(["1 open question; this level needs 3 to 5"]);
+      expect(at("middle", [])).toEqual(["no questions; this level needs up to 3"]);
+      expect(at("middle", ["Would you like Ella Fitzgerald or Nat King Cole next?"])).toEqual([]);
+      expect(at("late", [])).toEqual([]); // comments are optional at the late level
+      expect(thinKitNote(["no music, though artists were offered"])).toMatch(/^This kit is too thin to show: no music, though artists were offered\. Call submit_kit again/);
+    });
   });
 
   it("lets Claude fix a problem with another lookup, running that turn's tools in parallel", async () => {
@@ -402,7 +490,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
         { type: "tool_use", id: "b", name: "get_music", input: { seed_ids: ["f1"] } },
         { type: "tool_use", id: "c", name: "get_places", input: { seed_ids: ["f1"] } },
       ]),
-      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...empty, music: [{ id: "f1", why: "x" }] } }]),
+      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: { ...done, music: [{ id: "f1", why: "x" }] } }]),
     ]);
     const kit = await buildLiveKit(rosa, { client });
     expect(create).toHaveBeenCalledTimes(2);
@@ -428,7 +516,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
   it("refuses lookups once it's the last turn: only the up-front lookups reach Qloo", async () => {
     const { client, sent } = fakeClient([
       msg([{ type: "tool_use", id: "a", name: "resolve_favorite", input: { name: "Frank Sinatra", kind: "artist" } }]),
-      msg([{ type: "tool_use", id: "b", name: "submit_kit", input: empty }]),
+      msg([{ type: "tool_use", id: "b", name: "submit_kit", input: done }]),
     ]);
     // A budget this short makes the first turn the last one.
     const kit = await buildLiveKit(rosa, { client, budgetMs: 30_000 });
@@ -455,7 +543,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
   it("caches the tools and system prompt the same way on every turn, and not the person's message", async () => {
     const { client, sent } = fakeClient([
       msg([{ type: "tool_use", id: "b", name: "get_music", input: { seed_ids: ["SINATRA"] } }]),
-      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }]),
+      msg([{ type: "tool_use", id: "d", name: "submit_kit", input: done }]),
     ]);
     await buildLiveKit(rosa, { client });
     for (const { body } of sent) {
@@ -469,7 +557,7 @@ describe("buildLiveKit (loop control, fake Claude)", () => {
 
   it("records each call's token use in the trace and logs it without profile details", async () => {
     const usage = { input_tokens: 3100, output_tokens: 900, cache_creation_input_tokens: 2950, cache_read_input_tokens: null };
-    const { client } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: empty }], "tool_use", usage)]);
+    const { client } = fakeClient([msg([{ type: "tool_use", id: "d", name: "submit_kit", input: done }], "tool_use", usage)]);
     const kit = await buildLiveKit(rosa, { client });
     const turn = kit.trace.find((s) => s.kind === "llm")!;
     expect(turn.input.usage).toEqual({ in: 3100, cacheWrite: 2950, cacheRead: 0, out: 900 });

@@ -11,7 +11,7 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import type { EraWindow, Profile, TraceStep } from "@/lib/types";
 import { qlooGet, type QlooResult } from "./client";
-import { cleanDishes, landmarks, nothingToAvoid, screen } from "./filters";
+import { cleanDishes, landmarks, nothingToAvoid, screen, withinTheirYears } from "./filters";
 import type { Excluded, QlooEntity } from "./types";
 
 // The lookups run in code take up to 3 favorites + 6 + 2 for traditions; the rest is room for
@@ -195,8 +195,11 @@ export async function runTool(ctx: RunContext, name: string, input: unknown): Pr
       const r = await ctx.qloo("/v2/insights", { ...signal, "filter.type": "urn:entity:artist", take: 25 });
       if (!r.ok) return fail(r.error);
       // Artists carry no rating or themes, so only the caregiver's list applies.
-      const { kept, excluded } = screen(r.entities, ctx.avoid, { content: false });
-      const top = kept.slice(0, 8);
+      const screened = screen(r.entities, ctx.avoid, { content: false });
+      // Then the artists who came along well after their years (Qloo gives artists no year field).
+      const dated = withinTheirYears(screened.kept, ctx.era);
+      const excluded = [...screened.excluded, ...dated.excluded];
+      const top = dated.kept.slice(0, 8);
       for (const e of top) ctx.seen.set(e.entity_id, { kind: "artist", name: e.name });
       record(`${r.entities.length} artists returned, ${top.length} offered`, excluded, top.length ? "ok" : "gap");
       return { content: JSON.stringify({ artists: top.map((e) => ({ id: ctx.handle(e.entity_id, "a"), name: e.name })) }), isError: false };

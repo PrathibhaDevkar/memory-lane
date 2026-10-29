@@ -6,8 +6,10 @@
 import { KIT_LIMITS } from "@/lib/care";
 import type { SupportLevel } from "@/lib/types";
 
-const PRESUMES = /^(you\b|remember when\b)|\byou (loved|used to|were always|always|once)\b/i;
-const TESTS_MEMORY = /\bremember(ed)?\b|\brecall\b/i;
+// "used to" states a fact about the past whoever it's about ("your family used to share…", seen live).
+const PRESUMES = /^(you\b|remember when\b)|\byou (loved|were always|always|once)\b|\bused to\b/i;
+// "Your favorite memory of…" asks them to remember as much as "remember" does (seen live).
+const TESTS_MEMORY = /\bremember(ed)?\b|\brecall\b|\bmemor(y|ies)\b/i;
 const QUIZ = /\b(what|which) year\b|\bwhat was (the|his|her|their) name\b|\bwhat'?s (the|his|her|their) name\b|\bwho (sang|starred|played|wrote)\b|\bhow old were you\b|\bwhat date\b/i;
 const CHILDLIKE = /\b(yummy|doggy|kitty|choo[- ]choo|nap ?time|sweetie|good (boy|girl|job)|well done|potty|silly billy)\b/i;
 const OPEN_START = /^(what|how|who|where|which|why|tell me)\b/i;

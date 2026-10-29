@@ -1,6 +1,7 @@
 // Safety and relevance rules applied to every Qloo result before Claude or the caregiver sees it.
 // Design: docs/plan.md §3 (D3, D4). Evidence: docs/research.md §2.
 
+import type { EraWindow } from "@/lib/types";
 import type { Excluded, QlooEntity } from "./types";
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -132,6 +133,45 @@ export function screen(entities: QlooEntity[], thingsToAvoid: string[], opts: { 
       continue;
     }
     kept.push(e);
+  }
+  return { kept, excluded };
+}
+
+// ---------- Artists' years ----------
+
+// Qloo gives artists no year, so music seeded with a modern favorite can bring artists from long
+// after the person's years (Selena Gomez for a Taylor Swift fan born in 1942; Femi Kuti for Mr.
+// Okafor). Their descriptions usually say when they began. A guess, so it errs towards keeping.
+const YEAR = "(1[89]\\d\\d|20[0-2]\\d)";
+const BEGAN = new RegExp(`\\b(?:formed|founded|debuted|debut album|debut single|began (?:recording|performing))\\b[^.]{0,40}?\\b${YEAR}\\b`, "i");
+// Life dates only right after the name, so an album span like "(1971–1975)" isn't read as a birth.
+const BORN = [new RegExp(`\\((?:born\\s+)?${YEAR}\\s*[–-]`), new RegExp(`\\(born[^)]*?${YEAR}`, "i"), new RegExp(`\\bborn\\b[^.]{0,40}?\\b${YEAR}\\b`, "i")];
+const ANY_YEAR = new RegExp(`\\b${YEAR}s?\\b`, "g");
+/** Years after the window an artist may still start: close enough, and a margin for a rough guess. */
+export const ARTIST_GRACE_YEARS = 5;
+
+/** About when an artist's career began, from Qloo's description, or null if it doesn't say. */
+export function careerStart(description: string | undefined): { year: number; from: string } | null {
+  if (!description) return null;
+  const began = description.match(BEGAN);
+  if (began) return { year: Number(began[1]), from: `began ${began[1]}` };
+  const head = description.slice(0, 120);
+  for (const re of BORN) {
+    const m = head.match(re);
+    if (m) return { year: Number(m[1]) + 20, from: `born ${m[1]}` };
+  }
+  const years = [...description.matchAll(ANY_YEAR)].map((m) => Number(m[1]));
+  return years.length ? { year: Math.min(...years), from: `first year mentioned ${Math.min(...years)}` } : null;
+}
+
+/** Artists whose careers began well after the person's formative years go; unknown years stay. */
+export function withinTheirYears(entities: QlooEntity[], era: EraWindow) {
+  const kept: QlooEntity[] = [];
+  const excluded: Excluded[] = [];
+  for (const e of entities) {
+    const start = careerStart(e.properties.description);
+    if (start && start.year > era.end + ARTIST_GRACE_YEARS) excluded.push({ title: e.name, reason: `Came along after their years (${start.from}).` });
+    else kept.push(e);
   }
   return { kept, excluded };
 }
