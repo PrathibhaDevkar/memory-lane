@@ -85,6 +85,9 @@ describe("POST /api/compare", () => {
     expect((await post(JSON.stringify({ ...rosa, thingsToAvoid: [] }))).status).toBe(400);
     const stop = await post(JSON.stringify({ ...rosa, suddenChange: true }));
     expect(stop.status).toBe(400);
+    // Before the rest of the profile is checked, as in /api/kit.
+    const bare = await post(JSON.stringify({ suddenChange: true }));
+    expect(await bare.json()).toEqual({ error: "There's no kit after a sudden change, so there's nothing to compare." });
     expect(buildComparison).not.toHaveBeenCalled();
     expect(liveKitBlocked).not.toHaveBeenCalled();
     expect(captured).toEqual([]);

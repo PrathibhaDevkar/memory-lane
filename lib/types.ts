@@ -162,7 +162,9 @@ export const KitSchema = z.object({
 export const SafetyStopSchema = z.object({
   mode: z.literal("safety_stop"),
   message: z.string(),
-  profile: ProfileSchema,
+  // The answers given so far: the stop comes before the rest of the form is checked (D9), so any of
+  // them may be missing.
+  profile: ProfileSchema.partial(),
 });
 
 export const KitResponseSchema = z.union([KitSchema, SafetyStopSchema]);
