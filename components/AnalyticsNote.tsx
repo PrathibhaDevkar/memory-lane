@@ -2,7 +2,7 @@ import { posthogKey } from "@/lib/analytics/config";
 
 // Every event and property is listed there. main only gets the file when PR #2 merges, so this links
 // the working branch, which is kept.
-export const ANALYTICS_DOC_URL = "https://github.com/PrathibhaDevkar/memory-lane/blob/feat/phase2-real-data/docs/analytics.md";
+export const ANALYTICS_DOC_URL = "https://github.com/PrathibhaDevkar/memory-lane/blob/main/docs/analytics.md";
 
 /** Says on screen what analytics count. Shown only when they're on (NEXT_PUBLIC_POSTHOG_KEY is set). */
 export function AnalyticsNote() {

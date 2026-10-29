@@ -8,7 +8,7 @@ export default function Home() {
       <header className="no-print border-b border-line">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6">
           <div>
-            <p className="font-serif text-2xl font-semibold">Memory Lane</p>
+            <h1 className="font-serif text-2xl font-semibold">Memory Lane</h1>
             <p className="text-muted">Personal reminiscence sessions, put together in a minute.</p>
           </div>
           <TextSizeControl />
