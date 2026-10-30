@@ -1,8 +1,8 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import rosa from "@/fixtures/kits/rosa.json";
 import { EXAMPLE_PROFILE, IntakeForm } from "@/components/IntakeForm";
-import { SessionMode } from "@/components/SessionMode";
+import { clearOfStop, SessionMode } from "@/components/SessionMode";
 import { SafetyStop } from "@/components/SafetyStop";
 import { SessionNote } from "@/components/SessionNote";
 import { SAFETY_STOP_MESSAGE } from "@/lib/care";
@@ -227,6 +227,18 @@ describe("screens", () => {
     expect(html).toMatch(/class="[^"]*sticky bottom-0[^"]*"><button[^>]*>Stop</);
   });
 
+  // At Largest text on a phone, the pinned Stop covered the Spotify button on half the cards, so a tap
+  // meant for it could land on Stop. The button now sits right under the title, above the "why" line.
+  it("puts the card's Spotify or YouTube button right under its title, before the why line", () => {
+    const html = renderToStaticMarkup(<SessionMode kit={kit} onEnd={() => {}} onBack={() => {}} />);
+    const title = html.indexOf('id="card-title"');
+    const button = html.indexOf("Search on Spotify");
+    const why = html.indexOf("people who love Frank Sinatra also love Ella Fitzgerald");
+    expect(title).toBeGreaterThan(-1);
+    expect(button).toBeGreaterThan(title);
+    expect(why).toBeGreaterThan(button);
+  });
+
   it("the note screen offers copy, WhatsApp and print, and says nothing is kept", () => {
     const html = renderToStaticMarkup(
       <SessionNote kit={kit} log={log([{ cardId: "a", kind: "song", title: "Ella Fitzgerald", reaction: "lit_up" }])} onBuildNext={() => {}} onBackToKit={() => {}} />,
@@ -265,5 +277,35 @@ describe("screens", () => {
     const html = renderToStaticMarkup(<IntakeForm initial={{ ...EXAMPLE_PROFILE, suddenChange: false }} askSafetyAgain busy={false} onSubmit={() => {}} />);
     expect(html.match(/name="[^"]*-sudden"[^>]*checked/)).toBeNull();
     expect(html).toContain('value="Rosa"');
+  });
+});
+
+// When a card appears, the Stop row pinned to the bottom of a small screen must not sit over its buttons.
+describe("clearOfStop", () => {
+  const box = (top: number, bottom: number, children = 1) =>
+    ({ childElementCount: children, getBoundingClientRect: () => ({ top, bottom }) }) as unknown as HTMLElement;
+  const scrolls = (title: HTMLElement, buttons: HTMLElement, stopRow: HTMLElement) => {
+    const calls: number[] = [];
+    vi.stubGlobal("window", { scrollBy: ({ top }: { top: number }) => calls.push(top) });
+    try {
+      clearOfStop(title, buttons, stopRow);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+    return calls;
+  };
+
+  it("scrolls the card's buttons clear of the pinned Stop, with a few pixels to spare", () => {
+    expect(scrolls(box(100, 150), box(400, 484), box(460, 568))).toEqual([28]);
+  });
+
+  it("never scrolls the card's title off the top", () => {
+    expect(scrolls(box(10, 60), box(400, 484), box(436, 568))).toEqual([10]);
+  });
+
+  it("leaves the page alone when nothing is covered, the title is at the top, or the card has no buttons", () => {
+    expect(scrolls(box(100, 150), box(300, 384), box(436, 568))).toEqual([]);
+    expect(scrolls(box(0, 50), box(400, 484), box(436, 568))).toEqual([]);
+    expect(scrolls(box(100, 150), box(400, 400, 0), box(436, 568))).toEqual([]);
   });
 });
