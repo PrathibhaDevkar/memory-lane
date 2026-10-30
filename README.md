@@ -11,7 +11,7 @@ Built for the [Qloo Agentic Hackathon](https://qloo.devpost.com/) ("Agents, but 
 
 ## Try it
 
-**Watch it first:** a [1:45 walkthrough on YouTube](https://www.youtube.com/watch?v=LNFQwXMNSNg), recorded on the live site on Oct 29: the safety check, a live kit for Walt as it builds, the comparison, session mode and the care note.
+**Watch it first:** a [1:40 walkthrough on YouTube](https://www.youtube.com/watch?v=RGh6K1hkY1Q), recorded on the live site on Oct 29: the safety check, a live kit for Walt as it builds, the comparison, session mode and the care note.
 
 **[memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app)**: click **Try a demo**.
 - **Rosa**, born 1942 in Chicago, loves Frank Sinatra: a full kit, then **Start session**.
