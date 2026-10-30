@@ -87,7 +87,7 @@ The year window, hometown and safety rules come from the caregiver's form and ar
 ## Measured, not guessed
 
 - **Cost and speed:** about 0.1–0.15 US cents of Claude tokens per kit, in 10–20 seconds (live, Oct 27–29). That is what lets the demo stay free.
-- **Tests:** 311 automated tests cover the Qloo filters (on real Qloo responses), the agent loop, the safety check, the question rules and the screens.
+- **Tests:** 316 automated tests cover the Qloo filters (on real Qloo responses), the agent loop, the safety check, the question rules and the screens.
 - **Audits:** every live check is in [`audits/`](audits/), including the [production audit](audits/2026-10-27-production-audit.md) (Oct 27) and the [end-to-end check](audits/2026-10-29-end-to-end-after-merges.md) after the last fixes (Oct 29).
 
 ## Built with
