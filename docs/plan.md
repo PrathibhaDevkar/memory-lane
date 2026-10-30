@@ -567,7 +567,7 @@ No professional caregiver is available. **Adults aged 60+** judge era accuracy (
 | Session | Card order per level, care note from the log, avoid-next-time, share text and link, screens, safety question asked again | vitest |
 | Human | Testers per §12.8; a stranger | Phase 3–4 |
 
-On Oct 29, 311 tests pass with no network; the 2 live tests run only with `LIVE=1` and a Qloo key.
+On Oct 30, 316 tests pass with no network; the 2 live tests run only with `LIVE=1` and a Qloo key.
 
 ---
 
