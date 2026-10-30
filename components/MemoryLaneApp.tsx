@@ -49,7 +49,9 @@ export function MemoryLaneApp() {
   useEffect(() => {
     if (state.view !== "form") {
       if (!kitRef.current?.contains(document.activeElement)) kitRef.current?.focus();
-      window.scrollTo({ top: 0 });
+      // Session mode starts at the card, below the page header, so the reactions fit on a phone.
+      if (state.view === "session") kitRef.current?.scrollIntoView({ block: "start" });
+      else window.scrollTo({ top: 0 });
     }
   }, [state.view]);
 
