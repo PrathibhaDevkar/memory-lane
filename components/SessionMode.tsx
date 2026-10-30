@@ -68,6 +68,18 @@ function ReadAloud({ card }: { card: SessionCard }) {
   );
 }
 
+/**
+ * On a small screen at large text, the Stop row pinned to the bottom can cover the card's Spotify,
+ * YouTube or Read aloud button, so a tap meant for it can land on Stop. Scroll the page just enough to
+ * clear them (with a few pixels to spare), but never past the card's title.
+ */
+export function clearOfStop(title: HTMLElement | null, buttons: HTMLElement | null, stopRow: HTMLElement | null) {
+  if (!title || !buttons?.childElementCount || !stopRow) return;
+  const covered = buttons.getBoundingClientRect().bottom - stopRow.getBoundingClientRect().top;
+  const room = Math.floor(title.getBoundingClientRect().top);
+  if (covered > 0 && room > 0) window.scrollBy({ top: Math.min(Math.ceil(covered) + 4, room) });
+}
+
 export function SessionMode({ kit, onEnd, onBack }: Props) {
   const [cards] = useState(() => buildCards(kit));
   const [startedAt] = useState(() => new Date().toISOString());
@@ -75,10 +87,15 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [stopped, setStopped] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const buttonsRef = useRef<HTMLDivElement>(null);
+  const stopRowRef = useRef<HTMLDivElement>(null);
 
-  // Move focus to each new card so screen-reader and keyboard users follow along.
+  // Move focus to each new card so screen-reader and keyboard users follow along. Then, a frame later
+  // (after the page has scrolled to the session), keep the pinned Stop off the card's buttons.
   useEffect(() => {
     headingRef.current?.focus();
+    const frame = requestAnimationFrame(() => clearOfStop(headingRef.current, buttonsRef.current, stopRowRef.current));
+    return () => cancelAnimationFrame(frame);
   }, [index, stopped]);
 
   const finish = (log: LogEntry[]) => onEnd({ startedAt, endedAt: new Date().toISOString(), entries: log });
@@ -142,8 +159,9 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
         <h2 id="card-title" ref={headingRef} tabIndex={-1} className="mt-1 font-serif text-3xl font-semibold leading-tight outline-none [overflow-wrap:anywhere] sm:mt-2 sm:text-5xl">
           {card.title}
         </h2>
-        {card.detail && <p className="mt-3 text-lg text-muted sm:mt-4">{card.detail}</p>}
-        <div className="no-print mt-4 flex flex-wrap gap-3 sm:mt-6">
+        {/* The buttons sit right under the title, so the Stop row pinned to the bottom of a small screen
+            doesn't cover them when the card appears (at Largest text it hid Spotify on half the cards). */}
+        <div ref={buttonsRef} className="no-print mt-3 flex flex-wrap gap-3 empty:hidden sm:mt-4">
           {card.link && (
             <a
               href={card.link.href}
@@ -157,6 +175,7 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
           )}
           <ReadAloud key={card.id} card={card} />
         </div>
+        {card.detail && <p className="mt-3 text-lg text-muted sm:mt-4">{card.detail}</p>}
       </div>
 
       <div className="no-print mt-3 sm:mt-4">
@@ -181,7 +200,7 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
       {/* Stop has its own row, pinned to the bottom of the screen when the card is too tall to leave room,
           so it's always in reach (on a phone the reactions sat below the screen). Only Stop is pinned:
           all five took most of a small screen at Largest text and covered the card. */}
-      <div className="no-print sticky bottom-0 bg-paper pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div ref={stopRowRef} className="no-print sticky bottom-0 bg-paper pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <button
           type="button"
           onClick={() => react("stopped")}
