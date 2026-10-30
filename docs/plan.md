@@ -428,7 +428,7 @@ Planned files are listed in §12.
 | 1 | Scaffold, contract, form → kit, deployed | ✅ Live at [memory-lane-two-umber.vercel.app](https://memory-lane-two-umber.vercel.app) |
 | 2 | Live agent: Qloo tools, filters, Claude loop | ✅ Checked live on Oct 19 and Oct 20 (Haiku 5.5, all six personas passed; [audit](../audits/2026-10-19-claude-haiku-5-5-medium.md)), with two token cuts since. Live kits in production since Oct 27 ([production audit](../audits/2026-10-27-production-audit.md)) |
 | 3 | Care-practice features, session mode, trace, comparison | ✅ Built Oct 15–26: intake, safety stop, question rules, support levels, watch-for, session mode, session note, WhatsApp share, trace panel, demo buttons (Rosa, Margaret), larger text and analytics, and the comparison with Claude on its own. Fixes from the production audit merged Oct 29 (#24–#31; [end-to-end check](../audits/2026-10-29-end-to-end-after-merges.md)) |
-| 4 | Ship: from working to winning, then submit | 🟡 Live kits in production, the comparison, the README, the Devpost text and the [video](https://www.youtube.com/watch?v=LNFQwXMNSNg) done by Oct 29; `main` deploys production since PR #2 merged on Oct 29. Not done: the tester study and more saved demo kits. The plan is in §11.1 |
+| 4 | Ship: from working to winning, then submit | 🟡 Live kits in production, the comparison, the README, the Devpost text and the [video](https://www.youtube.com/watch?v=RGh6K1hkY1Q) done by Oct 29; `main` deploys production since PR #2 merged on Oct 29. Not done: the tester study and more saved demo kits. The plan is in §11.1 |
 
 ```mermaid
 gantt
