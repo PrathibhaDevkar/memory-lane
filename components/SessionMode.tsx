@@ -126,7 +126,7 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
 
   const card = cards[index];
   return (
-    <section aria-labelledby="card-title" className="mx-auto flex min-h-[70vh] max-w-2xl flex-col">
+    <section aria-labelledby="card-title" className="mx-auto flex max-w-2xl flex-col">
       <div className="no-print flex items-center justify-between gap-3">
         <p aria-live="polite" className="font-medium text-muted">
           {index + 1} of {cards.length}
@@ -136,14 +136,14 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
         </button>
       </div>
 
-      <div className="mt-6 flex flex-1 flex-col justify-center rounded-2xl border border-line bg-card p-6 sm:p-10">
+      <div className="mt-3 flex flex-col rounded-2xl border border-line bg-card p-5 sm:mt-4 sm:p-10">
         <p className="font-semibold text-muted">{CARD_LABEL[card.kind]}</p>
         {/* A long name ("Fitzgerald") can't fit a 320px screen at Largest text; break it rather than push the page sideways. */}
-        <h2 id="card-title" ref={headingRef} tabIndex={-1} className="mt-2 font-serif text-4xl font-semibold leading-tight outline-none [overflow-wrap:anywhere] sm:text-5xl">
+        <h2 id="card-title" ref={headingRef} tabIndex={-1} className="mt-1 font-serif text-3xl font-semibold leading-tight outline-none [overflow-wrap:anywhere] sm:mt-2 sm:text-5xl">
           {card.title}
         </h2>
-        {card.detail && <p className="mt-4 text-lg text-muted">{card.detail}</p>}
-        <div className="no-print mt-6 flex flex-wrap gap-3">
+        {card.detail && <p className="mt-3 text-lg text-muted sm:mt-4">{card.detail}</p>}
+        <div className="no-print mt-4 flex flex-wrap gap-3 sm:mt-6">
           {card.link && (
             <a
               href={card.link.href}
@@ -159,28 +159,37 @@ export function SessionMode({ kit, onEnd, onBack }: Props) {
         </div>
       </div>
 
-      <div className="mt-6">
-        <p id="reaction-hint" className="mb-3 text-muted">
+      <div className="no-print mt-3 sm:mt-4">
+        <p id="reaction-hint" className="mb-2 text-muted sm:mb-3">
           How did that land? If they seem upset or tired, pause or tap Stop.
         </p>
         {/* As many to a row as fit at 7rem each, so larger text gets fewer, wider buttons ("Not interested"
-            spilled out of its button on a tablet at Large text). Stop always has its own row. */}
+            spilled out of its button on a tablet at Large text). */}
         <div role="group" aria-describedby="reaction-hint" className="flex flex-wrap gap-3">
-          {REACTIONS.map((r) => (
+          {REACTIONS.filter((r) => r.value !== "stopped").map((r) => (
             <button
               key={r.value}
               type="button"
               onClick={() => react(r.value)}
-              className={
-                r.value === "stopped"
-                  ? "min-h-16 basis-full rounded-xl border-2 border-error bg-card px-3 py-4 text-lg font-semibold text-error"
-                  : "min-h-16 flex-[1_1_7rem] rounded-xl border-2 border-control bg-card px-3 py-4 text-lg font-semibold hover:bg-accent-soft"
-              }
+              className="min-h-16 flex-[1_1_7rem] rounded-xl border-2 border-control bg-card px-3 py-4 text-lg font-semibold hover:bg-accent-soft"
             >
               {r.label}
             </button>
           ))}
         </div>
+      </div>
+      {/* Stop has its own row, pinned to the bottom of the screen when the card is too tall to leave room,
+          so it's always in reach (on a phone the reactions sat below the screen). Only Stop is pinned:
+          all five took most of a small screen at Largest text and covered the card. */}
+      <div className="no-print sticky bottom-0 bg-paper pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <button
+          type="button"
+          onClick={() => react("stopped")}
+          aria-describedby="reaction-hint"
+          className="min-h-16 w-full rounded-xl border-2 border-error bg-card px-3 py-4 text-lg font-semibold text-error"
+        >
+          {REACTIONS.find((r) => r.value === "stopped")!.label}
+        </button>
       </div>
     </section>
   );

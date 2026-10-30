@@ -217,6 +217,16 @@ describe("screens", () => {
     expect(html).toContain("End session");
   });
 
+  // On a phone the reactions sat below the screen, Stop included. Stop is now pinned to the bottom of
+  // the screen, in its own row, while the other four stay under the card.
+  it("keeps Stop in its own pinned row, outside the other reactions", () => {
+    const html = renderToStaticMarkup(<SessionMode kit={kit} onEnd={() => {}} onBack={() => {}} />);
+    const group = html.slice(html.indexOf('role="group"'), html.indexOf("</div>", html.indexOf('role="group"')));
+    for (const label of ["Lit up", "Calm", "Not interested", "Not today"]) expect(group).toContain(`>${label}<`);
+    expect(group).not.toContain(">Stop<");
+    expect(html).toMatch(/class="[^"]*sticky bottom-0[^"]*"><button[^>]*>Stop</);
+  });
+
   it("the note screen offers copy, WhatsApp and print, and says nothing is kept", () => {
     const html = renderToStaticMarkup(
       <SessionNote kit={kit} log={log([{ cardId: "a", kind: "song", title: "Ella Fitzgerald", reaction: "lit_up" }])} onBuildNext={() => {}} onBackToKit={() => {}} />,
