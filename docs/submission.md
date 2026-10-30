@@ -11,7 +11,7 @@
 - [x] **Public repo** with an **open-source license visible in the About section** (MIT); the repo contains everything needed to run it ([README](../README.md#run-it-locally))
 - [x] **Text description** in English: written on Devpost, with measured facts from dated runs
 - [x] **Testing instructions** (below): free and **unrestricted for judges until Nov 16**; demo kits are never rate-limited, and live kits allow 20 per visitor an hour and 1,000 a day
-- [x] **Video** (not required, but judges may score from the description and video alone): [1:40 walkthrough on YouTube](https://www.youtube.com/watch?v=RGh6K1hkY1Q), recorded on the live site on Oct 29 at 1920×1200, with captions
+- [x] **Video** (not required, but judges may score from the description and video alone): [2:24 narrated walkthrough on YouTube](https://www.youtube.com/watch?v=HDbtGJg_WOc), recorded on the live site on Oct 30 at 1920×1200, with captions and a computer voice-over
 - [x] Explain how Qloo is integrated and why the project is **agentic** (on Devpost, and in the [README](../README.md#how-qloo-drives-it))
 - [ ] One team member submits as the **Representative**
 - [ ] After submitting: keep Vercel up, the Qloo key valid and Claude credits funded **until Nov 16**
